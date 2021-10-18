@@ -1,0 +1,37 @@
+version: "3.8"
+services:
+  postgres-timber:
+    container_name: pgres
+    image: "postgres"
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASS}
+      - POSTGRES_DB=${DB_NAME}
+    volumes:
+      - "pgdata_timber:/var/lib/postgresql/data"
+    command:
+      [
+          "postgres",
+          "-c",
+          "log_statement=mod",
+          "-c",
+          "log_min_error_statement=ERROR",
+      ]
+  timber:
+    container_name: timber
+    image: "ghcr.io/gal/cs3500:latest"
+    build: .
+    environment:
+      DB_HOST: ${DB_HOST}
+      DB_PORT: ${DB_PORT}
+      DB_USER: ${DB_USER}
+      DB_PASS: ${DB_PASS}
+      DB_NAME: ${DB_NAME}
+    volumes:
+      - ./:/go/src/app
+    depends_on:
+      - postgres-timber
+volumes:
+  pgdata_timber:
