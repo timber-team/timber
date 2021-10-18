@@ -13,11 +13,11 @@ services:
       - "pgdata_timber:/var/lib/postgresql/data"
     command:
       [
-          "postgres",
-          "-c",
-          "log_statement=mod",
-          "-c",
-          "log_min_error_statement=ERROR",
+        "postgres",
+        "-c",
+        "log_statement=mod",
+        "-c",
+        "log_min_error_statement=ERROR",
       ]
   timber:
     container_name: timber
@@ -29,6 +29,9 @@ services:
       DB_USER: ${DB_USER}
       DB_PASS: ${DB_PASS}
       DB_NAME: ${DB_NAME}
+      AUTH_KEY: ${AUTH_KEY}
+      REDIS_ADDRESS: ${REDIS_ADDRESS}
+      REDIS_PASS: ${REDIS_PASS}
     volumes:
       - ./:/go/src/app
     depends_on:

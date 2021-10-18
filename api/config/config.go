@@ -19,5 +19,9 @@ func initDefaults() {
 	viper.SetDefault("db.host", "")
 	viper.SetDefault("db.port", "")
 	viper.SetDefault("db.name", "")
+	
 	viper.SetDefault("auth.key", "")
+	
+	viper.SetDefault("redis.address", "")
+	viper.SetDefault("redis.pass", "")
 }
