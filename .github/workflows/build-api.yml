@@ -3,7 +3,7 @@ name: Build API
 on:
   push:
     branches:
-      - 'master'
+      - 'main'
 
 jobs:
   docker:
