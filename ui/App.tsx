@@ -2,9 +2,14 @@ import React from 'react'
 // import 'bootstrap/dist/css/bootstrap.css'
 import './style/custom.scss'
 
+import { Card } from 'react-bootstrap'
+
 const App: React.FC = () => {
     return (
-        <h1>Hello there</h1>
+        <Card>
+            <Card.Header>Hello there</Card.Header>
+            <Card.Body>General Kenobi</Card.Body>
+        </Card>
     )
 }
 
