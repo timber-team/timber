@@ -3,6 +3,8 @@ package models
 import (
 	"time"
 
+	"github.com/golang-jwt/jwt"
+
 	"gorm.io/gorm"
 
 	"github.com/gal/timber/database"
@@ -61,4 +63,10 @@ type LoginDetails struct {
 	Username string `json:"username,omitempty"`
 	Email    string `json:"email,omitempty"`
 	Password string `json:"password,omitempty"`
+}
+
+type TokenClaims struct {
+	jwt.StandardClaims
+	UID int    `json:"uid,omitempty"`
+	Typ string `json:"typ,omitempty"`
 }
