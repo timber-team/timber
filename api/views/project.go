@@ -1,6 +1,7 @@
 package views
 
 import (
+	"encoding/json"
 	"net/http"
 	"strconv"
 
@@ -48,20 +49,25 @@ func CreateProject(w http.ResponseWriter, r *http.Request) {
 		utils.RespondJSON(w, nil, "err",
 			"invalid request", http.StatusBadRequest,
 		)
-	proj.ID = 0
-	proj.CreatedAt = 0
-	proj.UpdatedAt = 0
+		proj.ID = 0
+		proj.CreatedAt = 0
+		proj.UpdatedAt = 0
 
-	proj.Owner = utils.GetUID()
+		projOwnerId, _ := utils.GetUID(r)
+		projOwner := &models.User{ID: projOwnerId}
+		projOwner.Get()
 
-	if err := proj.Create(); err != nil {
-		utils.RespondJSON(w, nil, "error",
-			"failed to create project", http.StatusInternalServerError,
-		)
-		log.WithContext(r.Context()).WithError(err).Info("failed to create project")
-		return
+		proj.Owner = *projOwner
+
+		if err := proj.Create(); err != nil {
+			utils.RespondJSON(w, nil, "error",
+				"failed to create project", http.StatusInternalServerError,
+			)
+			log.WithContext(r.Context()).WithError(err).Info("failed to create project")
+			return
+		}
+
+		utils.RespondJSON(w, proj, "success", "", http.StatusOK)
+		log.WithContext(r.Context()).Info("served create project")
 	}
-
-	utils.RespondJSON(w, proj, "success", "", http.StatusOK)
-	log.WithContext(r.Context()).Info("served create project")
 }
