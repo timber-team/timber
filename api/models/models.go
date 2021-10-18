@@ -44,7 +44,14 @@ type Project struct {
 }
 
 type Application struct {
+	ID        string
 	User      User
 	Project   Project
 	Timestamp time.Time
+}
+
+type LoginDetails struct {
+	Username  string
+	Email     string
+	Passworrd string
 }
