@@ -179,7 +179,7 @@ func PatchUser(w http.ResponseWriter, r *http.Request) {
 		)
 
 		log.WithContext(r.Context()).WithError(err).Info(
-			fmt.Sprintf("error updating user with id %s", id),
+			fmt.Sprintf("error updating user with id %d", id),
 		)
 		return
 	}
