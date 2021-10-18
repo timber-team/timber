@@ -19,35 +19,35 @@ func InitModels() {
 }
 
 type User struct {
-	ID          string
-	Username    string
-	Email       string
-	Description string
-	AvatarURL   string
-	Tags        []string
+	ID          string   `gorm:"primaryKey;type:string;default:uuid_generate_v4()" json:"id,omitempty"`
+	Username    string   `json:"username,omitempty"`
+	Email       string   `json:"email,omitempty"`
+	Description string   `json:"description,omitempty"`
+	AvatarURL   string   `json:"avatar_url,omitempty"`
+	Tags        []string `json:"tags,omitempty"`
 }
 
 type UserAuth struct {
-	ID      string
-	Email   string
-	Enabled bool
-	Hash    []byte
+	ID      string `json:"id,omitempty"`
+	Email   string `json:"email,omitempty"`
+	Enabled bool   `json:"enabled,omitempty"`
+	Hash    []byte `json:"hash,omitempty"`
 }
 
 type Project struct {
-	ID              string
-	Name            string
-	Owner           User
-	PreferredSkills []string
-	RequiredSkills  []string
-	Applications    []Application
+	ID              string        `gorm:"primaryKey;type:string;default:uuid_generate_v4()" json:"id,omitempty"`
+	Name            string        `json:"name,omitempty"`
+	Owner           User          `json:"owner,omitempty"`
+	PreferredSkills []string      `json:"preferred_skills,omitempty"`
+	RequiredSkills  []string      `json:"required_skills,omitempty"`
+	Applications    []Application `json:"applications,omitempty"`
 }
 
 type Application struct {
-	ID        string
-	User      User
-	Project   Project
-	Timestamp time.Time
+	ID        string    `gorm:"primaryKey;type:string;default:uuid_generate_v4()" json:"id,omitempty"`
+	User      User      `json:"user,omitempty"`
+	Project   Project   `json:"project,omitempty"`
+	Timestamp time.Time `json:"timestamp,omitempty"`
 }
 
 type GenericResponse struct {
@@ -58,7 +58,7 @@ type GenericResponse struct {
 }
 
 type LoginDetails struct {
-	Username string
-	Email    string
-	Password string
+	Username string `json:"username,omitempty"`
+	Email    string `json:"email,omitempty"`
+	Password string `json:"password,omitempty"`
 }

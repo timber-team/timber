@@ -8,14 +8,6 @@ import (
 )
 
 func Route(r *chi.Mux) {
-	// logger := httplog.NewLogger("timber-logger", httplog.Options{
-	// 	JSON:     true,
-	// 	LogLevel: "trace",
-	// 	Concise:  true,
-	// })
-
-	// r.Use(httplog.RequestLogger(logger))
-
 	r.Get("/", func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
 	})
@@ -28,6 +20,8 @@ func userHandler() http.Handler {
 
 	r.Get("/{id}", views.GetUser)
 	r.Post("/", views.CreateUser)
+	r.Patch("/{id", views.PatchUser)
+	r.Delete("/{id}", views.DeleteUser)
 
 	return r
 }

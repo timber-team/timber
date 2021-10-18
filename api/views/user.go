@@ -3,9 +3,11 @@ package views
 import (
 	"encoding/json"
 	"errors"
+	"fmt"
 	"net/http"
 
 	"github.com/Strum355/log"
+	"github.com/go-chi/chi"
 	"gorm.io/gorm"
 
 	"github.com/gal/timber/models"
@@ -118,4 +120,62 @@ func CreateUser(w http.ResponseWriter, r *http.Request) {
 	)
 	log.WithContext(r.Context()).
 		Info("user with email already exists")
+}
+
+func PatchUser(w http.ResponseWriter, r *http.Request) {
+	id := chi.URLParam(r, "id")
+
+	var u *models.User
+
+	if err := json.NewDecoder(r.Body).Decode(
+		&u,
+	); err != nil {
+		utils.RespondJSON(w, nil, "err",
+			"invalid request", http.StatusBadRequest,
+		)
+
+		log.WithContext(r.Context()).WithError(err).Info("invalid PATCH request")
+		return
+	}
+
+	u.ID = id
+
+	if err := u.Patch(); err != nil {
+		utils.RespondJSON(w, nil, "error",
+			"error updating user", http.StatusInternalServerError,
+		)
+
+		log.WithContext(r.Context()).WithError(err).Info(
+			fmt.Sprintf("error updating user with id %s", id),
+		)
+		return
+	}
+
+	utils.RespondJSON(w, u, "sucess", "updated user", http.StatusOK)
+	log.WithContext(r.Context()).Info(fmt.Sprintf("updated user with id %s", id))
+}
+
+func DeleteUser(w http.ResponseWriter, r *http.Request) {
+	id := chi.URLParam(r, "id")
+
+	user := &models.User{ID: id}
+	if err := user.Delete(); err == nil {
+		userAuth := &models.UserAuth{ID: id}
+		if err = userAuth.Delete(); err == nil {
+			utils.RespondJSON(w, nil, "success",
+				"deleted user", http.StatusOK,
+			)
+			log.WithContext(r.Context()).Info(
+				fmt.Sprintf("Deleted user with id %s", id),
+			)
+			return
+		}
+		utils.RespondJSON(w, nil, "error", "error deleting user", http.StatusInternalServerError)
+		log.WithContext(r.Context()).WithError(err).Info("error deleting user")
+
+		return
+	}
+
+	utils.RespondJSON(w, nil, "error", "error deleting user", http.StatusInternalServerError)
+	log.WithContext(r.Context()).Info("error deleting userauth")
 }
