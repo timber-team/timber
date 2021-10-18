@@ -31,7 +31,7 @@ type UserAuth struct {
 	ID      string
 	Email   string
 	Enabled bool
-	Hash    string
+	Hash    []byte
 }
 
 type Project struct {
@@ -50,8 +50,15 @@ type Application struct {
 	Timestamp time.Time
 }
 
+type GenericResponse struct {
+	Detail string      `json:"detail,omitempty"`
+	Msg    string      `json:"msg,omitempty"`
+	Data   interface{} `json:"data,omitempty"`
+	Code   int         `json:"code,omitempty"`
+}
+
 type LoginDetails struct {
-	Username  string
-	Email     string
-	Passworrd string
+	Username string
+	Email    string
+	Password string
 }
