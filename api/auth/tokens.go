@@ -1,35 +1,38 @@
 package auth
+
 import (
 	"context"
 	"fmt"
-	"github.com/gal/timber/models"
-	"github.com/go-redis/redis/v8"
+	"log"
+	"time"
+
+	redis "github.com/go-redis/redis/v8"
 	"github.com/golang-jwt/jwt"
 	"github.com/google/uuid"
 	"github.com/spf13/viper"
-	"log"
-	"time"
+
+	"github.com/gal/timber/models"
 )
 
 var rdb *redis.Client
 
-func InitRedis() error{
+func InitRedis() error {
 	rdb = redis.NewClient(&redis.Options{
-		Addr: viper.GetString("redis.address"),
+		Addr:     viper.GetString("redis.address"),
 		Password: viper.GetString("redis.pass"),
-		DB: 0,
+		DB:       0,
 	})
 
 	_, err := rdb.Ping(context.Background()).Result()
-	if err != nil{
+	if err != nil {
 		return fmt.Errorf("error connecting to redis: %w", err)
 	}
 	return nil
 }
 
-func GenerateAccessToken(tokenString string) (*jwt.Token, string, error){
+func GenerateAccessToken(tokenString string) (*jwt.Token, string, error) {
 	token, err := jwt.ParseWithClaims(tokenString, &models.TokenClaims{},
-		func (token *jwt.Token) (interface{}, error) {
+		func(token *jwt.Token) (interface{}, error) {
 			if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 				return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
 			}
@@ -44,7 +47,7 @@ func GenerateAccessToken(tokenString string) (*jwt.Token, string, error){
 	accessToken := createToken(claims.Id, claims.UID, time.Now().Add(time.Minute*10).Unix(), "access")
 
 	signedToken, err := accessToken.SignedString([]byte(viper.GetString("auth.key")))
-	if err != nil{
+	if err != nil {
 		return nil, "", err
 	}
 
@@ -136,4 +139,3 @@ func createToken(id string, uid int, expiresAt int64, typ string) *jwt.Token {
 
 	return token
 }
-

@@ -19,5 +19,5 @@ func initDefaults() {
 	viper.SetDefault("db.host", "")
 	viper.SetDefault("db.port", "")
 	viper.SetDefault("db.name", "")
-	// viper.SetDefault("sendgrid.credential", "")
+	viper.SetDefault("auth.key", "")
 }
