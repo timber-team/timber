@@ -5,6 +5,7 @@ import (
 	"log"
 	"net/http"
 
+	"github.com/gal/timber/middlewares"
 	"github.com/gal/timber/models"
 	"golang.org/x/crypto/bcrypt"
 )
@@ -28,6 +29,10 @@ func RespondJSON(w http.ResponseWriter, payload interface{}, detail string, msg 
 
 	w.WriteHeader(status)
 	w.Write(encoded)
+}
+
+func HasAccess(r *http.Request, uid int) bool {
+	return r.Context().Value(&middlewares.AuthCtx{}).(middlewares.AuthStruct).UID == uid
 }
 
 func HashPassword(password []byte) ([]byte, error) {

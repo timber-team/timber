@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"strconv"
 
 	"github.com/Strum355/log"
 	"github.com/go-chi/chi"
@@ -15,7 +16,25 @@ import (
 )
 
 func GetUser(w http.ResponseWriter, r *http.Request) {
-	w.WriteHeader(http.StatusOK)
+	id, err := strconv.Atoi(chi.URLParam(r, "id"))
+	if err != nil {
+		utils.RespondJSON(w, nil, "error", "invalid id", http.StatusBadRequest)
+		log.WithContext(r.Context()).WithError(err).
+			Info("failed to convert string to in")
+		return
+	}
+	if !utils.HasAccess(r, id) {
+		utils.RespondJSON(w, nil, "error",
+			"unauthorized for requested content", http.StatusUnauthorized,
+		)
+		log.WithContext(r.Context()).Info(fmt.Sprintf("unauthorized for User %d", id))
+		return
+	}
+
+	user := &models.User{ID: id}
+
+	utils.RespondJSON(w, user, "success", "", http.StatusOK)
+	log.WithContext(r.Context()).Info("Served get request for user")
 }
 
 func CreateUser(w http.ResponseWriter, r *http.Request) {
@@ -73,7 +92,7 @@ func CreateUser(w http.ResponseWriter, r *http.Request) {
 				return
 			}
 
-			if u.ID == "" {
+			if u.ID == 0 {
 				utils.RespondJSON(w, nil, "error",
 					"error creating user", http.StatusInternalServerError,
 				)
@@ -123,7 +142,21 @@ func CreateUser(w http.ResponseWriter, r *http.Request) {
 }
 
 func PatchUser(w http.ResponseWriter, r *http.Request) {
-	id := chi.URLParam(r, "id")
+	id, err := strconv.Atoi(chi.URLParam(r, "id"))
+	if err != nil {
+		utils.RespondJSON(w, nil, "error", "invalid id", http.StatusBadRequest)
+		log.WithContext(r.Context()).WithError(err).
+			Info("failed to convert string to in")
+		return
+	}
+
+	if !utils.HasAccess(r, id) {
+		utils.RespondJSON(w, nil, "error",
+			"unauthorized for requested content", http.StatusUnauthorized,
+		)
+		log.WithContext(r.Context()).Info(fmt.Sprintf("unauthorized for User %d", id))
+		return
+	}
 
 	var u *models.User
 
@@ -152,11 +185,25 @@ func PatchUser(w http.ResponseWriter, r *http.Request) {
 	}
 
 	utils.RespondJSON(w, u, "sucess", "updated user", http.StatusOK)
-	log.WithContext(r.Context()).Info(fmt.Sprintf("updated user with id %s", id))
+	log.WithContext(r.Context()).Info(fmt.Sprintf("updated user with id %d", id))
 }
 
 func DeleteUser(w http.ResponseWriter, r *http.Request) {
-	id := chi.URLParam(r, "id")
+	id, err := strconv.Atoi(chi.URLParam(r, "id"))
+	if err != nil {
+		utils.RespondJSON(w, nil, "error", "invalid id", http.StatusBadRequest)
+		log.WithContext(r.Context()).WithError(err).
+			Info("failed to convert string to in")
+		return
+	}
+
+	if !utils.HasAccess(r, id) {
+		utils.RespondJSON(w, nil, "error",
+			"unauthorized for requested content", http.StatusUnauthorized,
+		)
+		log.WithContext(r.Context()).Info(fmt.Sprintf("unauthorized for User %d", id))
+		return
+	}
 
 	user := &models.User{ID: id}
 	if err := user.Delete(); err == nil {
@@ -166,7 +213,7 @@ func DeleteUser(w http.ResponseWriter, r *http.Request) {
 				"deleted user", http.StatusOK,
 			)
 			log.WithContext(r.Context()).Info(
-				fmt.Sprintf("Deleted user with id %s", id),
+				fmt.Sprintf("Deleted user with id %d", id),
 			)
 			return
 		}

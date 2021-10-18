@@ -2,10 +2,11 @@ package middlewares
 
 import (
 	"context"
-	"github.com/Strum355/log"
-	"github.com/gal/timber/auth"
 	"net/http"
 	"strings"
+
+	"github.com/Strum355/log"
+	"github.com/gal/timber/auth"
 )
 
 type AuthCtx struct{}
@@ -39,5 +40,3 @@ func CheckTokens(next http.Handler) http.Handler {
 		next.ServeHTTP(w, r.WithContext(context.WithValue(r.Context(), Auth, 0)))
 	})
 }
-
-

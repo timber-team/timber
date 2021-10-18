@@ -21,7 +21,7 @@ func InitModels() {
 }
 
 type User struct {
-	ID          string   `gorm:"primaryKey;type:string;default:uuid_generate_v4()" json:"id,omitempty"`
+	ID          int      `gorm:"primaryKey;autoIncrement" json:"id,omitempty"`
 	Username    string   `json:"username,omitempty"`
 	Email       string   `json:"email,omitempty"`
 	Description string   `json:"description,omitempty"`
@@ -30,14 +30,14 @@ type User struct {
 }
 
 type UserAuth struct {
-	ID      string `json:"id,omitempty"`
+	ID      int    `json:"id,omitempty"`
 	Email   string `json:"email,omitempty"`
 	Enabled bool   `json:"enabled,omitempty"`
 	Hash    []byte `json:"hash,omitempty"`
 }
 
 type Project struct {
-	ID              string        `gorm:"primaryKey;type:string;default:uuid_generate_v4()" json:"id,omitempty"`
+	ID              int           `gorm:"primaryKey;autoIncrement" json:"id,omitempty"`
 	Name            string        `json:"name,omitempty"`
 	Owner           User          `json:"owner,omitempty"`
 	PreferredSkills []string      `json:"preferred_skills,omitempty"`
@@ -46,7 +46,7 @@ type Project struct {
 }
 
 type Application struct {
-	ID        string    `gorm:"primaryKey;type:string;default:uuid_generate_v4()" json:"id,omitempty"`
+	ID        int       `gorm:"primaryKey;autoIncrement" json:"id,omitempty"`
 	User      User      `json:"user,omitempty"`
 	Project   Project   `json:"project,omitempty"`
 	Timestamp time.Time `json:"timestamp,omitempty"`
