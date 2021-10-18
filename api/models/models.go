@@ -15,7 +15,7 @@ func InitModels() {
 	db = database.InitDB()
 
 	db.Exec("CREATE EXTENSION IF NOT EXISTS \"uuid-ossp\";") // enable uuid generation on server
-	db.AutoMigrate(&User{}, &UserAuth{}, &Project{}, &Applications{})
+	db.AutoMigrate(&User{}, &UserAuth{}, &Project{}, &Application{})
 }
 
 type User struct {
