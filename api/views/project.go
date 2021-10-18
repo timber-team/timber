@@ -38,3 +38,30 @@ func GetProject(w http.ResponseWriter, r *http.Request) {
 	utils.RespondJSON(w, proj, "success", "", http.StatusOK)
 	log.WithContext(r.Context()).Info("served get project")
 }
+
+func CreateProject(w http.ResponseWriter, r *http.Request) {
+	var proj *models.Project
+
+	if err := json.NewDecoder(r.Body).Decode(
+		&proj,
+	); err != nil {
+		utils.RespondJSON(w, nil, "err",
+			"invalid request", http.StatusBadRequest,
+		)
+	proj.ID = 0
+	proj.CreatedAt = 0
+	proj.UpdatedAt = 0
+
+	proj.Owner = utils.GetUID()
+
+	if err := proj.Create(); err != nil {
+		utils.RespondJSON(w, nil, "error",
+			"failed to create project", http.StatusInternalServerError,
+		)
+		log.WithContext(r.Context()).WithError(err).Info("failed to create project")
+		return
+	}
+
+	utils.RespondJSON(w, proj, "success", "", http.StatusOK)
+	log.WithContext(r.Context()).Info("served create project")
+}

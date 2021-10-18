@@ -27,6 +27,8 @@ type User struct {
 	Description string   `json:"description,omitempty"`
 	AvatarURL   string   `json:"avatar_url,omitempty"`
 	Tags        []string `json:"tags,omitempty"`
+	CreatedAt   int      `json:"created_at,omitempty"`
+	UpdatedAt   int      `json:"modified_at,omitempty"`
 }
 
 type UserAuth struct {
@@ -43,6 +45,8 @@ type Project struct {
 	PreferredSkills []string      `json:"preferred_skills,omitempty"`
 	RequiredSkills  []string      `json:"required_skills,omitempty"`
 	Applications    []Application `json:"applications,omitempty"`
+	CreatedAt       int           `json:"created_at,omitempty"`
+	UpdatedAt       int           `json:"modified_at,omitempty"`
 }
 
 type Application struct {

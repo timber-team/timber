@@ -35,6 +35,11 @@ func HasAccess(r *http.Request, uid int) bool {
 	return r.Context().Value(&middlewares.AuthCtx{}).(middlewares.AuthStruct).UID == uid
 }
 
+// TODOD make safer
+func GetUID(r *http.Request) (int, error) {
+	return r.Context().Value(&middlewares.AuthCtx{}).(middlewares.AuthStruct).UID, nil
+}
+
 func HashPassword(password []byte) ([]byte, error) {
 	return bcrypt.GenerateFromPassword(password, bcrypt.DefaultCost)
 }
