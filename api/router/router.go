@@ -23,7 +23,7 @@ func userHandler() http.Handler {
 
 	r.Get("/{id}", views.GetUser)
 	r.Post("/", views.CreateUser)
-	r.Patch("/{id", views.PatchUser)
+	r.Patch("/{id}", views.PatchUser)
 	r.Delete("/{id}", views.DeleteUser)
 
 	return r

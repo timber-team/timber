@@ -13,7 +13,7 @@ RUN go mod download
 
 COPY .. .
 
-RUN go install github.com/gal/cs3500
+RUN go install github.com/gal/timber
 
 CMD ["go", "run", "*.go"]
 
@@ -21,6 +21,6 @@ FROM alpine
 
 WORKDIR /bin
 
-COPY --from=dev /go/bin/timber-api ./timber-api
+COPY --from=dev /go/bin/timber ./timber
 
-CMD ["sh", "-c", "timber-api", "-p"]
+CMD ["sh", "-c", "timber", "-p"]
