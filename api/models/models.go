@@ -1,6 +1,8 @@
 package models
 
 import (
+	"time"
+
 	"gorm.io/gorm"
 
 	"github.com/gal/timber/database"
@@ -38,9 +40,11 @@ type Project struct {
 	Owner           User
 	PreferredSkills []string
 	RequiredSkills  []string
+	Applications    []Application
 }
 
-type Applications struct {
-	Project    Project
-	Applicants []User
+type Application struct {
+	User      User
+	Project   Project
+	Timestamp time.Time
 }
