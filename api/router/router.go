@@ -16,6 +16,15 @@ func Route(r *chi.Mux) {
 	})
 
 	r.Handle("/users", userHandler())
+	r.Handle("/tokens", tokenHandler())
+}
+
+func tokenHandler() http.Handler {
+	r := chi.NewRouter()
+
+	r.Get("/", views.InspectAccessToken)
+
+	return r
 }
 
 func userHandler() http.Handler {
