@@ -2,13 +2,20 @@ package main
 
 import (
 	"net/http"
+	"os"
+
+	"github.com/Strum355/log"
+	"github.com/go-chi/chi"
 
 	"github.com/gal/timber/config"
 	"github.com/gal/timber/router"
-	"github.com/go-chi/chi"
 )
 
 func main() {
+	log.InitJSONLogger(&log.Config{
+		Output: os.Stdout,
+	})
+
 	config.InitConfig()
 
 	r := chi.NewRouter()
