@@ -1,14 +1,12 @@
 FROM node as build
 
-ENV NODE_ENV=production
+# ENV NODE_ENV=production
 
 WORKDIR /app
 
-COPY ["package.json", "package-lock.json*", "./"]
-
-RUN npm ci
-
 COPY . .
+
+RUN npm i
 
 RUN npm run build
 
