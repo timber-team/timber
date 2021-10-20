@@ -35,7 +35,7 @@ func HasAccess(r *http.Request, uid int) bool {
 	return r.Context().Value(&middlewares.AuthCtx{}).(middlewares.AuthStruct).UID == uid
 }
 
-// TODOD make safer
+// TODO: make safer
 func GetUID(r *http.Request) (int, error) {
 	return r.Context().Value(&middlewares.AuthCtx{}).(middlewares.AuthStruct).UID, nil
 }
