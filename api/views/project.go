@@ -1,73 +1,75 @@
+// TODO: Figure out what views will be doing cause MVC definition of "views" for this doesn't apply to our situation whatsoever, and the MVC definition for "controllers" basically does all this shit that these views were doing previously
+
 package views
 
-import (
-	"encoding/json"
-	"net/http"
-	"strconv"
+// import (
+// 	"encoding/json"
+// 	"net/http"
+// 	"strconv"
 
-	"github.com/Strum355/log"
-	"github.com/gal/timber/models"
-	"github.com/gal/timber/utils"
-	"github.com/go-chi/chi"
-)
+// 	"github.com/Strum355/log"
+// 	"github.com/gal/timber/models"
+// 	"github.com/gal/timber/utils"
+// 	"github.com/go-chi/chi"
+// )
 
-func GetProject(w http.ResponseWriter, r *http.Request) {
-	projId, err := strconv.Atoi(chi.URLParam(r, "id"))
-	if err != nil {
-		utils.RespondJSON(w, nil, "error",
-			"failed to deccode id", http.StatusBadRequest,
-		)
+// func GetProject(w http.ResponseWriter, r *http.Request) {
+// 	projId, err := strconv.Atoi(chi.URLParam(r, "id"))
+// 	if err != nil {
+// 		utils.RespondJSON(w, nil, "error",
+// 			"failed to deccode id", http.StatusBadRequest,
+// 		)
 
-		log.WithContext(r.Context()).WithError(err).
-			Info("failed to decode project id")
-		return
-	}
-	proj := &models.Project{
-		ID: projId,
-	}
+// 		log.WithContext(r.Context()).WithError(err).
+// 			Info("failed to decode project id")
+// 		return
+// 	}
+// 	proj := &models.Project{
+// 		ID: projId,
+// 	}
 
-	if err = proj.Get(); err != nil {
-		utils.RespondJSON(w, nil, "error",
-			"failed to get project", http.StatusNotFound,
-		)
+// 	if err = proj.Get(); err != nil {
+// 		utils.RespondJSON(w, nil, "error",
+// 			"failed to get project", http.StatusNotFound,
+// 		)
 
-		log.WithContext(r.Context()).WithError(err).
-			Info("failed to fetch project by id")
-		return
-	}
+// 		log.WithContext(r.Context()).WithError(err).
+// 			Info("failed to fetch project by id")
+// 		return
+// 	}
 
-	utils.RespondJSON(w, proj, "success", "", http.StatusOK)
-	log.WithContext(r.Context()).Info("served get project")
-}
+// 	utils.RespondJSON(w, proj, "success", "", http.StatusOK)
+// 	log.WithContext(r.Context()).Info("served get project")
+// }
 
-func CreateProject(w http.ResponseWriter, r *http.Request) {
-	var proj *models.Project
+// func CreateProject(w http.ResponseWriter, r *http.Request) {
+// 	var proj *models.Project
 
-	if err := json.NewDecoder(r.Body).Decode(
-		&proj,
-	); err != nil {
-		utils.RespondJSON(w, nil, "err",
-			"invalid request", http.StatusBadRequest,
-		)
-		proj.ID = 0
-		proj.CreatedAt = 0
-		proj.UpdatedAt = 0
+// 	if err := json.NewDecoder(r.Body).Decode(
+// 		&proj,
+// 	); err != nil {
+// 		utils.RespondJSON(w, nil, "err",
+// 			"invalid request", http.StatusBadRequest,
+// 		)
+// 		proj.ID = 0
+// 		proj.CreatedAt = 0
+// 		proj.UpdatedAt = 0
 
-		projOwnerId, _ := utils.GetUID(r)
-		projOwner := &models.User{ID: projOwnerId}
-		projOwner.Get()
+// 		projOwnerId, _ := utils.GetUID(r)
+// 		projOwner := &models.User{ID: projOwnerId}
+// 		projOwner.Get()
 
-		proj.Owner = *projOwner
+// 		proj.Owner = *projOwner
 
-		if err := proj.Create(); err != nil {
-			utils.RespondJSON(w, nil, "error",
-				"failed to create project", http.StatusInternalServerError,
-			)
-			log.WithContext(r.Context()).WithError(err).Info("failed to create project")
-			return
-		}
+// 		if err := proj.Create(); err != nil {
+// 			utils.RespondJSON(w, nil, "error",
+// 				"failed to create project", http.StatusInternalServerError,
+// 			)
+// 			log.WithContext(r.Context()).WithError(err).Info("failed to create project")
+// 			return
+// 		}
 
-		utils.RespondJSON(w, proj, "success", "", http.StatusOK)
-		log.WithContext(r.Context()).Info("served create project")
-	}
-}
+// 		utils.RespondJSON(w, proj, "success", "", http.StatusOK)
+// 		log.WithContext(r.Context()).Info("served create project")
+// 	}
+// }
