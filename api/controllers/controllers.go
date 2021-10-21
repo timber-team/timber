@@ -12,7 +12,7 @@ import (
 type Handler struct {
 	UserHandler    UserHandler
 	ProjectHandler ProjectHandler
-	//ApplicationHandler ApplicationHandler
+	ApplicationHandler ApplicationHandler
 	//TokenHandler TokenHandler
 }
 
@@ -20,7 +20,7 @@ type Config struct {
 	R              *chi.Mux
 	UserHandler    UserHandler
 	ProjectHandler ProjectHandler
-	//ApplicationHandler ApplicationHandler
+	ApplicationHandler ApplicationHandler
 	//TokenHandler	TokenHandler
 }
 
@@ -28,7 +28,7 @@ func NewHandler(c *Config) { // Create the handler
 	h := &Handler{
 		UserHandler:    c.UserHandler,
 		ProjectHandler: c.ProjectHandler,
-		//ApplicationHandler: c.ApplicationHandler,
+		ApplicationHandler: c.ApplicationHandler,
 		//TokenHandler:	c.TokenHandler,
 	}
 	r := c.R
