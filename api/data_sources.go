@@ -16,7 +16,6 @@ type dataSources struct {
 	RedisClient *redis.Client
 }
 
-// InitDS establishes connections to fields in dataSources
 func initDS() (*dataSources, error) {
 	log.Info("Initializing data sources")
 
@@ -41,6 +40,8 @@ func initDS() (*dataSources, error) {
 	if err := pql.Ping(); err != nil {
 		return nil, fmt.Errorf("error connecting to db: %w", err)
 	}
+
+	
 
 	// Load redis variables
 	rdbAddress := viper.GetString("redis.address")

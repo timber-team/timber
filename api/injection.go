@@ -10,12 +10,16 @@ import (
 func inject(d *dataSources) (*chi.Mux, error) {
 	log.Info("Injecting data sources")
 
+	// Migrate postgres
+	d.DB.Exec("CREATE EXTENSION IF NOT EXISTS \"uuid-ossp\";") // enable uuid generation on server
+	d.DB.AutoMigrate(&models.User{}, &models.UserAuth{}, &models.Project{}, &models.Application{})
+
 	/*
 	 * Model layer
 	 */
 	userStore := models.NewUserStore(d.DB)
+	authStore := models.NewAuthStore(d.DB)
 	// TODO:
-	//authStore := models.NewAuthStore(d.DB)
 	//projectStore := models.NewProjectStore(d.DB)
 	//applicationStore := models.NewApplicationStore(d.DB)
 
@@ -24,9 +28,8 @@ func inject(d *dataSources) (*chi.Mux, error) {
 	/*
 	 * Controller layer
 	 */
-	userHandler := controllers.NewUserHandler(*userStore)
+	userHandler := controllers.NewUserHandler(*userStore, *authStore)
 	// TODO:
-	//authHandler := controllers.NewAuthHandler(authStore)
 	//projectHandler := controllers.NewProjectHandler(projectStore)
 	//applicationHandler := controllers.NewApplicationHandler(applicationStore)
 
@@ -56,7 +59,6 @@ func inject(d *dataSources) (*chi.Mux, error) {
 		R:           router,
 		UserHandler: *userHandler,
 		// TODO:
-		//AuthHandler: AuthHandler,
 		//ProjectHandler: ProjectHandler,
 		//ApplicationHandler: ApplicationHandler,
 		//TokenHandler:	TokenHandler,
