@@ -20,8 +20,8 @@ func inject(d *dataSources) (*chi.Mux, error) {
 	userStore := models.NewUserStore(d.DB)
 	authStore := models.NewAuthStore(d.DB)
 	projectStore := models.NewProjectStore(d.DB)
+	applicationStore := models.NewApplicationStore(d.DB)
 	// TODO:
-	//applicationStore := models.NewApplicationStore(d.DB)
 
 	//tokenStore := models.NewTokenRepository(d.RedisClient)
 
@@ -30,8 +30,8 @@ func inject(d *dataSources) (*chi.Mux, error) {
 	 */
 	userHandler := controllers.NewUserHandler(*userStore, *authStore)
 	projectHandler := controllers.NewProjectHandler(*projectStore)
+	applicationHandler := controllers.NewApplicationHandler(*applicationStore)
 	// TODO:
-	//applicationHandler := controllers.NewApplicationHandler(applicationStore)
 
 	//tokenHandler := controllers.NewTokenHandler(tokenStore)
 
@@ -59,8 +59,8 @@ func inject(d *dataSources) (*chi.Mux, error) {
 		R:              router,
 		UserHandler:    *userHandler,
 		ProjectHandler: *projectHandler,
+		ApplicationHandler: *applicationHandler,
 		// TODO:
-		//ApplicationHandler: ApplicationHandler,
 		//TokenHandler:	TokenHandler,
 	})
 
