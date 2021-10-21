@@ -1,34 +1,32 @@
 package models
 
-// TODO: Move methods to userStore
-//func (u *User) Get() error {
-//	return db.First(&u, "id = ?", u.ID).Error
-//}
-//
-//func (u *User) GetByEmail() error {
-//	return db.Where(&u, "email = ?", u.Email).Error
-//}
-//
-//func (u *User) Create() error {
-//	return db.Create(&u).Error
-//}
-//
-//func (u *User) Patch() error {
-//	return db.Save(&u).Error
-//}
-//
-//func (u *User) Delete() error {
-//	u.Get()
-//	return db.Delete(&u).Error
-//}
+import "gorm.io/gorm"
 
-type User struct {
-	ID          int      `gorm:"primaryKey;autoIncrement" json:"id,omitempty"`
-	Username    string   `json:"username,omitempty"`
-	Email       string   `json:"email,omitempty"`
-	Description string   `json:"description,omitempty"`
-	AvatarURL   string   `json:"avatar_url,omitempty"`
-	Tags        []string `json:"tags,omitempty"`
-	CreatedAt   int      `json:"created_at,omitempty"`
-	UpdatedAt   int      `json:"modified_at,omitempty"`
+type UserStore struct {
+	db *gorm.DB
+}
+
+func NewUserStore(db *gorm.DB) *UserStore {
+	return &UserStore{db}
+}
+
+func (us *UserStore) Get(id int) error {
+	return us.db.First(&User{}, "id = ?", id).Error
+}
+
+func (us *UserStore) GetByEmail(email string) error {
+	return us.db.Where(&User{}, "email = ?", email).Error
+}
+
+func (us *UserStore) Create(user *User) error {
+	return us.db.Create(user).Error
+}
+
+func (us *UserStore) Patch(user *User) error {
+	return us.db.Save(user).Error
+}
+
+func (us *UserStore) Delete(user *User) error {
+	us.Get(user.ID)
+	return us.db.Delete(user).Error
 }

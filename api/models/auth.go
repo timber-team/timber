@@ -1,31 +1,33 @@
 package models
 
-// TODO: Move methods to authStore
-// func (u *UserAuth) Get() error {
-// 	return db.First(&u, "id = ?", u.ID).Error
-// }
+import "gorm.io/gorm"
 
-// func (u *UserAuth) GetByEmail() error {
-// 	return db.Where("email = ?", u.Email).First(&u).Error
-// }
+type AuthStore struct {
+	db *gorm.DB
+}
 
-// func (u *UserAuth) Create() error {
-// 	u.Get()
-// 	return db.Create(&u).Error
-// }
+func NewAuthStore(db *gorm.DB) *AuthStore {
+	return &AuthStore{db}
+}
 
-// func (u *UserAuth) Patch() error {
-// 	return db.Save(&u).Error
-// }
+func (as *AuthStore) Get(id int) error {
+	return as.db.First(&UserAuth{}, "id = ?", id).Error
+}
 
-// func (u *UserAuth) Delete() error {
-// 	u.Get()
-// 	return db.Delete(&u).Error
-// }
+func (as *AuthStore) GetByEmail(email string) error {
+	return as.db.Where("email = ?", email).First(&UserAuth{}).Error
+}
 
-type UserAuth struct {
-	ID      int    `json:"id,omitempty"`
-	Email   string `json:"email,omitempty"`
-	Enabled bool   `json:"enabled,omitempty"`
-	Hash    []byte `json:"hash,omitempty"`
+func (as *AuthStore) Create(userAuth *UserAuth) error {
+	as.Get(userAuth.ID)
+	return as.db.Create(&userAuth).Error
+}
+
+func (as *AuthStore) Patch(userAuth *UserAuth) error {
+	return as.db.Save(&userAuth).Error
+}
+
+func (as *AuthStore) Delete(userAuth *UserAuth) error {
+	as.Get(userAuth.ID)
+	return as.db.Delete(&userAuth).Error
 }
