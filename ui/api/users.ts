@@ -1,4 +1,4 @@
-import {APIResponse, simple_api_request} from "./api"
+import {APIResponse, simple_api_request} from "./init"
 
 export function get_user(user_id: string): APIResponse{
     return simple_api_request("/users/" + user_id,"GET", null, false)
