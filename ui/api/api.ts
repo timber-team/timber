@@ -15,7 +15,10 @@ export interface APIResponse {
 }
 
 interface GenericResponse{
-    body: string
+    detail: string,
+    msg: string,
+    payload: any,
+    status: number
 }
 
 export function simple_api_request(endpoint: string, method: string, body: any, authenticated = true) : APIResponse{
