@@ -1,44 +1,49 @@
 package models
 
 import (
-	"github.com/golang-jwt/jwt"
-	"time"
+	"github.com/google/uuid"
 )
 
 type User struct {
-	ID          int      `gorm:"primaryKey;autoIncrement" json:"id,omitempty"`
-	Username    string   `json:"username,omitempty"`
-	Email       string   `json:"email,omitempty"`
-	Description string   `json:"description,omitempty"`
-	AvatarURL   string   `json:"avatar_url,omitempty"`
-	Tags        []string `json:"tags,omitempty"`
-	CreatedAt   int      `json:"created_at,omitempty"`
-	UpdatedAt   int      `json:"modified_at,omitempty"`
+	ID          int       `gorm:"primaryKey;autoIncrement" json:"id"`
+	CreatedAt   int64     `gorm:"autoCreateTime" json:"created_at,omitempty"`
+	UpdatedAt   int64     `gorm:"autoUpdateTime" json:"modified_at,omitempty"`
+	Username    string    `json:"username,omitempty"`
+	Email       string    `gorm:"unique" json:"email,omitempty"`
+	Password    string    `json:"-,omitempty"`
+	Verified    bool      `gorm:"default:false" json:"verified,omitempty"`
+	Description string    `json:"description,omitempty"`
+	AvatarURL   string    `json:"avatar_url,omitempty"`
+	Tags        []string  `gorm:"type:text[]" json:"tags,omitempty"`
+	Projects    []Project `gorm:"foreignKey:OwnerID"`
 }
 
-type UserAuth struct {
-	ID      int    `json:"id,omitempty"`
-	Email   string `json:"email,omitempty"`
-	Enabled bool   `json:"enabled,omitempty"`
-	Hash    []byte `json:"hash,omitempty"`
-}
+// TODO: Pretty sure we don't need this anymore because we can just exclude fields on the main user
+//type UserAuth struct {
+//	ID      int    `json:"id,omitempty"`
+//	Email   string `json:"email,omitempty"`
+//	Enabled bool   `json:"enabled,omitempty"`
+//	Hash    []byte `json:"hash,omitempty"`
+//}
 
 type Project struct {
 	ID              int           `gorm:"primaryKey;autoIncrement" json:"id,omitempty"`
+	CreatedAt       int64         `gorm:"autoCreateTime" json:"created_at,omitempty"`
+	UpdatedAt       int64         `gorm:"autoUpdateTime" json:"modified_at,omitempty"`
 	Name            string        `json:"name,omitempty"`
-	Owner           User          `json:"owner,omitempty"`
-	PreferredSkills []string      `json:"preferred_skills,omitempty"`
-	RequiredSkills  []string      `json:"required_skills,omitempty"`
+	OwnerID         int           `json:"owner,omitempty"`
+	PreferredSkills []string      `gorm:"type:text[]" json:"preferred_skills,omitempty"`
+	RequiredSkills  []string      `gorm:"type:text[]" json:"required_skills,omitempty"`
 	Applications    []Application `json:"applications,omitempty"`
-	CreatedAt       int           `json:"created_at,omitempty"`
-	UpdatedAt       int           `json:"modified_at,omitempty"`
 }
 
 type Application struct {
-	ID        int       `gorm:"primaryKey;autoIncrement" json:"id,omitempty"`
-	User      User      `json:"user,omitempty"`
-	Project   Project   `json:"project,omitempty"`
-	Timestamp time.Time `json:"timestamp,omitempty"`
+	ID        int   `gorm:"primaryKey;autoIncrement" json:"id,omitempty"`
+	CreatedAt int64 `gorm:"autoCreateTime" json:"created_at,omitempty"`
+	UpdatedAt int64 `gorm:"autoUpdateTime" json:"modified_at,omitempty"`
+	UserID    int   `json:"user,omitempty"`
+	ProjectID int   `json:"project,omitempty"`
+	Timestamp int64 `gorm:"type:time" json:"timestamp,omitempty"`
 }
 
 type GenericResponse struct {
@@ -54,8 +59,17 @@ type LoginDetails struct {
 	Password string `json:"password,omitempty"`
 }
 
-type TokenClaims struct {
-	jwt.StandardClaims
-	UID int    `json:"uid,omitempty"`
-	Typ string `json:"typ,omitempty"`
+type RefreshToken struct {
+	ID  uuid.UUID `json:"-"`
+	UID int       `json:"-"`
+	SS  string    `json:"refreshToken"`
+}
+
+type AccessToken struct {
+	SS string `json:"accessToken"`
+}
+
+type TokenPair struct {
+	AccessToken
+	RefreshToken
 }
