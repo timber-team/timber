@@ -41,16 +41,15 @@ func initDS() (*dataSources, error) {
 		return nil, fmt.Errorf("error connecting to db: %w", err)
 	}
 
-	
-
 	// Load redis variables
 	rdbAddress := viper.GetString("redis.address")
+	rdbPort := viper.GetString("redis.port")
 	rdbPassword := viper.GetString("redis.pass")
 
 	// Initialize redis connection
 	log.Info("Connecting to Redis")
 	rdb := redis.NewClient(&redis.Options{
-		Addr:     rdbAddress,
+		Addr:     rdbAddress + ":" + rdbPort,
 		Password: rdbPassword,
 		DB:       0,
 	})
