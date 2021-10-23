@@ -19,6 +19,14 @@ services:
         "-c",
         "log_min_error_statement=ERROR",
       ]
+  redis-timber:
+    image: "redis:alpine"
+    command: >
+      --requirepass ${REDIS_PASS}
+    ports:
+      - "6379:6379"
+    volumes:
+      - "rdbdata_timber:/data"
   timber:
     container_name: timber
     image: "ghcr.io/gal/timber:latest"
@@ -31,6 +39,7 @@ services:
       DB_NAME: ${DB_NAME}
       AUTH_KEY: ${AUTH_KEY}
       REDIS_ADDRESS: ${REDIS_ADDRESS}
+      REDIS_PORT: ${REDIS_PORT}
       REDIS_PASS: ${REDIS_PASS}
     ports:
       - "8080"
@@ -41,3 +50,4 @@ services:
       - redis-timber
 volumes:
   pgdata_timber:
+  rdbdata_timber:
