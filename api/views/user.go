@@ -1,230 +1,63 @@
-// TODO: Figure out what views will be doing cause MVC definition of "views" for this doesn't apply to our situation whatsoever, and the MVC definition for "controllers" basically does all this shit that these views were doing previously
+// TODO: Add more functions to the User Handler
 
 package views
 
-// import (
-// 	"encoding/json"
-// 	"errors"
-// 	"fmt"
-// 	"net/http"
-// 	"strconv"
+import (
+	"net/http"
 
-// 	"github.com/Strum355/log"
-// 	"github.com/go-chi/chi"
-// 	"gorm.io/gorm"
+	"github.com/Strum355/log"
+	"github.com/gal/timber/models"
+	"github.com/gal/timber/utils"
+	"github.com/gal/timber/utils/customerror"
+	"github.com/gin-gonic/gin"
+)
 
-// 	"github.com/gal/timber/models"
-// 	"github.com/gal/timber/utils"
-// )
+// signupRequest is used for json marshalling and validation
+type signupRequest struct {
+	Email    string `json:"email" binding:"required,email"`
+	Password string `json:"password" binding:"required,gte=6,lte=30"`
+}
 
-// func GetUser(w http.ResponseWriter, r *http.Request) {
-// 	id, err := strconv.Atoi(chi.URLParam(r, "id"))
-// 	if err != nil {
-// 		utils.RespondJSON(w, nil, "error", "invalid id", http.StatusBadRequest)
-// 		log.WithContext(r.Context()).WithError(err).
-// 			Info("failed to convert string to in")
-// 		return
-// 	}
-// 	if !utils.HasAccess(r, id) {
-// 		utils.RespondJSON(w, nil, "error",
-// 			"unauthorized for requested content", http.StatusUnauthorized,
-// 		)
-// 		log.WithContext(r.Context()).Info(fmt.Sprintf("unauthorized for User %d", id))
-// 		return
-// 	}
+// Signup handler
+func (h *Handler) Signup(c *gin.Context) {
+	// Variable to hold the incoming json body {email, password}
+	var req signupRequest
 
-// 	user := &models.User{ID: id}
+	// Bind incoming json to the struct and check for validation errors
+	if ok := utils.BindData(c, &req); !ok {
+		return
+	}
 
-// 	utils.RespondJSON(w, user, "success", "", http.StatusOK)
-// 	log.WithContext(r.Context()).Info("Served get request for user")
-// }
+	u := &models.User{
+		Email:    req.Email,
+		Password: req.Password,
+	}
 
-// func CreateUser(w http.ResponseWriter, r *http.Request) {
-// 	var loginDetails *models.LoginDetails
-// 	var u *models.User
+	ctx := c.Request.Context()
 
-// 	if err := json.NewDecoder(r.Body).Decode(
-// 		&loginDetails,
-// 	); err != nil {
-// 		utils.RespondJSON(w, nil, "err",
-// 			"invalid request", http.StatusBadRequest,
-// 		)
+	err := h.UserController.Signup(ctx, u)
 
-// 		log.WithContext(r.Context()).Info("invalid login request")
-// 		return
-// 	}
+	if err != nil {
+		log.WithContext(ctx).WithError(err).Error("Failed to sign up user")
+		c.JSON(customerror.Status(err), gin.H{
+			"error": err,
+		})
+		return
+	}
 
-// 	if loginDetails.Email == "" && loginDetails.Username == "" ||
-// 		loginDetails.Password == "" {
-// 		utils.RespondJSON(w, nil, "err",
-// 			"invalid request", http.StatusBadRequest,
-// 		)
+	// Create a token pair as strings
+	tokens, err := h.TokenController.NewPairFromUser(ctx, u, "")
 
-// 		log.WithContext(r.Context()).Info("invalid login request")
-// 		return
-// 	}
+	if err != nil {
+		log.WithContext(ctx).WithError(err).Error("Failed to create tokens for user")
 
-// 	u = &models.User{
-// 		Username: loginDetails.Username,
-// 		Email:    loginDetails.Email,
-// 	}
+		c.JSON(customerror.Status(err), gin.H{
+			"error": err,
+		})
+		return
+	}
 
-// 	if err := u.GetByEmail(); err != nil {
-// 		if errors.Is(err, gorm.ErrRecordNotFound) {
-// 			if err := u.Create(); err != nil {
-// 				utils.RespondJSON(w, nil, "error",
-// 					"error creating user", http.StatusInternalServerError,
-// 				)
-
-// 				log.WithContext(r.Context()).
-// 					WithError(err).Info("error creating user")
-
-// 				return
-// 			}
-// 			// TODO make sure to delete user object if userauth fails
-// 			hashed, err := utils.HashPassword([]byte(loginDetails.Password))
-// 			if err != nil {
-// 				utils.RespondJSON(w, nil, "error",
-// 					"error creating user", http.StatusInternalServerError,
-// 				)
-
-// 				log.WithContext(r.Context()).
-// 					WithError(err).Info("error creating password hash")
-
-// 				return
-// 			}
-
-// 			if u.ID == 0 {
-// 				utils.RespondJSON(w, nil, "error",
-// 					"error creating user", http.StatusInternalServerError,
-// 				)
-
-// 				log.WithContext(r.Context()).
-// 					Info("error creating user")
-
-// 				return
-// 			}
-
-// 			userAuth := &models.UserAuth{
-// 				ID:      u.ID,
-// 				Email:   u.Email,
-// 				Hash:    hashed,
-// 				Enabled: false,
-// 			}
-
-// 			if err = userAuth.Create(); err != nil {
-// 				utils.RespondJSON(w, nil, "error",
-// 					"error creating user", http.StatusInternalServerError,
-// 				)
-
-// 				log.WithContext(r.Context()).WithError(err).
-// 					Info("error creating userAuth")
-// 				// TODO delete user object
-// 				return
-// 			}
-
-// 			utils.RespondJSON(w, u, "success", "", http.StatusCreated)
-// 		} else {
-// 			utils.RespondJSON(w, nil, "error",
-// 				"error creating user", http.StatusInternalServerError,
-// 			)
-
-// 			log.WithContext(r.Context()).
-// 				WithError(err).Info("error creating user")
-
-// 			return
-// 		}
-// 	}
-
-// 	utils.RespondJSON(w, nil, "error",
-// 		"user with email already exists", http.StatusConflict,
-// 	)
-// 	log.WithContext(r.Context()).
-// 		Info("user with email already exists")
-// }
-
-// func PatchUser(w http.ResponseWriter, r *http.Request) {
-// 	id, err := strconv.Atoi(chi.URLParam(r, "id"))
-// 	if err != nil {
-// 		utils.RespondJSON(w, nil, "error", "invalid id", http.StatusBadRequest)
-// 		log.WithContext(r.Context()).WithError(err).
-// 			Info("failed to convert string to in")
-// 		return
-// 	}
-
-// 	if !utils.HasAccess(r, id) {
-// 		utils.RespondJSON(w, nil, "error",
-// 			"unauthorized for requested content", http.StatusUnauthorized,
-// 		)
-// 		log.WithContext(r.Context()).Info(fmt.Sprintf("unauthorized for User %d", id))
-// 		return
-// 	}
-
-// 	var u *models.User
-
-// 	if err := json.NewDecoder(r.Body).Decode(
-// 		&u,
-// 	); err != nil {
-// 		utils.RespondJSON(w, nil, "err",
-// 			"invalid request", http.StatusBadRequest,
-// 		)
-
-// 		log.WithContext(r.Context()).WithError(err).Info("invalid PATCH request")
-// 		return
-// 	}
-
-// 	u.ID = id
-
-// 	if err := u.Patch(); err != nil {
-// 		utils.RespondJSON(w, nil, "error",
-// 			"error updating user", http.StatusInternalServerError,
-// 		)
-
-// 		log.WithContext(r.Context()).WithError(err).Info(
-// 			fmt.Sprintf("error updating user with id %d", id),
-// 		)
-// 		return
-// 	}
-
-// 	utils.RespondJSON(w, u, "sucess", "updated user", http.StatusOK)
-// 	log.WithContext(r.Context()).Info(fmt.Sprintf("updated user with id %d", id))
-// }
-
-// func DeleteUser(w http.ResponseWriter, r *http.Request) {
-// 	id, err := strconv.Atoi(chi.URLParam(r, "id"))
-// 	if err != nil {
-// 		utils.RespondJSON(w, nil, "error", "invalid id", http.StatusBadRequest)
-// 		log.WithContext(r.Context()).WithError(err).
-// 			Info("failed to convert string to in")
-// 		return
-// 	}
-
-// 	if !utils.HasAccess(r, id) {
-// 		utils.RespondJSON(w, nil, "error",
-// 			"unauthorized for requested content", http.StatusUnauthorized,
-// 		)
-// 		log.WithContext(r.Context()).Info(fmt.Sprintf("unauthorized for User %d", id))
-// 		return
-// 	}
-
-// 	user := &models.User{ID: id}
-// 	if err := user.Delete(); err == nil {
-// 		userAuth := &models.UserAuth{ID: id}
-// 		if err = userAuth.Delete(); err == nil {
-// 			utils.RespondJSON(w, nil, "success",
-// 				"deleted user", http.StatusOK,
-// 			)
-// 			log.WithContext(r.Context()).Info(
-// 				fmt.Sprintf("Deleted user with id %d", id),
-// 			)
-// 			return
-// 		}
-// 		utils.RespondJSON(w, nil, "error", "error deleting user", http.StatusInternalServerError)
-// 		log.WithContext(r.Context()).WithError(err).Info("error deleting user")
-
-// 		return
-// 	}
-
-// 	utils.RespondJSON(w, nil, "error", "error deleting user", http.StatusInternalServerError)
-// 	log.WithContext(r.Context()).Info("error deleting userauth")
-// }
+	c.JSON(http.StatusCreated, gin.H{
+		"tokens": tokens,
+	})
+}
