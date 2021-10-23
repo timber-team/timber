@@ -19,7 +19,7 @@ func (appStore *ApplicationStore) Get(id int) error {
 }
 
 func (appStore *ApplicationStore) Create(app *Application) error {
-	app.Timestamp = time.Now()
+	app.Timestamp = time.Now().Unix()
 	return appStore.db.Create(&app).Error
 }
 
