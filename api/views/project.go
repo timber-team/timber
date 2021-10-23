@@ -1,4 +1,4 @@
-// TODO: Figure out what views will be doing cause MVC definition of "views" for this doesn't apply to our situation whatsoever, and the MVC definition for "controllers" basically does all this shit that these views were doing previously
+// TODO: Project Handler functions
 
 package views
 
