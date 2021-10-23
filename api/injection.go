@@ -1,67 +1,56 @@
 package main
 
 import (
+	"time"
+
 	"github.com/Strum355/log"
 	"github.com/gal/timber/controllers"
 	"github.com/gal/timber/models"
-	"github.com/go-chi/chi"
+	"github.com/gal/timber/views"
+	"github.com/gin-gonic/gin"
+	"github.com/spf13/viper"
 )
 
-func inject(d *dataSources) (*chi.Mux, error) {
+func inject(d *dataSources) (*gin.Engine, error) {
 	log.Info("Injecting data sources")
 
 	// Migrate postgres
 	d.DB.Exec("CREATE EXTENSION IF NOT EXISTS \"uuid-ossp\";") // enable uuid generation on server
-	d.DB.AutoMigrate(&models.User{}, &models.UserAuth{}, &models.Project{}, &models.Application{})
+	d.DB.AutoMigrate(&models.User{}, &models.Application{}, &models.Project{})
 
 	/*
 	 * Model layer
 	 */
 	userStore := models.NewUserStore(d.DB)
-	authStore := models.NewAuthStore(d.DB)
 	projectStore := models.NewProjectStore(d.DB)
 	applicationStore := models.NewApplicationStore(d.DB)
-	// TODO:
-
-	//tokenStore := models.NewTokenRepository(d.RedisClient)
+	tokenStore := models.NewTokenStore(d.RedisClient)
 
 	/*
 	 * Controller layer
 	 */
-	userHandler := controllers.NewUserHandler(*userStore, *authStore)
-	projectHandler := controllers.NewProjectHandler(*projectStore)
-	applicationHandler := controllers.NewApplicationHandler(*applicationStore)
-	// TODO:
+	userController := controllers.NewUserController(*userStore)
+	projectController := controllers.NewProjectController(*projectStore)
+	applicationController := controllers.NewApplicationController(*applicationStore)
 
-	//tokenHandler := controllers.NewTokenHandler(tokenStore)
+	// Load auth key from env variable
+	authKey := viper.GetString("auth.key")
 
-	// TODO:
-	//// Load auth key from env variable
-	//authKey := viper.GetString("auth.key")
+	// Load expiration lengths
+	accessTokenExp := int64(time.Minute * 15)
+	refreshTokenExp := int64(time.Hour * 24 * 30)
 
-	// TODO:
-	//// Load expiration lengths from env variables and parse as int
-	//accessTokenExp := time.Minute * 15
-	//refreshTokenExp := time.Hour * 24 * 30
-	//
-	//
-	//tokenHandler := controllers.NewTokenHandler(&controllers.TokenHandlerConfig{
-	//	tokenStore:       tokenStore,
-	//	AuthKey:         authKey,
-	//	AccessExpiration:      accessTokenExp,
-	//	RefreshExpiration: refreshTokenExp,
-	//})
+	tokenController := controllers.NewTokenController(*tokenStore, authKey, accessTokenExp, refreshTokenExp)
 
-	// Initialize chi Router
-	router := chi.NewRouter()
+	// Initialize router
+	router := gin.Default()
 
-	controllers.NewHandler(&controllers.Config{
-		R:              router,
-		UserHandler:    *userHandler,
-		ProjectHandler: *projectHandler,
-		ApplicationHandler: *applicationHandler,
-		// TODO:
-		//TokenHandler:	TokenHandler,
+	views.NewHandler(&views.Config{
+		R:                     router,
+		UserController:        *userController,
+		ProjectController:     *projectController,
+		ApplicationController: *applicationController,
+		TokenController:       *tokenController,
 	})
 
 	return router, nil
