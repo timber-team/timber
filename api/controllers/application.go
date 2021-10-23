@@ -2,11 +2,12 @@ package controllers
 
 import "github.com/gal/timber/models"
 
-type ApplicationHandler struct {
+type ApplicationController struct {
 	Applications models.ApplicationStore
 }
 
-func NewApplicationHandler(appStore models.ApplicationStore) *ApplicationHandler {
-	return &ApplicationHandler{appStore}
+func NewApplicationController(appStore models.ApplicationStore) *ApplicationController {
+	return &ApplicationController{appStore}
 }
-// TODO: Application handler functions
+
+// TODO: Application Controller functions
