@@ -2,8 +2,9 @@ package models
 
 import (
 	"context"
-	"fmt"
+	"errors"
 
+	"github.com/gal/timber/utils/customerror"
 	"gorm.io/gorm"
 )
 
@@ -40,10 +41,15 @@ func (userStore *UserStore) FindByEmail(email string) (*User, error) {
 }
 
 func (userStore *UserStore) Create(ctx context.Context, user *User) error {
-	if err := userStore.db.First(user, "email = ?", user.Email); err == nil {
-		return fmt.Errorf("email is already in use. UID: %v, Email: %s", user.ID, user.Email)
+	err := userStore.CheckExistsByEmail(user.Email)
+	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return userStore.db.Create(user).Error
+		} else {
+			return err
+		}
 	}
-	return userStore.db.Create(user).Error
+	return customerror.NewConflict("email", user.Email)
 }
 
 func (userStore *UserStore) Patch(user *User) error {
