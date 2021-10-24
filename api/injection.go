@@ -16,9 +16,7 @@ func inject(d *dataSources) (*gin.Engine, error) {
 
 	// Migrate postgres
 	d.DB.Exec("CREATE EXTENSION IF NOT EXISTS \"uuid-ossp\";") // enable uuid generation on server
-	d.DB.AutoMigrate(models.User{})
-	d.DB.AutoMigrate(&models.Application{})
-	d.DB.AutoMigrate(&models.Project{})
+	d.DB.AutoMigrate(&models.User{}, &models.Project{}, &models.Application{})
 
 	/*
 	 * Model layer
