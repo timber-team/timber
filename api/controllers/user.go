@@ -33,3 +33,27 @@ func (userControl *UserController) Signup(ctx context.Context, u *models.User) e
 
 	return userControl.Users.Create(ctx, u)
 }
+
+func (userControl *UserController) Signin(ctx context.Context, u *models.User) error {
+	uFetched, err := userControl.Users.FindByEmail(u.Email)
+
+	//	Returns NotAuthorized to the client
+	if err != nil {
+		return customerror.NewAuthorization("Invalid email and password combination")
+	}
+
+	// Verify the password
+	match, err := auth.ComparePasswords(uFetched.Password, u.Password)
+
+	if err != nil {
+		return customerror.NewInternal()
+	}
+
+	if !match {
+		return customerror.NewAuthorization("Invalid email and password combination")
+	}
+
+	*u = *uFetched
+
+	return nil
+}
