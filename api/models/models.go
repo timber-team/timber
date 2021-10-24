@@ -5,11 +5,11 @@ import (
 )
 
 type User struct {
-	ID          int       `gorm:"primaryKey;autoIncrement" json:"id"`
-	CreatedAt   int64     `gorm:"autoCreateTime" json:"created_at,omitempty"`
-	UpdatedAt   int64     `gorm:"autoUpdateTime" json:"modified_at,omitempty"`
+	ID          int       `gorm:"primaryKey;autoIncrement;->" json:"id"`
+	CreatedAt   int64     `gorm:"autoCreateTime;<-:create" json:"created_at,omitempty"`
+	UpdatedAt   int64     `gorm:"autoUpdateTime;<-:create" json:"modified_at,omitempty"`
 	Username    string    `json:"username,omitempty"`
-	Email       string    `gorm:"unique" json:"email,omitempty"`
+	Email       string    `json:"email,omitempty"`
 	Password    string    `json:"-,omitempty"`
 	Verified    bool      `gorm:"default:false" json:"verified,omitempty"`
 	Description string    `json:"description,omitempty"`
@@ -27,20 +27,21 @@ type User struct {
 //}
 
 type Project struct {
-	ID              int           `gorm:"primaryKey;autoIncrement" json:"id,omitempty"`
-	CreatedAt       int64         `gorm:"autoCreateTime" json:"created_at,omitempty"`
-	UpdatedAt       int64         `gorm:"autoUpdateTime" json:"modified_at,omitempty"`
+	ID              int           `gorm:"primaryKey;autoIncrement;->" json:"id,omitempty"`
+	CreatedAt       int64         `gorm:"autoCreateTime;<-:create" json:"created_at,omitempty"`
+	UpdatedAt       int64         `gorm:"autoUpdateTime;<-:create" json:"modified_at,omitempty"`
 	Name            string        `json:"name,omitempty"`
-	OwnerID         int           `json:"owner,omitempty"`
+	OwnerID         int           `json:"owner_id,omitempty"`
+	CollaboratorIDs []int         `gorm:"type:int[]" json:"collaborator_ids,omitempty"`
 	PreferredSkills []string      `gorm:"type:text[]" json:"preferred_skills,omitempty"`
 	RequiredSkills  []string      `gorm:"type:text[]" json:"required_skills,omitempty"`
-	Applications    []Application `json:"applications,omitempty"`
+	Applications    []Application `gorm:"foreignKey:ProjectID" json:"applications,omitempty"`
 }
 
 type Application struct {
-	ID        int   `gorm:"primaryKey;autoIncrement" json:"id,omitempty"`
-	CreatedAt int64 `gorm:"autoCreateTime" json:"created_at,omitempty"`
-	UpdatedAt int64 `gorm:"autoUpdateTime" json:"modified_at,omitempty"`
+	ID        int   `gorm:"primaryKey;autoIncrement;->" json:"id,omitempty"`
+	CreatedAt int64 `gorm:"autoCreateTime;<-:create" json:"created_at,omitempty"`
+	UpdatedAt int64 `gorm:"autoUpdateTime;<-:create" json:"modified_at,omitempty"`
 	UserID    int   `json:"user,omitempty"`
 	ProjectID int   `json:"project,omitempty"`
 	Timestamp int64 `gorm:"type:time" json:"timestamp,omitempty"`
