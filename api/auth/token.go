@@ -16,14 +16,14 @@ type AccessTokenCustomClaims struct {
 }
 
 func GenerateAccessToken(u *models.User, key string, exp int64) (string, error) {
-	unixTime := time.Now().Unix()
-	tokenExp := unixTime + exp
+	currentTime := time.Now()
+	tokenExp := currentTime.Add(time.Duration(exp))
 
 	claims := AccessTokenCustomClaims{
 		User: u,
 		StandardClaims: jwt.StandardClaims{
-			IssuedAt:  unixTime,
-			ExpiresAt: tokenExp,
+			IssuedAt:  currentTime.Unix(),
+			ExpiresAt: tokenExp.Unix(),
 		},
 	}
 
@@ -50,7 +50,7 @@ type RefreshTokenCustomClaims struct {
 
 func GenerateRefreshToken(uid int, key string, exp int64) (*RefreshTokenData, error) {
 	currentTime := time.Now()
-	tokenExp := currentTime.Add(time.Duration(exp) * time.Second)
+	tokenExp := currentTime.Add(time.Duration(exp))
 	tokenID, err := uuid.NewRandom()
 
 	if err != nil {
