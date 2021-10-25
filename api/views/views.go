@@ -35,7 +35,9 @@ func NewHandler(c *Config) {
 
 	if gin.Mode() != gin.TestMode {
 		g.GET("/profile", middlewares.AuthUser(h.TokenController), h.Profile)
+		g.POST("/projects", middlewares.AuthUser(h.TokenController), h.NewProject)
 	} else {
+		g.GET("/profile", middlewares.AuthUser(h.TokenController), h.Profile)
 		g.GET("/profile", h.Profile)
 	}
 
