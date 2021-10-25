@@ -17,7 +17,11 @@ func NewUserController(userStore models.UserStore) *UserController {
 	return &UserController{userStore}
 }
 
-func (userControl *UserController) Get(ctx context.Context, id int) (*models.User, error) {
+// func (UserController *UserController) Get(ctx context.Context, u *models.User) error {
+// return re
+// }
+
+func (userControl *UserController) GetByID(ctx context.Context, id int) (*models.User, error) {
 	u, err := userControl.Users.FindByID(id)
 	return u, err
 }
