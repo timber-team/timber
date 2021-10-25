@@ -1,6 +1,8 @@
 package controllers
 
 import (
+	"context"
+
 	"github.com/gal/timber/models"
 )
 
@@ -10,6 +12,10 @@ type ProjectController struct {
 
 func NewProjectController(pStore models.ProjectStore) *ProjectController {
 	return &ProjectController{pStore}
+}
+
+func (projectControl *ProjectController) NewProject(ctx context.Context, p *models.Project) error {
+	return projectControl.Projects.Create(p)
 }
 
 // TODO: Project Controller functions
