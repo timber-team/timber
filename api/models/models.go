@@ -31,11 +31,12 @@ type Project struct {
 	ID              int           `gorm:"primaryKey;autoIncrement;->" json:"id,omitempty"`
 	CreatedAt       int64         `gorm:"autoCreateTime;<-:create" json:"created_at,omitempty"`
 	UpdatedAt       int64         `gorm:"autoUpdateTime;<-:create" json:"modified_at,omitempty"`
-	Name            string        `json:"name,omitempty"`
-	OwnerID         int           `json:"owner_id,omitempty"`
-	Collaborators   []*User       `gorm:"many2many:user_projects"`
-	PreferredSkills []string      `gorm:"type:text[]" json:"preferred_skills,omitempty"`
-	RequiredSkills  []string      `gorm:"type:text[]" json:"required_skills,omitempty"`
+	Name            string        `json:"name"`
+	Description     string        `json:"description"`
+	OwnerID         int           `gorm:"not null;<-:create" json:"owner_id,omitempty"`
+	Collaborators   []*User       `gorm:"many2many:user_projects" json:"collaborators"`
+	PreferredSkills []string      `gorm:"type:text[]" json:"preferred_skills"`
+	RequiredSkills  []string      `gorm:"type:text[]" json:"required_skills"`
 	Applications    []Application `json:"applications,omitempty"`
 }
 
