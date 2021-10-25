@@ -2,6 +2,76 @@
 
 package views
 
+import (
+	"fmt"
+	"net/http"
+
+	"github.com/Strum355/log"
+	"github.com/gal/timber/models"
+	"github.com/gal/timber/utils"
+	"github.com/gal/timber/utils/customerror"
+	"github.com/gin-gonic/gin"
+)
+
+type projectRequest struct {
+	Name string `json:"name" binding:"required,gte=4,lte=30"`
+}
+
+func (h *Handler) NewProject(c *gin.Context) {
+	var req projectRequest
+
+	if ok := utils.BindData(c, &req); !ok {
+		return
+	}
+
+	user, exists := c.Get("user")
+
+	if !exists {
+		log.WithContext(c).Error("Unable to extract user from the request context")
+		err := customerror.NewInternal()
+		c.JSON(err.Status(), gin.H{
+			"error": err,
+		})
+		return
+	}
+
+	uid := user.(*models.User).ID
+
+	ctx := c.Request.Context()
+
+	u, err := h.UserController.GetByID(ctx, uid)
+
+	if err != nil {
+		log.WithContext(ctx).WithError(err).Error(fmt.Sprintf("Unable to find user: %v", uid))
+		e := customerror.NewNotFound("user", fmt.Sprintf("%d", uid))
+
+		c.JSON(e.Status(), gin.H{
+			"error": e,
+		})
+		return
+	}
+
+	p := &models.Project{
+		Name:          req.Name,
+		OwnerID:       uid,
+		Collaborators: []*models.User{u},
+	}
+
+	err = h.ProjectController.NewProject(ctx, p)
+
+	if err != nil {
+		log.WithContext(ctx).WithError(err).Error("Failed to create project")
+		c.JSON(customerror.Status(err), gin.H{
+			"error": err,
+		})
+		return
+	}
+
+	c.JSON(http.StatusCreated, gin.H{
+		"project": p,
+	})
+}
+
 // import (
 // 	"encoding/json"
 // 	"net/http"
