@@ -3,7 +3,7 @@ import { Navbar, Nav, Container, Dropdown, Image } from 'react-bootstrap'
 const Navcustom: React.FC = () => {
     return (
         <div>
-            <Navbar expand="sm" variant="dark" bg="black">
+            <Navbar expand="sm" bg="primary">
             <Container style={{
                 width: "95%",
                 margin: "auto"

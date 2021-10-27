@@ -1,4 +1,15 @@
-// $body-bg: rgb(126, 126, 126);
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display&family=Rubik&display=swap'); // Playfair Display & Rubik
 
-// import rest of defaults
+$theme-colors: (
+    "primary": #C7493A,
+    "secondary": #A33327
+    // "success": $success,
+    // "info": $info,
+    // "warning": $warning,
+    // "danger": $danger,
+    // "light": $light,
+    // "dark": $dark
+);
+
+// Keep this on the bottom
 @import '~bootstrap/scss/bootstrap.scss';

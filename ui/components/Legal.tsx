@@ -3,7 +3,7 @@ import { Navbar, Nav, Container, Dropdown, Image, Row, Col } from 'react-bootstr
 const Legal: React.FC = () => {
     return (
         <div>
-            <Navbar fixed="bottom" variant="dark" bg="black"
+            <Navbar fixed="bottom" bg="primary"
                 style={{ color: "#fff8" }}
             >
                 <Container
