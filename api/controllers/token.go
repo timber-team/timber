@@ -13,13 +13,27 @@ import (
 
 type TokenController struct {
 	Tokens                models.TokenStore
+	UserController        UserController
 	AuthKey               string
 	AccessExpirationSecs  int64
 	RefreshExpirationSecs int64
 }
 
-func NewTokenController(tStore models.TokenStore, authKey string, AccessExpirationSecs int64, RefreshExpirationSecs int64) *TokenController {
-	return &TokenController{tStore, authKey, AccessExpirationSecs, RefreshExpirationSecs}
+func NewTokenController(tStore models.TokenStore, uController UserController, authKey string, AccessExpirationSecs int64, RefreshExpirationSecs int64) *TokenController {
+	return &TokenController{tStore, uController, authKey, AccessExpirationSecs, RefreshExpirationSecs}
+}
+
+func (tokenControl *TokenController) Signin(ctx context.Context, user *models.User) (*models.TokenPair, error) {
+	// if user not in db --> create user first
+	if err := tokenControl.UserController.Users.FindByEmail(user); err != nil {
+		tokenControl.UserController.Users.Create(user)
+	}
+
+	tokenPair, err := tokenControl.NewPairFromUser(ctx, user, "")
+	if err != nil {
+		return nil, err
+	}
+	return tokenPair, nil
 }
 
 func (tokenControl *TokenController) NewPairFromUser(ctx context.Context, u *models.User, prevTokenID string) (*models.TokenPair, error) {

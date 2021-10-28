@@ -2,7 +2,6 @@ package views
 
 import (
 	"github.com/gal/timber/controllers"
-	"github.com/gal/timber/middlewares"
 	"github.com/gin-gonic/gin"
 )
 
@@ -33,14 +32,18 @@ func NewHandler(c *Config) {
 
 	// TODO: Routing and Handlers
 
-	if gin.Mode() != gin.TestMode {
-		g.GET("/profile", middlewares.AuthUser(h.TokenController), h.Profile)
-		g.POST("/projects", middlewares.AuthUser(h.TokenController), h.NewProject)
-	} else {
-		g.GET("/profile", middlewares.AuthUser(h.TokenController), h.Profile)
-		g.GET("/profile", h.Profile)
-	}
+	// if gin.Mode() != gin.TestMode {
+	// 	g.GET("/profile", middlewares.AuthUser(h.TokenController), h.Profile)
+	// 	g.POST("/projects", middlewares.AuthUser(h.TokenController), h.NewProject)
+	// } else {
+	// 	g.GET("/profile", middlewares.AuthUser(h.TokenController), h.Profile)
+	// 	g.GET("/profile", h.Profile)
+	// }
 
-	g.POST("/signup", h.Signup)
-	g.POST("/signin", h.Signin)
+	// g.POST("/signup", h.Signup)
+	// g.Group("/auth") {
+	// 	g.Get("/signin/{provider}")
+	// }
+	g.GET("/auth/signin/:provider", h.Signin)
+	g.GET("/auth/callback/:provider", h.GoogleOauthCallback)
 }

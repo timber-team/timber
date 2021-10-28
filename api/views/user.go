@@ -2,135 +2,95 @@
 
 package views
 
-import (
-	"fmt"
-	"net/http"
+// type loginRequest struct {
+// 	Username string `json:"username" binding:"omitempty,gte=6,lte=30"`
+// 	Email    string `json:"email" binding:"required,email"`
+// 	Password string `json:"password" binding:"required,gte=6,lte=30"`
+// }
 
-	"github.com/Strum355/log"
-	"github.com/gal/timber/models"
-	"github.com/gal/timber/utils"
-	"github.com/gal/timber/utils/customerror"
-	"github.com/gin-gonic/gin"
-)
+// revoke user access
 
-type loginRequest struct {
-	Username string `json:"username" binding:"omitempty,gte=6,lte=30"`
-	Email    string `json:"email" binding:"required,email"`
-	Password string `json:"password" binding:"required,gte=6,lte=30"`
-}
+// // output, err := json.Marshal(contents)
+// if err != nil {
+// 	log.WithContext(ctx).WithError(err).Error(err.Error())
+// 	e := customerror.NewInternal()
 
-// Signup handler
-func (h *Handler) Signup(c *gin.Context) {
-	// Variable to hold the incoming json body {email, password}
-	var req loginRequest
+// 	c.JSON(e.Status(), gin.H{
+// 		"error": e,
+// 	})
+// 	return
+// }
 
-	// Bind incoming json to the struct and check for validation errors
-	if ok := utils.BindData(c, &req); !ok {
-		return
-	}
+// c.JSON(http.StatusOK, gin.H{
+// 	"pog": string(contents),
+// })
 
-	u := &models.User{
-		Email:    req.Email,
-		Password: req.Password,
-	}
+// var req loginRequest
 
-	ctx := c.Request.Context()
+// if ok := utils.BindData(c, &req); !ok {
+// 	return
+// }
 
-	err := h.UserController.Signup(ctx, u)
+// u := &models.User{
+// 	Email:    req.Email,
+// 	Password: req.Password,
+// }
+// ctx := c.Request.Context()
+// err := h.UserController.Signin(ctx, u)
 
-	if err != nil {
-		log.WithContext(ctx).WithError(err).Error("Failed to sign up user")
-		c.JSON(customerror.Status(err), gin.H{
-			"error": err,
-		})
-		return
-	}
+// if err != nil {
+// 	log.WithContext(ctx).WithError(err).Error("Failed to sign in user")
+// 	c.JSON(customerror.Status(err), gin.H{
+// 		"error": err,
+// 	})
+// 	return
+// }
 
-	// Create a token pair as strings
-	tokens, err := h.TokenController.NewPairFromUser(ctx, u, "")
+// tokens, err := h.TokenController.NewPairFromUser(ctx, u, "")
 
-	if err != nil {
-		log.WithContext(ctx).WithError(err).Error("Failed to create tokens for user")
+// if err != nil {
+// 	log.WithContext(ctx).WithError(err).Error("Failed to create tokens for user")
 
-		c.JSON(customerror.Status(err), gin.H{
-			"error": err,
-		})
-		return
-	}
+// 	c.JSON(customerror.Status(err), gin.H{
+// 		"error": err,
+// 	})
+// 	return
+// }
 
-	c.JSON(http.StatusCreated, gin.H{
-		"tokens": tokens,
-	})
-}
+// c.JSON(http.StatusOK, gin.H{
+// 	"tokens": tokens,
+// })
+// }
 
-// Signin handler
-func (h *Handler) Signin(c *gin.Context) {
-	var req loginRequest
+// func (h *Handler) Profile(c *gin.Context) {
+// 	user, exists := c.Get("user")
 
-	if ok := utils.BindData(c, &req); !ok {
-		return
-	}
+// 	if !exists {
+// 		log.WithContext(c).Error("Unable to extract user from the request context")
+// 		err := customerror.NewInternal()
+// 		c.JSON(err.Status(), gin.H{
+// 			"error": err,
+// 		})
+// 		return
+// 	}
 
-	u := &models.User{
-		Email:    req.Email,
-		Password: req.Password,
-	}
-	ctx := c.Request.Context()
-	err := h.UserController.Signin(ctx, u)
+// 	uid := user.(*models.User).ID
 
-	if err != nil {
-		log.WithContext(ctx).WithError(err).Error("Failed to sign in user")
-		c.JSON(customerror.Status(err), gin.H{
-			"error": err,
-		})
-		return
-	}
+// 	ctx := c.Request.Context()
 
-	tokens, err := h.TokenController.NewPairFromUser(ctx, u, "")
+// 	u, err := h.UserController.GetByID(ctx, uid)
 
-	if err != nil {
-		log.WithContext(ctx).WithError(err).Error("Failed to create tokens for user")
+// 	if err != nil {
+// 		log.WithContext(ctx).WithError(err).Error(fmt.Sprintf("Unable to find user: %v", uid))
+// 		e := customerror.NewNotFound("user", fmt.Sprintf("%d", uid))
 
-		c.JSON(customerror.Status(err), gin.H{
-			"error": err,
-		})
-		return
-	}
+// 		c.JSON(e.Status(), gin.H{
+// 			"error": e,
+// 		})
+// 		return
+// 	}
 
-	c.JSON(http.StatusOK, gin.H{
-		"tokens": tokens,
-	})
-}
-
-func (h *Handler) Profile(c *gin.Context) {
-	user, exists := c.Get("user")
-
-	if !exists {
-		log.WithContext(c).Error("Unable to extract user from the request context")
-		err := customerror.NewInternal()
-		c.JSON(err.Status(), gin.H{
-			"error": err,
-		})
-		return
-	}
-
-	uid := user.(*models.User).ID
-
-	ctx := c.Request.Context()
-
-	u, err := h.UserController.GetByID(ctx, uid)
-
-	if err != nil {
-		log.WithContext(ctx).WithError(err).Error(fmt.Sprintf("Unable to find user: %v", uid))
-		e := customerror.NewNotFound("user", fmt.Sprintf("%d", uid))
-
-		c.JSON(e.Status(), gin.H{
-			"error": e,
-		})
-		return
-	}
-
-	c.JSON(http.StatusOK, gin.H{
-		"user": u,
-	})
-}
+// 	c.JSON(http.StatusOK, gin.H{
+// 		"user": u,
+// 	})
+// }
