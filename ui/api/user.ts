@@ -10,7 +10,7 @@ export interface User{
     Username: string,
     Description: string,
     AvatarURL: string,
-    Tags: [string],
+    Tags: string[],
     Projects:Array<project.Project>,
     Applications: Array<application.Application>
 
@@ -18,17 +18,18 @@ export interface User{
 
 }
 
-
+// export function get_many_users(users_id_list : Array<string>){
+//     typeof
+// }
 
 
 export function get_user(user_id: string): User{
 
-    // let id = 5;
 
     return {
-        ID: "yes",
-        CreatedAt: "yes",
-        UpdatedAt: "yes",
+        ID: "5",
+        CreatedAt: "65",
+        UpdatedAt: "65",
         Username: "yes",
         Description: "yes",
         AvatarURL: "yes",
