@@ -11,5 +11,8 @@ $theme-colors: (
     // "dark": $dark
 );
 
+$font-family-sans-serif: "Rubik";
+$font-family-monospace: "Playfair Display";
+
 // Keep this on the bottom
 @import '~bootstrap/scss/bootstrap.scss';
