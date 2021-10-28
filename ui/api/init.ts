@@ -1,4 +1,6 @@
-export * as users from "./users"
+export * as user from "./user"
+export * as project from "./project"
+export * as application from "./application"
 
 
 const API_DOMAIN = "localhost:1234"
