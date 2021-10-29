@@ -22,7 +22,7 @@ services:
   redis-timber:
     image: "redis:alpine"
     command: >
-      --requirepass "pass"
+      --requirepass ${REDIS_PASS}
     ports:
       - "6379:6379"
     volumes:
