@@ -10,7 +10,7 @@ export default () => {
         CreatedAt: '1412312',
         UpdatedAt: '190241024',
         Name: 'Shanghai1\'s Gust Project',
-        Description: 'Gust Gust Gust Gust Gust Gust Gust Gust Gust Gust Gust Gust Gust Gust Gust Gust Gust Gust Gust Gust Gust Gust Gust Gust Gust Gust Gust Gust Gust Gust Gust Gust Gust Gust Gust Gust Gust Gust Gust Gust Gust Gust Gust Gust Gust Gust Gust Gust Gust Gust Gust Gust Gust Gust Gust Gust Gust Gust Gust Gust Gust Gust Gust Gust Gust Gust Gust Gust Gust Gust Gust Gust Gust Gust Gust Gust Gust Gust Gust Gust Gust Gust Gust Gust Gust Gust Gust Gust Gust Gust Gust Gust Gust Gust Gust Gust Gust Gust Gust Gust Gust Gust Gust Gust Gust Gust Gust Gust Gust Gust Gust Gust Gust Gust Gust Gust Gust Gust Gust ',
+        Description: 'Gust Gust Gust Gust Gust Gust Gust',
         OwnerID: '1',
         Collaborators: [],
         PreferredSkills: ['Gust', 'Ro', 'Postgres', 'Redis'],
@@ -36,35 +36,31 @@ export default () => {
 
     const [current, setCurrent] = useState(<Card Name={z.Name} Description={z.Description} PreferredSkills={z.PreferredSkills} RequiredSkills={z.RequiredSkills} />)
 
-    const [{ rotateZ, opacity }, api] = useSpring(() => ({ 
+    const [{ rotateZ, opacity, x }, api] = useSpring(() => ({ 
         rotateZ: 0,
-        opacity: 1
+        opacity: 1,
+        x: 0
     }))
 
-    const bind = useDrag(({ down, cancel, movement: [mx] }) => {
-        const foo = () => {} // Temp until we implement stuff to accept or decline a project
-        const bar = () => {} // Temp until we implement stuff to accept or decline a project
-
-        if (mx > 15 || mx < -15) {
-            (mx > 15) ? foo() : bar()
-            if (cards.length) {
-                z = cards.pop()
-                setCurrent(<Card Name={z.Name} Description={z.Description} PreferredSkills={z.PreferredSkills} RequiredSkills={z.RequiredSkills} />)
-            } else {
-                setCurrent(<div> You've ran out of projects to see for today </div>)
-            }
-            api.start({ rotateZ: 0, opacity: 1})
+    const bind = useDrag(({down, cancel, movement: [mx], active }) => {
+        if (down && Math.atan(mx/424) * (180 / Math.PI) > 14) {
+            console.log('right')
+            cancel()
+        } else if (down && Math.atan(mx/424) * (180 / Math.PI) < -14) {
+            console.log('left')
             cancel()
         }
-        api.start({ rotateZ: down ? mx : 0 , opacity: 15/mx})
-    })
+        api.start({ rotateZ: down ? Math.atan(mx/424) * (180 / Math.PI) : 0, 
+            immediate: active,
+            opacity: 0.5 + (0.5 * 12.5/(Math.abs(Math.atan(mx/424) * (180 / Math.PI))))})
+    }, {bounds: {left: Math.atan(0.26) * -424, right: Math.atan(0.26) * 424, top: 0, bottom: 0}})
 
     return (
         <div>
             <Container>
                 <Row className='justify-content-md-center'>
                     <Col md="auto">
-                    <animated.div {...bind()} style={{rotateZ, opacity, transformOrigin: 'bottom center'}} >
+                    <animated.div {...bind()} style={{rotateZ, opacity, x, transformOrigin: 'bottom center'}} >
                         {current}
                     </animated.div>
                     </Col>
