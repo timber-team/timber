@@ -17,13 +17,8 @@ func NewUserController(userStore models.UserStore) *UserController {
 	return &UserController{userStore}
 }
 
-// func (UserController *UserController) Get(ctx context.Context, u *models.User) error {
-// return re
-// }
-
-func (userControl *UserController) GetByID(ctx context.Context, id int) (*models.User, error) {
-	u, err := userControl.Users.FindByID(id)
-	return u, err
+func (userControl *UserController) Get(ctx context.Context, u *models.User) error {
+	return userControl.Users.Get(ctx, u)
 }
 
 func (userControl *UserController) Signup(ctx context.Context, u *models.User) error {
@@ -39,7 +34,7 @@ func (userControl *UserController) Signup(ctx context.Context, u *models.User) e
 }
 
 func (userControl *UserController) Signin(ctx context.Context, u *models.User) error {
-	uFetched, err := userControl.Users.FindByEmail(u.Email)
+	uFetched, err := userControl.Users.GetByEmail(ctx, u.Email)
 
 	//	Returns NotAuthorized to the client
 	if err != nil {
@@ -54,7 +49,7 @@ func (userControl *UserController) Signin(ctx context.Context, u *models.User) e
 	}
 
 	if !match {
-		return customerror.NewAuthorization("Invalid email and password combination")
+		return customerror.NewAuthorization("Mismatched email and password combination")
 	}
 
 	*u = *uFetched
