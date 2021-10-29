@@ -33,7 +33,7 @@ type Project struct {
 }
 
 type Application struct {
-	ID        int   `gorm:"primaryKey;autoIncrement;->" json:"id"`
+	ID        int   `gorm:"primaryKey;autoIncrement;" json:"id"`
 	CreatedAt int64 `gorm:"autoCreateTime;<-:create" json:"created_at"`
 	UpdatedAt int64 `gorm:"autoUpdateTime;<-:create" json:"modified_at"`
 	UserID    int   `json:"user_id"`
