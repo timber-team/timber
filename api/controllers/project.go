@@ -18,6 +18,10 @@ func (projectControl *ProjectController) Get(ctx context.Context, p *models.Proj
 	return projectControl.Projects.Get(ctx, p)
 }
 
+func (projectControl *ProjectController) GetAll(ctx context.Context, p []*models.Project) error {
+	return projectControl.Projects.GetAll(ctx, p)
+}
+
 func (projectControl *ProjectController) Create(ctx context.Context, p *models.Project) error {
 	return projectControl.Projects.Create(ctx, p)
 }

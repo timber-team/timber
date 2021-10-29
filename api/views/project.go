@@ -152,3 +152,48 @@ func (h *Handler) GetProject(c *gin.Context) {
 		"project": p,
 	})
 }
+
+func (h *Handler) GetProjects(c *gin.Context) {
+	user, exists := c.Get("user")
+
+	if !exists {
+		log.WithContext(c).Error("Unable to extract user from the request context")
+		err := customerror.NewInternal()
+		c.JSON(err.Status(), gin.H{
+			"error": err,
+		})
+		return
+	}
+
+	ctx := c.Request.Context()
+
+	u := user.(*models.User)
+
+	err := h.UserController.Get(ctx, u)
+
+	if err != nil {
+		log.WithContext(ctx).WithError(err).Error(fmt.Sprintf("Unable to find user: %v", u.ID))
+		e := customerror.NewNotFound("user", fmt.Sprintf("%d", u.ID))
+
+		c.JSON(e.Status(), gin.H{
+			"error": e,
+		})
+		return
+	}
+	projects := u.Projects
+	err = h.ProjectController.GetAll(ctx, projects)
+
+	if err != nil {
+		log.WithContext(ctx).WithError(err).Error(fmt.Sprintf("Unable to find user: %v", u.ID))
+		e := customerror.NewNotFound("user", fmt.Sprintf("%d", u.ID))
+
+		c.JSON(e.Status(), gin.H{
+			"error": e,
+		})
+		return
+	}
+
+	c.JSON(http.StatusCreated, gin.H{
+		"projects": projects,
+	})
+}

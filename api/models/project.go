@@ -17,6 +17,15 @@ func (projectStore *ProjectStore) Get(ctx context.Context, project *Project) err
 	return projectStore.db.WithContext(ctx).Preload("Collaborators").Preload("Applications").Omit("Collaborators.Projects").First(&project).Error
 }
 
+func (projectStore *ProjectStore) GetAll(ctx context.Context, projects []*Project) error {
+	for _, proj := range projects {
+		if err := projectStore.Get(ctx, proj); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
 func (projectStore *ProjectStore) Create(ctx context.Context, project *Project) error {
 	return projectStore.db.WithContext(ctx).Create(&project).Error
 }
