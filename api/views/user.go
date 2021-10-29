@@ -9,29 +9,37 @@ import (
 	"strconv"
 )
 
-func (h *Handler) GetUser(c *gin.Context) {
-	if user, exists := c.Get("user"); exists {
-		userID, err := strconv.Atoi(c.Param("id"))
-		if err != nil {
-			// do stuff
-			c.AbortWithStatus(http.StatusBadRequest)
-		}
-		// TODO check if has access
-		if user.(models.User).ID == userID {
-			fetchingUser := &models.User{
-				ID: userID,
-			}
+func (h *Handler) Profile(c *gin.Context) {
+	user, exists := c.Get("user")
 
-			if err = h.UserController.Get(c, fetchingUser); err != nil {
-				// do stuff
-				c.AbortWithStatus(http.StatusNotFound)
-			}
-
-			c.JSON(http.StatusOK, gin.H{
-				"user": *fetchingUser,
-			})
-		}
+	if !exists {
+		log.WithContext(c).Error("Unable to extract user from the request context")
+		err := customerror.NewInternal()
+		c.JSON(err.Status(), gin.H{
+			"error": err,
+		})
+		return
 	}
 
-	c.AbortWithStatus(http.StatusUnauthorized)
+	uid := user.(*models.User).ID
+
+	ctx := c.Request.Context()
+
+	u := user.(*models.User)
+
+	err := h.UserController.Get(ctx, u)
+
+	if err != nil {
+		log.WithContext(ctx).WithError(err).Error(fmt.Sprintf("Unable to find user: %v", uid))
+		e := customerror.NewNotFound("user", fmt.Sprintf("%d", uid))
+
+		c.JSON(e.Status(), gin.H{
+			"error": e,
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"user": u,
+	})
 }

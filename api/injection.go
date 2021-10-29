@@ -18,6 +18,9 @@ func inject(d *dataSources) (*gin.Engine, error) {
 	d.DB.Exec("CREATE EXTENSION IF NOT EXISTS \"uuid-ossp\";") // enable uuid generation on server
 	d.DB.AutoMigrate(&models.User{}, &models.Project{}, &models.Application{})
 
+	d.DB.Preload("Projects").Preload("Applications").Find(&models.User{})
+	d.DB.Preload("Collaborators").Preload("Applications").Find(&models.Project{})
+
 	/*
 	 * Model layer
 	 */
@@ -37,7 +40,7 @@ func inject(d *dataSources) (*gin.Engine, error) {
 	authKey := viper.GetString("auth.key")
 
 	// Load expiration lengths
-	accessTokenExp := int64(time.Minute * 15)
+	accessTokenExp := int64(time.Minute * 10)
 	refreshTokenExp := int64(time.Hour * 24 * 30)
 
 	tokenController := controllers.NewTokenController(*tokenStore, *userStore, authKey, accessTokenExp, refreshTokenExp)
