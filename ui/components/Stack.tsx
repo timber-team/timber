@@ -1,11 +1,10 @@
-import { useState } from "react"
+import { useContext, useState } from "react"
 import { Col, Container, Row } from "react-bootstrap"
 import Card from "./Card"
-import { useSpring, animated } from '@react-spring/web'
-import { useDrag } from '@use-gesture/react'
+import { GenericInterface, swipeInfo, StackContext } from "./StackContext"
 
-export default () => {
-    var cards = [{
+export default () => {   
+    const [current, setCurrent] = useState([{
         ID: '1',
         CreatedAt: '1412312',
         UpdatedAt: '190241024',
@@ -29,43 +28,23 @@ export default () => {
         RequiredSkills: ['Go'],
         Applications: []
     }
-    ]
-   
+    ])
 
-    let z = cards.pop()
-
-    const [current, setCurrent] = useState(<Card Name={z.Name} Description={z.Description} PreferredSkills={z.PreferredSkills} RequiredSkills={z.RequiredSkills} />)
-
-    const [{ rotateZ, opacity, x }, api] = useSpring(() => ({ 
-        rotateZ: 0,
-        opacity: 1,
-        x: 0
-    }))
-
-    const bind = useDrag(({down, cancel, movement: [mx], active }) => {
-        if (down && Math.atan(mx/424) * (180 / Math.PI) > 14) {
-            console.log('right')
-            cancel()
-        } else if (down && Math.atan(mx/424) * (180 / Math.PI) < -14) {
-            console.log('left')
-            cancel()
-        }
-        api.start({ rotateZ: down ? Math.atan(mx/424) * (180 / Math.PI) : 0, 
-            immediate: active,
-            opacity: 0.5 + (0.5 * 12.5/(Math.abs(Math.atan(mx/424) * (180 / Math.PI))))})
-    }, {bounds: {left: Math.atan(0.26) * -424, right: Math.atan(0.26) * 424, top: 0, bottom: 0}})
+    const [stack, setStack] = useState<swipeInfo>(undefined)
+    const stackState: GenericInterface<swipeInfo> = {
+        value: stack,
+        setter: setStack
+    }
 
     return (
-        <div>
+        <StackContext.Provider value={stackState}>
             <Container>
                 <Row className='justify-content-md-center'>
                     <Col md="auto">
-                    <animated.div {...bind()} style={{rotateZ, opacity, x, transformOrigin: 'bottom center'}} >
-                        {current}
-                    </animated.div>
+                        <Card Name={current[current.length - 1].Name} Description={current[current.length - 1].Description} PreferredSkills={current[current.length - 1].PreferredSkills} RequiredSkills={current[current.length - 1].RequiredSkills} />
                     </Col>
                 </Row>
             </Container>
-        </div>
+        </StackContext.Provider>
     )
 }
