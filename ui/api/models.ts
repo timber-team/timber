@@ -5,8 +5,7 @@ export interface Application{
     CreatedAt: string,
     UpdatedAt: string,
     UserID: string,
-    ProjectID: string,
-    Timestamp: string,
+    ProjectID: string
 }
 
 
