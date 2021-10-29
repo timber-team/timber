@@ -38,8 +38,8 @@ func NewHandler(c *Config) {
 		g.POST("/projects", middlewares.AuthUser(h.TokenController), h.NewProject)
 		g.GET("/projects/:projectID", middlewares.AuthUser(h.TokenController), h.GetProject)
 	} else {
-		g.GET("/profile", middlewares.AuthUser(h.TokenController), h.Profile)
 		g.GET("/profile", h.Profile)
+		g.POST("/projects", h.NewProject)
 		g.GET("/projects/:projectID", h.GetProject)
 	}
 

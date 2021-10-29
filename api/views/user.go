@@ -133,6 +133,6 @@ func (h *Handler) Profile(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, gin.H{
-		"user": user,
+		"user": u,
 	})
 }
