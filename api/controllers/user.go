@@ -1,6 +1,8 @@
 package controllers
 
 import (
+	"context"
+
 	"github.com/gal/timber/models"
 )
 
@@ -12,9 +14,21 @@ func NewUserController(userStore models.UserStore) *UserController {
 	return &UserController{userStore}
 }
 
-// func (UserController *UserController) Get(ctx context.Context, u *models.User) error {
-// return re
-// }
+func (userController *UserController) Get(ctx context.Context, u *models.User) error {
+	return userController.Users.FindByID(u)
+}
+
+func (userController *UserController) GetByEmail(ctx context.Context, u *models.User) error {
+	return userController.Users.FindByEmail(u)
+}
+
+func (userController *UserController) Save(ctx context.Context, u *models.User) error {
+	return userController.Users.Patch(u)
+}
+
+func (userController *UserController) Delete(ctx context.Context, u *models.User) error {
+	return userController.Users.Delete(u)
+}
 
 // func (userControl *UserController) GetByID(ctx context.Context, id int) (*models.User, error) {
 // 	u, err := userControl.Users.FindByID(id)
