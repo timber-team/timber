@@ -136,7 +136,6 @@ func (h *Handler) GoogleOauthCallback(c *gin.Context) {
 			gin.H{
 				"tokens": tokenPair,
 			})
-
 	}
 }
 
