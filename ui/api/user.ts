@@ -1,22 +1,6 @@
 import {APIResponse, project, simple_api_request, application} from "./init"
 
-
-
-
-export interface User{
-    ID: string,
-    CreatedAt: string,
-    UpdatedAt: string,
-    Username: string,
-    Description: string,
-    AvatarURL: string,
-    Tags: string[],
-    Projects:Array<project.Project>,
-    Applications: Array<application.Application>
-
-    
-
-}
+import {Application, Project, User} from "./models";
 
 // export function get_many_users(users_id_list : Array<string>){
 //     typeof

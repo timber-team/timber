@@ -1,14 +1,7 @@
 import {user} from "./init";
-import { get_user, User } from "./user";
+import { get_user} from "./user";
 
-export interface Application{
-    ID: string,
-    CreatedAt: string,
-    UpdatedAt: string,
-    UserID: string,
-    ProjectID: string,
-    Timestamp: string,
-}
+import {Application, Project, User} from "./models";
 
 
 export function get_attached_user(application: Application): User{
