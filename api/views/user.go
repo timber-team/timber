@@ -118,7 +118,9 @@ func (h *Handler) Profile(c *gin.Context) {
 
 	ctx := c.Request.Context()
 
-	u, err := h.UserController.GetByID(ctx, uid)
+	u := user.(*models.User)
+
+	err := h.UserController.Get(ctx, u)
 
 	if err != nil {
 		log.WithContext(ctx).WithError(err).Error(fmt.Sprintf("Unable to find user: %v", uid))
@@ -131,6 +133,6 @@ func (h *Handler) Profile(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, gin.H{
-		"user": u,
+		"user": user,
 	})
 }
