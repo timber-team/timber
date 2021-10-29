@@ -6,9 +6,9 @@ services:
     ports:
       - "5432:5432"
     environment:
-      - POSTGRES_USER=${DB_USER}
-      - POSTGRES_PASSWORD=${DB_PASS}
-      - POSTGRES_DB=${DB_NAME}
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=postgres
     volumes:
       - "pgdata_timber:/var/lib/postgresql/data"
     command:
@@ -22,7 +22,7 @@ services:
   redis-timber:
     image: "redis:alpine"
     command: >
-      --requirepass ${REDIS_PASS}
+      --requirepass "pass"
     ports:
       - "6379:6379"
     volumes:

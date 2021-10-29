@@ -2,6 +2,7 @@ package views
 
 import (
 	"github.com/gal/timber/controllers"
+	"github.com/gal/timber/middlewares"
 	"github.com/gin-gonic/gin"
 )
 
@@ -32,18 +33,22 @@ func NewHandler(c *Config) {
 
 	// TODO: Routing and Handlers
 
-	// if gin.Mode() != gin.TestMode {
-	// 	g.GET("/profile", middlewares.AuthUser(h.TokenController), h.Profile)
-	// 	g.POST("/projects", middlewares.AuthUser(h.TokenController), h.NewProject)
-	// } else {
-	// 	g.GET("/profile", middlewares.AuthUser(h.TokenController), h.Profile)
-	// 	g.GET("/profile", h.Profile)
-	// }
+	if gin.Mode() != gin.TestMode {
+		g.GET("/profile", middlewares.AuthUser(h.TokenController), h.Profile)
+		g.POST("/projects", middlewares.AuthUser(h.TokenController), h.NewProject)
+		g.GET("/projects/:projectID", middlewares.AuthUser(h.TokenController), h.GetProject)
+		g.GET("/projects", middlewares.AuthUser(h.TokenController), h.GetProjects)
+		g.POST("/projects/:projectID/apply", middlewares.AuthUser(h.TokenController), h.NewApplication)
+	} else {
+		g.GET("/profile", h.Profile)
+		g.POST("/projects", h.NewProject)
+		g.GET("/projects/:projectID", h.GetProject)
+		g.GET("/projects", h.GetProjects)
+		g.POST("/projects/:projectID/apply", h.NewApplication)
+	}
 
 	// g.POST("/signup", h.Signup)
-	// g.Group("/auth") {
-	// 	g.Get("/signin/{provider}")
-	// }
+	// g.POST("/signin", h.Signin)
 	g.GET("/auth/signin/:provider", h.Signin)
 	g.GET("/auth/callback/:provider", h.GoogleOauthCallback)
 }
