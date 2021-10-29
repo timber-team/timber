@@ -1,9 +1,7 @@
 package models
 
 import (
-	"errors"
-
-	"github.com/gal/timber/utils/customerror"
+	"golang.org/x/net/context"
 	"gorm.io/gorm"
 )
 
@@ -15,35 +13,28 @@ func NewProjectStore(db *gorm.DB) *ProjectStore {
 	return &ProjectStore{db}
 }
 
-func (projectStore *ProjectStore) CheckExistsByID(id int) error {
-	return projectStore.db.First(&Project{}, "id = ?", id).Error
+func (projectStore *ProjectStore) Get(ctx context.Context, project *Project) error {
+	return projectStore.db.WithContext(ctx).Preload("Collaborators").Preload("Applications").Omit("Collaborators.Projects").First(&project).Error
 }
 
-func (projectStore *ProjectStore) CheckExistsByName(name string) error {
-	return projectStore.db.First(&Project{}, "name = ?", name).Error
-}
-
-func (projectStore *ProjectStore) Get(id int) error {
-	return projectStore.db.First(&Project{}, "id = ?", id).Error
-}
-
-func (projectStore *ProjectStore) Create(project *Project) error {
-	err := projectStore.CheckExistsByName(project.Name)
-	if err != nil {
-		if errors.Is(err, gorm.ErrRecordNotFound) {
-			return projectStore.db.Create(project).Error
-		} else {
+func (projectStore *ProjectStore) GetAll(ctx context.Context, projects []*Project) error {
+	for _, proj := range projects {
+		if err := projectStore.Get(ctx, proj); err != nil {
 			return err
 		}
 	}
-	return customerror.NewConflict("name", project.Name)
+	return nil
 }
 
-func (projectStore *ProjectStore) Patch(project *Project) error {
-	return projectStore.db.Save(&project).Error
+func (projectStore *ProjectStore) Create(ctx context.Context, project *Project) error {
+	return projectStore.db.WithContext(ctx).Create(&project).Error
 }
 
-func (projectStore *ProjectStore) Delete(project *Project) error {
-	projectStore.Get(project.ID)
-	return projectStore.db.Delete(&project).Error
+func (projectStore *ProjectStore) Patch(ctx context.Context, project *Project) error {
+	return projectStore.db.WithContext(ctx).Save(&project).Error
+}
+
+func (projectStore *ProjectStore) Delete(ctx context.Context, project *Project) error {
+	projectStore.Get(ctx, project)
+	return projectStore.db.WithContext(ctx).Delete(&project).Error
 }

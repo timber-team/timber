@@ -2,133 +2,198 @@
 
 package views
 
+import (
+	"fmt"
+	"net/http"
+	"strconv"
+
+	"github.com/Strum355/log"
+	"github.com/gal/timber/models"
+	"github.com/gal/timber/utils"
+	"github.com/gal/timber/utils/customerror"
+	"github.com/gin-gonic/gin"
+)
+
 type projectRequest struct {
 	Name string `json:"name" binding:"required,gte=4,lte=30"`
 }
 
-// func (h *Handler) NewProject(c *gin.Context) {
-// 	var req projectRequest
+func (h *Handler) NewProject(c *gin.Context) {
+	var req projectRequest
 
-// 	if ok := utils.BindData(c, &req); !ok {
-// 		return
-// 	}
+	if ok := utils.BindData(c, &req); !ok {
+		return
+	}
 
-// 	user, exists := c.Get("user")
+	user, exists := c.Get("user")
 
-// 	if !exists {
-// 		log.WithContext(c).Error("Unable to extract user from the request context")
-// 		err := customerror.NewInternal()
-// 		c.JSON(err.Status(), gin.H{
-// 			"error": err,
-// 		})
-// 		return
-// 	}
+	if !exists {
+		log.WithContext(c).Error("Unable to extract user from the request context")
+		err := customerror.NewInternal()
+		c.JSON(err.Status(), gin.H{
+			"error": err,
+		})
+		return
+	}
 
-// 	uid := user.(*models.User).ID
+	uid := user.(*models.User).ID
 
-// 	ctx := c.Request.Context()
+	ctx := c.Request.Context()
 
-// 	u, err := h.UserController.GetByID(ctx, uid)
+	u := user.(*models.User)
 
-// 	if err != nil {
-// 		log.WithContext(ctx).WithError(err).Error(fmt.Sprintf("Unable to find user: %v", uid))
-// 		e := customerror.NewNotFound("user", fmt.Sprintf("%d", uid))
+	err := h.UserController.Get(ctx, u)
 
-// 		c.JSON(e.Status(), gin.H{
-// 			"error": e,
-// 		})
-// 		return
-// 	}
+	if err != nil {
+		log.WithContext(ctx).WithError(err).Error(fmt.Sprintf("Unable to find user: %v", uid))
+		e := customerror.NewNotFound("user", fmt.Sprintf("%d", uid))
 
-// 	p := &models.Project{
-// 		Name:          req.Name,
-// 		OwnerID:       uid,
-// 		Collaborators: []*models.User{u},
-// 	}
+		c.JSON(e.Status(), gin.H{
+			"error": e,
+		})
+		return
+	}
 
-// 	err = h.ProjectController.NewProject(ctx, p)
+	p := &models.Project{
+		Name:          req.Name,
+		OwnerID:       uid,
+		Collaborators: []*models.User{u},
+	}
 
-// 	if err != nil {
-// 		log.WithContext(ctx).WithError(err).Error("Failed to create project")
-// 		c.JSON(customerror.Status(err), gin.H{
-// 			"error": err,
-// 		})
-// 		return
-// 	}
+	err = h.ProjectController.Projects.Create(ctx, p)
 
-// 	c.JSON(http.StatusCreated, gin.H{
-// 		"project": p,
-// 	})
-// }
+	if err != nil {
+		log.WithContext(ctx).WithError(err).Error("Failed to create project")
+		c.JSON(customerror.Status(err), gin.H{
+			"error": err,
+		})
+		return
+	}
 
-// import (
-// 	"encoding/json"
-// 	"net/http"
-// 	"strconv"
+	err = h.ProjectController.Projects.Patch(ctx, p)
 
-// 	"github.com/Strum355/log"
-// 	"github.com/gal/timber/models"
-// 	"github.com/gal/timber/utils"
-// 	"github.com/go-chi/chi"
-// )
+	if err != nil {
+		log.WithContext(ctx).WithError(err).Error("Failed to create project")
+		c.JSON(customerror.Status(err), gin.H{
+			"error": err,
+		})
+		return
+	}
 
-// func GetProject(w http.ResponseWriter, r *http.Request) {
-// 	projId, err := strconv.Atoi(chi.URLParam(r, "id"))
-// 	if err != nil {
-// 		utils.RespondJSON(w, nil, "error",
-// 			"failed to deccode id", http.StatusBadRequest,
-// 		)
+	err = h.ProjectController.Projects.Get(ctx, p)
 
-// 		log.WithContext(r.Context()).WithError(err).
-// 			Info("failed to decode project id")
-// 		return
-// 	}
-// 	proj := &models.Project{
-// 		ID: projId,
-// 	}
+	if err != nil {
+		log.WithContext(ctx).WithError(err).Error("Failed to create project")
+		c.JSON(customerror.Status(err), gin.H{
+			"error": err,
+		})
+		return
+	}
 
-// 	if err = proj.Get(); err != nil {
-// 		utils.RespondJSON(w, nil, "error",
-// 			"failed to get project", http.StatusNotFound,
-// 		)
+	c.JSON(http.StatusCreated, gin.H{
+		"project": p,
+	})
+}
 
-// 		log.WithContext(r.Context()).WithError(err).
-// 			Info("failed to fetch project by id")
-// 		return
-// 	}
+func (h *Handler) GetProject(c *gin.Context) {
+	urlPID := c.Param("projectID")
+	pid, err := strconv.Atoi(urlPID)
+	ctx := c.Request.Context()
+	if err != nil {
+		log.WithContext(ctx).WithError(err).Error(fmt.Sprintf("Unable to parse ID from url: %v", urlPID))
+		e := customerror.NewInternal()
 
-// 	utils.RespondJSON(w, proj, "success", "", http.StatusOK)
-// 	log.WithContext(r.Context()).Info("served get project")
-// }
+		c.JSON(e.Status(), gin.H{
+			"error": e,
+		})
+		return
+	}
 
-// func CreateProject(w http.ResponseWriter, r *http.Request) {
-// 	var proj *models.Project
+	user, exists := c.Get("user")
 
-// 	if err := json.NewDecoder(r.Body).Decode(
-// 		&proj,
-// 	); err != nil {
-// 		utils.RespondJSON(w, nil, "err",
-// 			"invalid request", http.StatusBadRequest,
-// 		)
-// 		proj.ID = 0
-// 		proj.CreatedAt = 0
-// 		proj.UpdatedAt = 0
+	if !exists {
+		log.WithContext(c).Error("Unable to extract user from the request context")
+		err := customerror.NewInternal()
+		c.JSON(err.Status(), gin.H{
+			"error": err,
+		})
+		return
+	}
 
-// 		projOwnerId, _ := utils.GetUID(r)
-// 		projOwner := &models.User{ID: projOwnerId}
-// 		projOwner.Get()
+	u := user.(*models.User)
 
-// 		proj.Owner = *projOwner
+	err = h.UserController.Get(ctx, u)
 
-// 		if err := proj.Create(); err != nil {
-// 			utils.RespondJSON(w, nil, "error",
-// 				"failed to create project", http.StatusInternalServerError,
-// 			)
-// 			log.WithContext(r.Context()).WithError(err).Info("failed to create project")
-// 			return
-// 		}
+	if err != nil {
+		log.WithContext(ctx).WithError(err).Error(fmt.Sprintf("Unable to find user: %v", u.ID))
+		e := customerror.NewNotFound("user", fmt.Sprintf("%d", u.ID))
 
-// 		utils.RespondJSON(w, proj, "success", "", http.StatusOK)
-// 		log.WithContext(r.Context()).Info("served create project")
-// 	}
-// }
+		c.JSON(e.Status(), gin.H{
+			"error": e,
+		})
+		return
+	}
+
+	p := &models.Project{
+		ID: pid,
+	}
+
+	err = h.ProjectController.Projects.Get(ctx, p)
+
+	if err != nil {
+		log.WithContext(ctx).WithError(err).Error("Failed to get project")
+		c.JSON(customerror.Status(err), gin.H{
+			"error": err,
+		})
+		return
+	}
+
+	c.JSON(http.StatusCreated, gin.H{
+		"project": p,
+	})
+}
+
+func (h *Handler) GetProjects(c *gin.Context) {
+	user, exists := c.Get("user")
+
+	if !exists {
+		log.WithContext(c).Error("Unable to extract user from the request context")
+		err := customerror.NewInternal()
+		c.JSON(err.Status(), gin.H{
+			"error": err,
+		})
+		return
+	}
+
+	ctx := c.Request.Context()
+
+	u := user.(*models.User)
+
+	err := h.UserController.Get(ctx, u)
+
+	if err != nil {
+		log.WithContext(ctx).WithError(err).Error(fmt.Sprintf("Unable to find user: %v", u.ID))
+		e := customerror.NewNotFound("user", fmt.Sprintf("%d", u.ID))
+
+		c.JSON(e.Status(), gin.H{
+			"error": e,
+		})
+		return
+	}
+	projects := u.Projects
+	err = h.ProjectController.GetAll(ctx, projects)
+
+	if err != nil {
+		log.WithContext(ctx).WithError(err).Error(fmt.Sprintf("Unable to find user: %v", u.ID))
+		e := customerror.NewNotFound("user", fmt.Sprintf("%d", u.ID))
+
+		c.JSON(e.Status(), gin.H{
+			"error": e,
+		})
+		return
+	}
+
+	c.JSON(http.StatusCreated, gin.H{
+		"projects": projects,
+	})
+}

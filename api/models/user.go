@@ -1,6 +1,7 @@
 package models
 
 import (
+	"context"
 	"errors"
 
 	"github.com/gal/timber/utils/customerror"
@@ -15,19 +16,25 @@ func NewUserStore(db *gorm.DB) *UserStore {
 	return &UserStore{db}
 }
 
-func (userStore *UserStore) FindByID(user *User) error {
-	return userStore.db.First(&user, "id = ?", user.ID).Error
+func (userStore *UserStore) Get(ctx context.Context, user *User) error {
+	return userStore.db.WithContext(ctx).Preload("Projects").Preload("Applications").Omit("Projects.Collaborators").First(&user).Error
 }
 
-func (userStore *UserStore) FindByEmail(user *User) error {
-	return userStore.db.First(user, "email = ?", user.Email).Error
+func (userStore *UserStore) GetByEmail(ctx context.Context, email string) (*User, error) {
+	var user *User
+	err := userStore.db.WithContext(ctx).Preload("Projects").Preload("Applications").Omit("Projects.Collaborators").First(&user, "email = ?", email).Error
+	return user, err
 }
 
-func (userStore *UserStore) Create(user *User) error {
-	err := userStore.FindByEmail(user)
+func (userStore *UserStore) CheckExistsByEmail(ctx context.Context, user *User) error {
+	return userStore.db.WithContext(ctx).Preload("Projects").Preload("Applications").Omit("Projects.Collaborators").First(&user, "email = ?", user.Email).Error
+}
+
+func (userStore *UserStore) Create(ctx context.Context, user *User) error {
+	_, err := userStore.GetByEmail(ctx, user.Email)
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
-			return userStore.db.Create(user).Error
+			return userStore.db.WithContext(ctx).Create(&user).Error
 		} else {
 			return err
 		}
@@ -35,13 +42,11 @@ func (userStore *UserStore) Create(user *User) error {
 	return customerror.NewConflict("email", user.Email)
 }
 
-func (userStore *UserStore) Patch(user *User) error {
-	return userStore.db.Save(user).Error
+func (userStore *UserStore) Patch(ctx context.Context, user *User) error {
+	return userStore.db.WithContext(ctx).Save(&user).Error
 }
 
-func (userStore *UserStore) Delete(user *User) error {
-	if err := userStore.FindByID(user); err != nil {
-		return err
-	}
-	return userStore.db.Delete(user).Error
+func (userStore *UserStore) Delete(ctx context.Context, user *User) error {
+	userStore.Get(ctx, user)
+	return userStore.db.WithContext(ctx).Delete(user).Error
 }

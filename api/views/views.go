@@ -30,7 +30,6 @@ func NewHandler(c *Config) {
 	}
 
 	g := c.R
-
 	// TODO: Routing and Handlers
 
 	if gin.Mode() != gin.TestMode {
@@ -45,10 +44,11 @@ func NewHandler(c *Config) {
 		g.GET("/projects/:projectID", h.GetProject)
 		g.GET("/projects", h.GetProjects)
 		g.POST("/projects/:projectID/apply", h.NewApplication)
-	}
 
-	// g.POST("/signup", h.Signup)
-	// g.POST("/signin", h.Signin)
-	g.GET("/auth/signin/:provider", h.Signin)
-	g.GET("/auth/callback/:provider", h.GoogleOauthCallback)
+		authHandler := g.Group("/auth")
+		{
+			authHandler.GET("/signin/:provider", h.SignIn)
+			authHandler.GET("/auth/callback/:provider", h.OauthCallback)
+		}
+	}
 }
