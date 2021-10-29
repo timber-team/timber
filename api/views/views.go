@@ -38,6 +38,6 @@ func NewHandler(c *Config) {
 	authHandler := g.Group("/auth")
 	{
 		authHandler.GET("/signin/:provider", h.SignIn)
-		g.GET("/auth/callback/:provider", h.GoogleOauthCallback)
+		g.GET("/auth/callback/:provider", h.OauthCallback)
 	}
 }
