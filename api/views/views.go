@@ -30,7 +30,6 @@ func NewHandler(c *Config) {
 	}
 
 	g := c.R
-
 	// TODO: Routing and Handlers
 
 	if gin.Mode() != gin.TestMode {
@@ -44,9 +43,12 @@ func NewHandler(c *Config) {
 		g.POST("/projects", h.NewProject)
 		g.GET("/projects/:projectID", h.GetProject)
 		g.GET("/projects", h.GetProjects)
-		g.POST("/projects/:projectID/apply", middlewares.AuthUser(h.TokenController), h.NewApplication)
-	}
+		g.POST("/projects/:projectID/apply", h.NewApplication)
 
-	g.POST("/signup", h.Signup)
-	g.POST("/signin", h.Signin)
+		authHandler := g.Group("/auth")
+		{
+			authHandler.GET("/signin/:provider", h.SignIn)
+			authHandler.GET("/auth/callback/:provider", h.OauthCallback)
+		}
+	}
 }

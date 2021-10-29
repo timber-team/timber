@@ -26,6 +26,10 @@ func (userStore *UserStore) GetByEmail(ctx context.Context, email string) (*User
 	return user, err
 }
 
+func (userStore *UserStore) CheckExistsByEmail(ctx context.Context, user *User) error {
+	return userStore.db.WithContext(ctx).Preload("Projects").Preload("Applications").Omit("Projects.Collaborators").First(&user, "email = ?", user.Email).Error
+}
+
 func (userStore *UserStore) Create(ctx context.Context, user *User) error {
 	_, err := userStore.GetByEmail(ctx, user.Email)
 	if err != nil {
@@ -37,9 +41,6 @@ func (userStore *UserStore) Create(ctx context.Context, user *User) error {
 	}
 	return customerror.NewConflict("email", user.Email)
 }
-
-// return userStore.db.WithContext(ctx).Create(&user).Error
-// }
 
 func (userStore *UserStore) Patch(ctx context.Context, user *User) error {
 	return userStore.db.WithContext(ctx).Save(&user).Error

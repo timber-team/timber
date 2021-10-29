@@ -43,7 +43,7 @@ func inject(d *dataSources) (*gin.Engine, error) {
 	accessTokenExp := int64(time.Minute * 10)
 	refreshTokenExp := int64(time.Hour * 24 * 30)
 
-	tokenController := controllers.NewTokenController(*tokenStore, authKey, accessTokenExp, refreshTokenExp)
+	tokenController := controllers.NewTokenController(*tokenStore, *userStore, authKey, accessTokenExp, refreshTokenExp)
 
 	// Initialize router
 	router := gin.Default()
