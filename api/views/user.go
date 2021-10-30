@@ -118,7 +118,7 @@ func (h *Handler) Profile(c *gin.Context) {
 
 	ctx := c.Request.Context()
 
-	u, err := h.UserController.Get(ctx, uid)
+	u, err := h.UserController.GetByID(ctx, uid)
 
 	if err != nil {
 		log.WithContext(ctx).WithError(err).Error(fmt.Sprintf("Unable to find user: %v", uid))
