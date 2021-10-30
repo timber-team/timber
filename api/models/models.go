@@ -5,55 +5,46 @@ import (
 )
 
 type User struct {
-	ID           int           `gorm:"primaryKey;autoIncrement;->" json:"id"`
-	CreatedAt    int64         `gorm:"autoCreateTime;<-:create" json:"created_at,omitempty"`
-	UpdatedAt    int64         `gorm:"autoUpdateTime;<-:create" json:"modified_at,omitempty"`
-	Username     string        `json:"username,omitempty"`
-	Email        string        `json:"email,omitempty"`
+	ID           int           `gorm:"primaryKey;autoIncrement;" json:"id"`
+	CreatedAt    int64         `gorm:"autoCreateTime;<-:create" json:"created_at"`
+	UpdatedAt    int64         `gorm:"autoUpdateTime;<-:create" json:"modified_at"`
+	Username     string        `json:"username"`
+	Email        string        `gorm:"unique" json:"email"`
 	Password     string        `json:"-"`
 	Verified     bool          `gorm:"default:false" json:"verified"`
 	Description  string        `json:"description"`
 	AvatarURL    string        `json:"avatar_url"`
 	Tags         []string      `gorm:"type:text[]" json:"tags"`
-	Projects     []*Project    `gorm:"many2many:user_projects" json:"projects"`
-	Applications []Application `json:"applications"`
+	Projects     []*Project    `gorm:"many2many:user_project;" json:"projects,omitempty"`
+	Applications []Application `json:"applications,omitempty"`
 }
 
-// TODO: Pretty sure we don't need this anymore because we can just exclude fields on the main user
-//type UserAuth struct {
-//	ID      int    `json:"id,omitempty"`
-//	Email   string `json:"email,omitempty"`
-//	Enabled bool   `json:"enabled,omitempty"`
-//	Hash    []byte `json:"hash,omitempty"`
-//}
-
 type Project struct {
-	ID              int           `gorm:"primaryKey;autoIncrement;->" json:"id,omitempty"`
-	CreatedAt       int64         `gorm:"autoCreateTime;<-:create" json:"created_at,omitempty"`
-	UpdatedAt       int64         `gorm:"autoUpdateTime;<-:create" json:"modified_at,omitempty"`
-	Name            string        `json:"name"`
+	ID              int           `gorm:"primaryKey;autoIncrement;" json:"id"`
+	CreatedAt       int64         `gorm:"autoCreateTime;<-:create" json:"created_at"`
+	UpdatedAt       int64         `gorm:"autoUpdateTime;<-:create" json:"modified_at"`
+	Name            string        `gorm:"unique" json:"name"`
 	Description     string        `json:"description"`
-	OwnerID         int           `gorm:"not null;<-:create" json:"owner_id,omitempty"`
-	Collaborators   []*User       `gorm:"many2many:user_projects" json:"collaborators"`
+	OwnerID         int           `gorm:"not null;<-:create" json:"owner_id"`
+	Collaborators   []*User       `gorm:"many2many:user_project;" json:"collaborators,omitempty"`
 	PreferredSkills []string      `gorm:"type:text[]" json:"preferred_skills"`
 	RequiredSkills  []string      `gorm:"type:text[]" json:"required_skills"`
 	Applications    []Application `json:"applications,omitempty"`
 }
 
 type Application struct {
-	ID        int   `gorm:"primaryKey;autoIncrement;->" json:"id,omitempty"`
-	CreatedAt int64 `gorm:"autoCreateTime;<-:create" json:"created_at,omitempty"`
-	UpdatedAt int64 `gorm:"autoUpdateTime;<-:create" json:"modified_at,omitempty"`
-	UserID    int   `json:"user_id,omitempty"`
-	ProjectID int   `json:"project_id,omitempty"`
-	Timestamp int64 `gorm:"type:time" json:"timestamp,omitempty"`
+	ID        int   `gorm:"primaryKey;autoIncrement;" json:"id"`
+	CreatedAt int64 `gorm:"autoCreateTime;<-:create" json:"created_at"`
+	UpdatedAt int64 `gorm:"autoUpdateTime;<-:create" json:"modified_at"`
+	UserID    int   `json:"user_id"`
+	ProjectID int   `json:"project_id"`
 }
 
 type GenericResponse struct {
-	Detail string      `json:"detail,omitempty"`
-	Msg    string      `json:"msg,omitempty"`
-	Data   interface{} `json:"data,omitempty"`
-	Code   int         `json:"code,omitempty"`
+	Detail string      `json:"detail"`
+	Msg    string      `json:"msg"`
+	Data   interface{} `json:"data"`
+	Code   int         `json:"code"`
 }
 
 type RefreshToken struct {
@@ -69,4 +60,11 @@ type AccessToken struct {
 type TokenPair struct {
 	AccessToken
 	RefreshToken
+}
+
+type GithubEmail struct {
+	Email      string `json:"email"`
+	Primary    bool   `json:"primary"`
+	Verified   bool   `json:"verified"`
+	Visibility string `json:"visibility"`
 }

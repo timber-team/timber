@@ -41,8 +41,12 @@ services:
       REDIS_ADDRESS: ${REDIS_ADDRESS}
       REDIS_PORT: ${REDIS_PORT}
       REDIS_PASS: ${REDIS_PASS}
+      OAUTH_GOOGLE_ID: ${OAUTH_GOOGLE_ID}
+      OAUTH_GOOGLE_SECRET: ${OAUTH_GOOGLE_SECRET}
+      OAUTH_GITHUB_ID: ${OAUTH_GITHUB_ID}
+      OAUTH_GITHUB_SECRET: ${OAUTH_GITHUB_SECRET}
     ports:
-      - "8080"
+      - "8080:8080"
     volumes:
       - ./:/go/src/app
     depends_on:

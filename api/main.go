@@ -12,6 +12,7 @@ import (
 	"github.com/Strum355/log"
 
 	"github.com/gal/timber/config"
+	"github.com/gal/timber/views"
 )
 
 func main() {
@@ -32,6 +33,8 @@ func main() {
 		log.WithError(err).Error("Error while injecting data sources")
 		return
 	}
+
+	views.InitOauth()
 
 	srv := &http.Server{
 		Addr:    ":8080",
