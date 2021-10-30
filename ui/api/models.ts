@@ -20,8 +20,6 @@ export interface User{
     Projects:Project[],
     Applications: Application[]
 
-    
-
 }
 
 export interface Project{
