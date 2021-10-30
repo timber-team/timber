@@ -6,7 +6,7 @@ export interface GenericInterface<T> {
 }
 
 export interface swipeInfo {
-    swiped: Boolean,
+    swiped: number,
     accept: Boolean
 }
 

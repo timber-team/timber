@@ -1,4 +1,4 @@
-import { useContext, useState } from "react"
+import { useContext, useEffect, useState } from "react"
 import { Col, Container, Row } from "react-bootstrap"
 import Card from "./Card"
 import { GenericInterface, swipeInfo, StackContext } from "./StackContext"
@@ -30,11 +30,15 @@ export default () => {
     }
     ])
 
-    const [stack, setStack] = useState<swipeInfo>(undefined)
+    const [stack, setStack] = useState<swipeInfo>({swiped: 0, accept: false})
     const stackState: GenericInterface<swipeInfo> = {
         value: stack,
         setter: setStack
     }
+
+    useEffect(() => {
+        console.log(stack)
+    }, [stack])
 
     return (
         <StackContext.Provider value={stackState}>

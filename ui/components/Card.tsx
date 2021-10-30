@@ -28,10 +28,10 @@ export default (props: viableProps) => {
 
     const bind = useDrag(({down, cancel, movement: [mx], active }) => {
         if (down && Math.atan(mx/424) * (180 / Math.PI) > 15) {
-            ctx.setter({swiped: true, accept: false})
+            ctx.setter({swiped: ctx.value.swiped + 1, accept: false})
             cancel()
         } else if (down && Math.atan(mx/424) * (180 / Math.PI) < -15) {
-            ctx.setter({swiped: true, accept: true})
+            ctx.setter({swiped: ctx.value.swiped + 1, accept: true})
             cancel()
         }
         api.start({ rotateZ: down ? Math.atan(mx/424) * (180 / Math.PI) : 0, 
