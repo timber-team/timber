@@ -40,6 +40,11 @@ type Application struct {
 	ProjectID int   `json:"project_id"`
 }
 
+type Tag struct {
+	ID   int    `gorm:"primaryKey;autoIncrement;" json:"id,omitempty"`
+	Name string `json:"name,omitempty"`
+}
+
 type GenericResponse struct {
 	Detail string      `json:"detail"`
 	Msg    string      `json:"msg"`
