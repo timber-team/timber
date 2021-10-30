@@ -1,4 +1,3 @@
-import { APIResponse, simple_api_request} from "./init";
 import {  get_attached_user } from "./application";
 
 import {Application, Project, User} from "./models";

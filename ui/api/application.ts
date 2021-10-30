@@ -1,4 +1,3 @@
-import {user} from "./init";
 import { get_user} from "./user";
 
 import {Application, Project, User} from "./models";
