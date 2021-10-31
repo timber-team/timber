@@ -15,7 +15,8 @@ import (
 	"golang.org/x/oauth2/google"
 
 	"github.com/gal/timber/models"
-	"github.com/gal/timber/utils/customerror"
+	"github.com/gal/timber/utils"
+	"github.com/gal/timber/utils/customresponse"
 )
 
 var googleConfig *oauth2.Config
@@ -82,23 +83,25 @@ func (h *Handler) GoogleOauthCallback(c *gin.Context) {
 
 	token, err := googleConfig.Exchange(ctx, code)
 	if err != nil {
-		log.WithContext(ctx).WithError(err).Error(err.Error())
-		e := customerror.NewInternal()
+		// log.WithContext(ctx).WithError(err).Error(err.Error())
+		// e := customresponse.NewInternal()
 
-		c.JSON(e.Status(), gin.H{
-			"error": e,
-		})
+		// c.JSON(e.Status(), gin.H{
+		// 	"error": e,
+		// })
+		utils.Respond(c, customresponse.NewInternal(), nil)
 		return
 	}
 
 	response, err := http.Get("https://www.googleapis.com/oauth2/v2/userinfo?access_token=" + token.AccessToken)
 	if err != nil {
-		log.WithContext(ctx).WithError(err).Error(err.Error())
-		e := customerror.NewInternal()
+		// log.WithContext(ctx).WithError(err).Error(err.Error())
+		// e := customresponse.NewInternal()
 
-		c.JSON(e.Status(), gin.H{
-			"error": e,
-		})
+		// c.JSON(e.Status(), gin.H{
+		// 	"error": e,
+		// })
+		utils.Respond(c, customresponse.NewInternal(), nil)
 		return
 	}
 
@@ -107,12 +110,13 @@ func (h *Handler) GoogleOauthCallback(c *gin.Context) {
 	contents := make(map[string]interface{})
 	err = json.NewDecoder(response.Body).Decode(&contents)
 	if err != nil {
-		log.WithContext(ctx).WithError(err).Error(err.Error())
-		e := customerror.NewInternal()
+		// log.WithContext(ctx).WithError(err).Error(err.Error())
+		// e := customresponse.NewInternal()
 
-		c.JSON(e.Status(), gin.H{
-			"error": e,
-		})
+		// c.JSON(e.Status(), gin.H{
+		// 	"error": e,
+		// })
+		utils.Respond(c, customresponse.NewInternal(), nil)
 		return
 	}
 
@@ -124,20 +128,24 @@ func (h *Handler) GoogleOauthCallback(c *gin.Context) {
 
 		tokenPair, err := h.TokenController.Signin(ctx, user)
 		if err != nil {
-			log.WithContext(ctx).WithError(err).Error(err.Error())
-			e := customerror.NewInternal()
+			// log.WithContext(ctx).WithError(err).Error(err.Error())
+			// e := customresponse.NewInternal()
 
-			c.JSON(e.Status(), gin.H{
-				"error": e,
-			})
+			// c.JSON(e.Status(), gin.H{
+			// 	"error": e,
+			// })
+			utils.Respond(c, customresponse.NewInternal(), nil)
 			return
 		}
 
-		c.JSON(http.StatusCreated,
-			gin.H{
-				"tokens": tokenPair,
-			})
+		// c.JSON(http.StatusCreated,
+		// 	gin.H{
+		// 		"tokens": tokenPair,
+		// 	})
+		utils.Respond(c, customresponse.NewCreated(), tokenPair)
+		return
 	}
+	utils.Respond(c, customresponse.NewInternal(), nil)
 }
 
 // GithubOauthCallback handles the user redirection after oauth with code
@@ -150,13 +158,13 @@ func (h *Handler) GithubOauthCallback(c *gin.Context) {
 	ctx := c.Request.Context()
 	token, err := githubConfig.Exchange(ctx, code)
 	if err != nil {
-		fmt.Println("bruh")
+		utils.Respond(c, customresponse.NewInternal(), nil)
 		return
 	}
 
 	apiRequest, err := http.NewRequest("GET", "https://api.github.com/user/emails", nil)
 	if err != nil {
-		c.AbortWithStatus(http.StatusInternalServerError)
+		utils.Respond(c, customresponse.NewInternal(), nil)
 		return
 	}
 
@@ -164,7 +172,8 @@ func (h *Handler) GithubOauthCallback(c *gin.Context) {
 	client := http.Client{}
 	apiResponse, err := client.Do(apiRequest)
 	if err != nil {
-		c.AbortWithStatus(http.StatusInternalServerError)
+		utils.Respond(c, customresponse.NewInternal(), nil)
+		return
 	}
 
 	defer apiResponse.Body.Close()
@@ -172,12 +181,13 @@ func (h *Handler) GithubOauthCallback(c *gin.Context) {
 	contents := make([]models.GithubEmail, 1)
 	err = json.NewDecoder(apiResponse.Body).Decode(&contents)
 	if err != nil {
-		log.WithContext(ctx).WithError(err).Error(err.Error())
-		e := customerror.NewInternal()
+		// log.WithContext(ctx).WithError(err).Error(err.Error())
+		// e := customresponse.NewInternal()
 
-		c.JSON(e.Status(), gin.H{
-			"error": e,
-		})
+		// c.JSON(e.Status(), gin.H{
+		// 	"error": e,
+		// })
+		utils.Respond(c, customresponse.NewInternal(), nil)
 		return
 	}
 
@@ -189,20 +199,78 @@ func (h *Handler) GithubOauthCallback(c *gin.Context) {
 
 			tokenPair, err := h.TokenController.Signin(ctx, user)
 			if err != nil {
-				log.WithContext(ctx).WithError(err).Error(err.Error())
-				e := customerror.NewInternal()
+				// log.WithContext(ctx).WithError(err).Error(err.Error())
+				// e := customresponse.NewInternal()
 
-				c.JSON(e.Status(), gin.H{
-					"error": e,
-				})
+				// c.JSON(e.Status(), gin.H{
+				// 	"error": e,
+				// })
+				utils.Respond(c, customresponse.NewInternal(), nil)
 				return
 			}
 
-			c.JSON(http.StatusCreated,
-				gin.H{
-					"tokens": tokenPair,
-				})
-
+			// c.JSON(http.StatusCreated,
+			// 	gin.H{
+			// 		"tokens": tokenPair,
+			// 	})
+			utils.Respond(c, customresponse.NewCreated(), tokenPair)
 		}
 	}
+}
+
+type tokensRequest struct {
+	RefreshToken string `json:"refreshToken" binding:"required"`
+}
+
+// Tokens handler
+func (h *Handler) Tokens(c *gin.Context) { // Bind incoming JSON to request of type tokensRequest
+	var req tokensRequest
+
+	if ok := utils.BindData(c, &req); !ok {
+		return
+	}
+
+	ctx := c.Request.Context()
+
+	// Verify refresh JWT
+	refreshToken, err := h.TokenController.ValidateRefreshToken(req.RefreshToken)
+
+	if err != nil {
+		// c.JSON(customresponse.Status(err), gin.H{
+		// 	"error": err,
+		// })
+		utils.Respond(c, customresponse.NewInternal(), nil)
+		return
+	}
+	u := &models.User{
+		ID: refreshToken.UID,
+	}
+	// Get up-to-date user
+	err = h.UserController.Users.Get(ctx, u)
+
+	if err != nil {
+		// c.JSON(customresponse.Status(err), gin.H{
+		// 	"error": err,
+		// })
+		utils.Respond(c, customresponse.NewNotFound("user", fmt.Sprintf("%d", refreshToken.UID)), nil)
+		return
+	}
+
+	// Create fresh pair of tokens
+	tokens, err := h.TokenController.NewPairFromUser(ctx, u, refreshToken.ID.String())
+
+	if err != nil {
+		// log.WithContext(ctx).WithError(err).Error(fmt.Sprintf("Failed to create tokens for user: %+v", u))
+
+		// c.JSON(customresponse.Status(err), gin.H{
+		// 	"error": err,
+		// })
+		utils.Respond(c, customresponse.NewInternal(), nil)
+		return
+	}
+
+	// c.JSON(http.StatusOK, gin.H{
+	// 	"tokens": tokens,
+	// })
+	utils.Respond(c, customresponse.NewOK(), tokens)
 }

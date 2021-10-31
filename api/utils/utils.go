@@ -1,33 +1,21 @@
 package utils
 
-// TODO: Refactor to work with Gin
+import (
+	"github.com/Strum355/log"
+	"github.com/gal/timber/utils/customresponse"
+	"github.com/gin-gonic/gin"
+)
 
-//func RespondJSON(w http.ResponseWriter, payload interface{}, detail string, msg string, status int) {
-//	w.Header().Set("Content-Type", "application/json")
-//
-//	data := &models.GenericResponse{
-//		Detail: detail,
-//		Msg:    msg,
-//		Data:   payload,
-//		Code:   status,
-//	}
-//
-//	encoded, err := json.Marshal(&data)
-//	if err != nil {
-//		w.WriteHeader(http.StatusInternalServerError)
-//		log.Println("Couldn't encode interface{} to JSON\n", err)
-//		return
-//	}
-//
-//	w.WriteHeader(status)
-//	w.Write(encoded)
-//}
-//
-//func HasAccess(r *http.Request, uid int) bool {
-//	return r.Context().Value(&middlewares.AuthCtx{}).(middlewares.AuthStruct).UID == uid
-//}
-//
-//// TODO: make safer
-//func GetUID(r *http.Request) (int, error) {
-//	return r.Context().Value(&middlewares.AuthCtx{}).(middlewares.AuthStruct).UID, nil
-//}
+func Respond(c *gin.Context, resp *customresponse.Response, payload interface{}) {
+	if resp.Status() >= 200 && resp.Status() <= 210 {
+		log.WithContext(c).Info(resp.Message)
+	} else {
+		log.WithContext(c).WithError(resp).Error(resp.Message)
+	}
+	c.JSON(resp.Status(), gin.H{
+		"detail":  resp.Detail,
+		"message": resp.Message,
+		"code":    resp.Status(),
+		"data":    payload,
+	})
+}

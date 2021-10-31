@@ -4,11 +4,10 @@ package views
 
 import (
 	"fmt"
-	"net/http"
 
-	"github.com/Strum355/log"
 	"github.com/gal/timber/models"
-	"github.com/gal/timber/utils/customerror"
+	"github.com/gal/timber/utils"
+	"github.com/gal/timber/utils/customresponse"
 	"github.com/gin-gonic/gin"
 )
 
@@ -16,11 +15,12 @@ func (h *Handler) Profile(c *gin.Context) {
 	user, exists := c.Get("user")
 
 	if !exists {
-		log.WithContext(c).Error("Unable to extract user from the request context")
-		err := customerror.NewInternal()
-		c.JSON(err.Status(), gin.H{
-			"error": err,
-		})
+		// log.WithContext(c).Error("Unable to extract user from the request context")
+		// err := customresponse.NewInternal()
+		// c.JSON(err.Status(), gin.H{
+		// 	"error": err,
+		// })
+		utils.Respond(c, customresponse.NewInternal(), nil)
 		return
 	}
 
@@ -33,16 +33,18 @@ func (h *Handler) Profile(c *gin.Context) {
 	err := h.UserController.Get(ctx, u)
 
 	if err != nil {
-		log.WithContext(ctx).WithError(err).Error(fmt.Sprintf("Unable to find user: %v", uid))
-		e := customerror.NewNotFound("user", fmt.Sprintf("%d", uid))
+		// log.WithContext(ctx).WithError(err).Error(fmt.Sprintf("Unable to find user: %v", uid))
+		// e := customresponse.NewNotFound("user", fmt.Sprintf("%d", uid))
 
-		c.JSON(e.Status(), gin.H{
-			"error": e,
-		})
+		// c.JSON(e.Status(), gin.H{
+		// 	"error": e,
+		// })
+		utils.Respond(c, customresponse.NewNotFound("user", fmt.Sprintf("%d", uid)), nil)
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{
-		"user": u,
-	})
+	// c.JSON(http.StatusOK, gin.H{
+	// 	"user": u,
+	// })
+	utils.Respond(c, customresponse.NewOK(), u)
 }

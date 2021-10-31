@@ -2,7 +2,7 @@ package utils
 
 import (
 	"github.com/Strum355/log"
-	"github.com/gal/timber/utils/customerror"
+	"github.com/gal/timber/utils/customresponse"
 	"github.com/gin-gonic/gin"
 	"github.com/go-playground/validator/v10"
 )
@@ -34,22 +34,24 @@ func BindData(c *gin.Context, req interface{}) bool {
 				})
 			}
 
-			err := customerror.NewBadRequest("Invalid request parameters. See invalidArgs")
+			// err := customresponse.NewBadRequest("Invalid request parameters. See invalidArgs")
 
-			c.JSON(err.Status(), gin.H{
-				"error":       err,
-				"invalidArgs": invalidArgs,
-			})
+			// c.JSON(err.Status(), gin.H{
+			// 	"error":       err,
+			// 	"invalidArgs": invalidArgs,
+			// })
+			Respond(c, customresponse.NewBadRequest("Invalid request parameters. See invalidArgs"), invalidArgs)
 			return false
 		}
 
 		// If validation errors can't be extracted, we return an internal server error as a fallback
-		fallback := customerror.NewInternal()
+		// fallback := customresponse.NewInternal()
 
-		c.JSON(fallback.Status(), gin.H{"error": fallback})
-		c.AbortWithStatusJSON(fallback.Status(), gin.H{
-			"error": fallback,
-		})
+		// c.JSON(fallback.Status(), gin.H{"error": fallback})
+		// c.AbortWithStatusJSON(fallback.Status(), gin.H{
+		// 	"error": fallback,
+		// })
+		Respond(c, customresponse.NewInternal(), nil)
 		return false
 	}
 

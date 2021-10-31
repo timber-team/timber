@@ -49,10 +49,13 @@ func NewHandler(c *Config) {
 		g.GET("/projects/:projectID", h.GetProject)
 		g.GET("/projects", h.GetProjects)
 		g.POST("/projects/:projectID/apply", h.NewApplication)
+		g.GET("/tags", h.GetTags)
+		g.POST("/tags", h.NewTag)
 	}
 
 	authHandler := g.Group("/auth")
 
 	authHandler.GET("/signin/:provider", h.SignIn)
 	authHandler.GET("/callback/:provider", h.OauthCallback)
+	authHandler.POST("/tokens", h.Tokens)
 }
