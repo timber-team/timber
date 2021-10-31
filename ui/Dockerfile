@@ -12,7 +12,7 @@ WORKDIR /app
 
 COPY --from=dev /app /app
 
-CMD npm run build
+RUN npm run build
 
 # CMD [ "npm start" ]
 
