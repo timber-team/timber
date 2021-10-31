@@ -1,29 +1,16 @@
-import { APIResponse, simple_api_request } from "./init";
+import { User } from "./types"
 
-export function get_user(user_id: string): APIResponse {
-  return simple_api_request("/users/" + user_id, "GET", null, false);
-}
-
-// export function get_self(): APIResponse{
-//     return simple_api_request()
+// // Finds logged-in user's profile
+// const GetProfile = async (): Promise<User> => {
+//     return 
 // }
 
-export function make_user(
-  email_address: string,
-  username: string
-): APIResponse {
-  let user_details = {
-    email_address: email_address,
-    username: username,
-  };
-
-  return simple_api_request("/users/", "POST", user_details, false);
-}
-
-// export function edit_user(): APIResponse{
-
+// // Finds user by id
+// const GetUser = async (userId: Number): Promise<User> => {
+//     return
 // }
 
-export function delete_user(user_id: string): APIResponse {
-  return simple_api_request("/users/" + user_id, "DELETE", null);
-}
+// // To be implemented
+// const DeleteUser = async (userId: Number): Promise<String> => {
+//     return
+// }
