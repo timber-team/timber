@@ -14,7 +14,7 @@ type User struct {
 	Verified     bool          `gorm:"default:false" json:"verified"`
 	Description  string        `json:"description"`
 	AvatarURL    string        `json:"avatar_url"`
-	Tags         []*Tag        `gorm:"many2many:user_tags" json:"tags"`
+	Tags         []Tag         `gorm:"many2many:user_tags" json:"tags"`
 	Projects     []*Project    `gorm:"many2many:user_project;" json:"projects,omitempty"`
 	Applications []Application `json:"applications,omitempty"`
 }
@@ -42,7 +42,7 @@ type Application struct {
 
 type Tag struct {
 	ID   int    `gorm:"primaryKey;autoIncrement;" json:"id,omitempty"`
-	Name string `json:"name,omitempty"`
+	Name string `gorm:"uniqueIndex" json:"name,omitempty"`
 }
 
 type GenericResponse struct {

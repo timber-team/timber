@@ -14,7 +14,7 @@ func NewProjectStore(db *gorm.DB) *ProjectStore {
 }
 
 func (projectStore *ProjectStore) Get(ctx context.Context, project *Project) error {
-	return projectStore.db.WithContext(ctx).Preload("Collaborators").Preload("Applications").Omit("Collaborators.Projects").First(&project).Error
+	return projectStore.db.WithContext(ctx).Preload("Collaborators").Preload("Applications").Preload("PreferredSkills").Preload("RequiredSkills").Omit("Collaborators.Projects").First(&project).Error
 }
 
 func (projectStore *ProjectStore) GetAll(ctx context.Context, projects []*Project) error {
