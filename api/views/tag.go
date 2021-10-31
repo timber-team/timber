@@ -51,11 +51,6 @@ func (h *Handler) NewTag(c *gin.Context) {
 
 	if ok := utils.BindData(c, &tag); !ok {
 		log.WithContext(c).Error("Unable to extract tag data from request")
-		e := customerror.NewBadRequest("request body invalid")
-
-		c.JSON(e.Status(), gin.H{
-			"error": e,
-		})
 		return
 	}
 

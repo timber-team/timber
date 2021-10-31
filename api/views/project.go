@@ -22,6 +22,7 @@ func (h *Handler) NewProject(c *gin.Context) {
 	var req projectRequest
 
 	if ok := utils.BindData(c, &req); !ok {
+		log.WithContext(c).Error("Could not bind data for new project")
 		return
 	}
 

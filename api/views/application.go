@@ -31,10 +31,6 @@ func (h *Handler) NewApplication(c *gin.Context) {
 
 	if !exists {
 		log.WithContext(c).Error("Unable to extract user from the request context")
-		err := customerror.NewInternal()
-		c.JSON(err.Status(), gin.H{
-			"error": err,
-		})
 		return
 	}
 
