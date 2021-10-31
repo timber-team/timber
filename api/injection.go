@@ -19,7 +19,7 @@ func inject(d *dataSources) (*gin.Engine, error) {
 
 	d.DB.Preload("Projects").Preload("Applications").Find(&models.User{})
 	d.DB.Preload("Collaborators").Preload("Applications").Find(&models.Project{})
-    d.DB.Preload("Tags").Find(&models.User{})
+	d.DB.Preload("Tags").Find(&models.User{})
 
 	/*
 	 * Model layer
@@ -55,6 +55,7 @@ func inject(d *dataSources) (*gin.Engine, error) {
 		ProjectController:     *projectController,
 		ApplicationController: *applicationController,
 		TokenController:       *tokenController,
+		TagController:         *tagController,
 	})
 
 	return router, nil

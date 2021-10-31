@@ -21,6 +21,7 @@ func initDefaults() {
 	viper.SetDefault("db.name", "")
 
 	viper.SetDefault("auth.key", "")
+	viper.SetDefault("api.url", "http://localhost/api")
 
 	viper.SetDefault("redis.address", "")
 	viper.SetDefault("redis.port", "")

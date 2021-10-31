@@ -14,7 +14,7 @@ type User struct {
 	Verified     bool          `gorm:"default:false" json:"verified"`
 	Description  string        `json:"description"`
 	AvatarURL    string        `json:"avatar_url"`
-	Tags         []Tag     `json:"tags"`
+	Tags         []*Tag        `gorm:"many2many:user_tags" json:"tags"`
 	Projects     []*Project    `gorm:"many2many:user_project;" json:"projects,omitempty"`
 	Applications []Application `json:"applications,omitempty"`
 }
@@ -27,10 +27,8 @@ type Project struct {
 	Description     string        `json:"description"`
 	OwnerID         int           `gorm:"not null;<-:create" json:"owner_id"`
 	Collaborators   []*User       `gorm:"many2many:user_project;" json:"collaborators,omitempty"`
-// 	PreferredSkills []string      `gorm:"type:text[]" json:"preferred_skills"`
-// 	RequiredSkills  []string      `gorm:"type:text[]" json:"required_skills"`
-    PreferredSkills []Tag   `json:"preferred_skills"`
-    RequiredSkills []Tag `json:"required_skills"`
+	PreferredSkills []Tag         `gorm:"many2many:project_preferred" json:"preferred_skills"`
+	RequiredSkills  []Tag         `gorm:"many2many:project_required" json:"required_skills"`
 	Applications    []Application `json:"applications,omitempty"`
 }
 

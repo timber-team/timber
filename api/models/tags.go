@@ -18,6 +18,12 @@ func (tagStore *TagStore) Get(ctx context.Context, tag *Tag) error {
 	return tagStore.db.WithContext(ctx).First(&tag).Error
 }
 
+func (tagStore *TagStore) GetAll(ctx context.Context) ([]Tag, error) {
+	var tags []Tag
+	err := tagStore.db.WithContext(ctx).Find(&tags).Error
+	return tags, err
+}
+
 func (tagStore *TagStore) Create(ctx context.Context, tag *Tag) error {
 	return tagStore.db.WithContext(ctx).Create(&tag).Error
 }
