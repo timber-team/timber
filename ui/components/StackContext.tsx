@@ -1,5 +1,6 @@
 import { createContext } from "react";
 
+// Im im keeping this just incase I wanna stop prop drilling in the future
 export interface GenericInterface<T> {
     setter: (value: T) => void;
     value: T

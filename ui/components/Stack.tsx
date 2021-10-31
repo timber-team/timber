@@ -1,10 +1,11 @@
-import { useContext, useEffect, useState } from "react"
-import { Col, Container, Row } from "react-bootstrap"
+import { useState } from "react"
+import { Button, Col, Container, Row } from "react-bootstrap"
 import Card from "./Card"
-import { GenericInterface, swipeInfo, StackContext } from "./StackContext"
 
-export default () => {   
-    const [current, setCurrent] = useState([{
+export default () => {
+    // The bug can be fixed (extra click one) when have the data for the requests done,
+    // It's only like this due to me setting the state like this 
+    const [cards, setCards] = useState([{
         ID: '1',
         CreatedAt: '1412312',
         UpdatedAt: '190241024',
@@ -30,25 +31,36 @@ export default () => {
     }
     ])
 
-    const [stack, setStack] = useState<swipeInfo>({swiped: 0, accept: false})
-    const stackState: GenericInterface<swipeInfo> = {
-        value: stack,
-        setter: setStack
+    // FIX later
+    const [current, setCurrent] = useState(cards[cards.length - 1])
+
+    const nextCard = () => {
+        setCards(cards.slice(0, -1))
+        setCurrent(cards[cards.length - 1])
     }
 
-    useEffect(() => {
-        console.log(stack)
-    }, [stack])
+    const meme = (e) => {
+        if (e) {
+            // DO ACCEPT
+        } else {
+            // DONT ACCEPT
+        }
+        nextCard()
+    }
 
     return (
-        <StackContext.Provider value={stackState}>
-            <Container>
-                <Row className='justify-content-md-center'>
-                    <Col md="auto">
-                        <Card Name={current[current.length - 1].Name} Description={current[current.length - 1].Description} PreferredSkills={current[current.length - 1].PreferredSkills} RequiredSkills={current[current.length - 1].RequiredSkills} />
-                    </Col>
-                </Row>
-            </Container>
-        </StackContext.Provider>
+        <Container>
+            <Row className='justify-content-md-center'>
+                <Col>
+                    <Button onClick={() => {meme(false)}}> Reject </Button>
+                </Col>
+                <Col md="auto">
+                    {current ? <Card Name={current.Name} Description={current.Description} PreferredSkills={current.PreferredSkills} RequiredSkills={current.RequiredSkills} /> : <div> No more stuff for you to checkout </div>}
+                </Col>  
+                <Col>
+                    <Button onClick={() => {meme(true)}}> Accept </Button>
+                </Col>
+            </Row>
+        </Container>
     )
 }
