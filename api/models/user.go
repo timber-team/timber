@@ -4,7 +4,7 @@ import (
 	"context"
 	"errors"
 
-	"github.com/gal/timber/utils/customerror"
+	"github.com/gal/timber/utils/customresponse"
 	"gorm.io/gorm"
 )
 
@@ -17,17 +17,17 @@ func NewUserStore(db *gorm.DB) *UserStore {
 }
 
 func (userStore *UserStore) Get(ctx context.Context, user *User) error {
-	return userStore.db.WithContext(ctx).Preload("Projects").Preload("Applications").Omit("Projects.Collaborators").First(&user).Error
+	return userStore.db.WithContext(ctx).Preload("Projects").Preload("Applications").Preload("Tags").Omit("Projects.Collaborators").First(&user).Error
 }
 
 func (userStore *UserStore) GetByEmail(ctx context.Context, email string) (*User, error) {
 	var user *User
-	err := userStore.db.WithContext(ctx).Preload("Projects").Preload("Applications").Omit("Projects.Collaborators").First(&user, "email = ?", email).Error
+	err := userStore.db.WithContext(ctx).Preload("Projects").Preload("Applications").Preload("Tags").Omit("Projects.Collaborators").First(&user, "email = ?", email).Error
 	return user, err
 }
 
 func (userStore *UserStore) CheckExistsByEmail(ctx context.Context, user *User) error {
-	return userStore.db.WithContext(ctx).Preload("Projects").Preload("Applications").Omit("Projects.Collaborators").First(&user, "email = ?", user.Email).Error
+	return userStore.db.WithContext(ctx).Preload("Projects").Preload("Applications").Preload("Tags").Omit("Projects.Collaborators").First(&user, "email = ?", user.Email).Error
 }
 
 func (userStore *UserStore) Create(ctx context.Context, user *User) error {
@@ -39,7 +39,7 @@ func (userStore *UserStore) Create(ctx context.Context, user *User) error {
 			return err
 		}
 	}
-	return customerror.NewConflict("email", user.Email)
+	return customresponse.NewConflict("email", user.Email)
 }
 
 func (userStore *UserStore) Patch(ctx context.Context, user *User) error {

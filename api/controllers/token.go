@@ -7,7 +7,7 @@ import (
 	"github.com/Strum355/log"
 	"github.com/gal/timber/auth"
 	"github.com/gal/timber/models"
-	"github.com/gal/timber/utils/customerror"
+	"github.com/gal/timber/utils/customresponse"
 	"github.com/google/uuid"
 )
 
@@ -50,20 +50,20 @@ func (tokenControl *TokenController) NewPairFromUser(ctx context.Context, u *mod
 
 	if err != nil {
 		log.WithContext(ctx).WithError(err).Error(fmt.Sprintf("Error generating accessToken for uid: %v", u.ID))
-		return nil, customerror.NewInternal()
+		return nil, err
 	}
 
 	refreshToken, err := auth.GenerateRefreshToken(u.ID, tokenControl.AuthKey, tokenControl.RefreshExpirationSecs)
 
 	if err != nil {
 		log.WithContext(ctx).WithError(err).Error(fmt.Sprintf("Error generating refreshToken for uid: %v", u.ID))
-		return nil, customerror.NewInternal()
+		return nil, customresponse.NewInternal()
 	}
 
 	// Set freshly generated refresh tokens to the valid token list
 	if err := tokenControl.Tokens.SetRefreshToken(ctx, fmt.Sprintf("%d", u.ID), refreshToken.ID.String(), refreshToken.ExpiresIn); err != nil {
 		log.WithContext(ctx).WithError(err).Error(fmt.Sprintf("Error storing tokenID for uid: %v", u.ID))
-		return nil, customerror.NewInternal()
+		return nil, customresponse.NewInternal()
 	}
 
 	return &models.TokenPair{
@@ -82,7 +82,7 @@ func (tokenControl *TokenController) ValidateAccessToken(tokenString string) (*m
 	// Return unauthorized error if user verification fails
 	if err != nil {
 		log.WithError(err).Error("Unable to validate or parse accessToken")
-		return nil, customerror.NewAuthorization("Unable to verify user from accessToken")
+		return nil, customresponse.NewAuthorization("Unable to verify user from accessToken")
 	}
 
 	return claims.User, nil
@@ -95,14 +95,14 @@ func (tokenControl *TokenController) ValidateRefreshToken(tokenString string) (*
 	// Return unauthorized error if user verification fails
 	if err != nil {
 		log.WithError(err).Error(fmt.Sprintf("Unable to validate or parse refreshToken for token string: %s", tokenString))
-		return nil, customerror.NewAuthorization("Unable to verify user from refreshToken")
+		return nil, customresponse.NewAuthorization("Unable to verify user from refreshToken")
 	}
 
 	tokenUUID, err := uuid.Parse(claims.Id)
 
 	if err != nil {
 		log.WithError(err).Error(fmt.Sprintf("Claims ID could not be parsed as UUID: %s", claims.Id))
-		return nil, customerror.NewAuthorization("Unable to verify user from refreshToken")
+		return nil, customresponse.NewAuthorization("Unable to verify user from refreshToken")
 	}
 
 	return &models.RefreshToken{

@@ -4,12 +4,12 @@ package views
 
 import (
 	"fmt"
-	"net/http"
 	"strconv"
 
 	"github.com/Strum355/log"
 	"github.com/gal/timber/models"
-	"github.com/gal/timber/utils/customerror"
+	"github.com/gal/timber/utils"
+	"github.com/gal/timber/utils/customresponse"
 	"github.com/gin-gonic/gin"
 )
 
@@ -18,12 +18,13 @@ func (h *Handler) NewApplication(c *gin.Context) {
 	pid, err := strconv.Atoi(urlPID)
 	ctx := c.Request.Context()
 	if err != nil {
-		log.WithContext(ctx).WithError(err).Error(fmt.Sprintf("Unable to parse ID from url: %v", urlPID))
-		e := customerror.NewInternal()
+		// log.WithContext(ctx).WithError(err).Error(fmt.Sprintf("Unable to parse ID from url: %v", urlPID))
+		// e := customresponse.NewInternal()
 
-		c.JSON(e.Status(), gin.H{
-			"error": e,
-		})
+		// c.JSON(e.Status(), gin.H{
+		// 	"error": e,
+		// })
+		utils.Respond(c, customresponse.NewInternal(), nil)
 		return
 	}
 
@@ -31,10 +32,6 @@ func (h *Handler) NewApplication(c *gin.Context) {
 
 	if !exists {
 		log.WithContext(c).Error("Unable to extract user from the request context")
-		err := customerror.NewInternal()
-		c.JSON(err.Status(), gin.H{
-			"error": err,
-		})
 		return
 	}
 
@@ -44,11 +41,12 @@ func (h *Handler) NewApplication(c *gin.Context) {
 
 	if err != nil {
 		log.WithContext(ctx).WithError(err).Error(fmt.Sprintf("Unable to find user: %v", u.ID))
-		e := customerror.NewNotFound("user", fmt.Sprintf("%d", u.ID))
+		// e := customresponse.NewNotFound("user", fmt.Sprintf("%d", u.ID))
 
-		c.JSON(e.Status(), gin.H{
-			"error": e,
-		})
+		// c.JSON(e.Status(), gin.H{
+		// 	"error": e,
+		// })
+		utils.Respond(c, customresponse.NewNotFound("user", fmt.Sprintf("%d", u.ID)), nil)
 		return
 	}
 
@@ -59,10 +57,11 @@ func (h *Handler) NewApplication(c *gin.Context) {
 	err = h.ProjectController.Projects.Get(ctx, p)
 
 	if err != nil {
-		log.WithContext(ctx).WithError(err).Error("Failed to get project")
-		c.JSON(customerror.Status(err), gin.H{
-			"error": err,
-		})
+		// log.WithContext(ctx).WithError(err).Error("Failed to get project")
+		// c.JSON(customresponse.Status(err), gin.H{
+		// 	"error": err,
+		// })
+		utils.Respond(c, customresponse.NewInternal(), nil)
 		return
 	}
 
@@ -74,14 +73,16 @@ func (h *Handler) NewApplication(c *gin.Context) {
 	err = h.ApplicationController.Applications.Create(ctx, application)
 
 	if err != nil {
-		log.WithContext(ctx).WithError(err).Error("Failed to create application")
-		c.JSON(customerror.Status(err), gin.H{
-			"error": err,
-		})
+		// log.WithContext(ctx).WithError(err).Error("Failed to create application")
+		// c.JSON(customresponse.Status(err), gin.H{
+		// 	"error": err,
+		// })
+		utils.Respond(c, customresponse.NewInternal(), nil)
 		return
 	}
 
-	c.JSON(http.StatusCreated, gin.H{
-		"application": application,
-	})
+	// c.JSON(http.StatusCreated, gin.H{
+	// 	"application": application,
+	// })
+	utils.Respond(c, customresponse.NewCreated(), application)
 }
