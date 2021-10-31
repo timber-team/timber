@@ -1,10 +1,18 @@
 import { useState } from "react"
 import { Button, Col, Container, Row } from "react-bootstrap"
 import Card from "./Card"
+import CardButtons from "./CardButtons"
 
 export default () => {
     // The bug can be fixed (extra click one) when have the data for the requests done,
-    // It's only like this due to me setting the state like this 
+    // It's only like this due to me setting the state like this
+
+    const colStyle = {
+        display: 'flex',
+        alignItems: 'end',
+        flexDirection: 'column'
+    }
+    
     const [cards, setCards] = useState([{
         ID: '1',
         CreatedAt: '1412312',
@@ -51,14 +59,14 @@ export default () => {
     return (
         <Container>
             <Row className='justify-content-md-center'>
-                <Col>
-                    <Button onClick={() => {meme(false)}}> Reject </Button>
+                <Col style={colStyle}>
+                    <CardButtons onClick={() => {meme(false)}}> Reject </CardButtons>
                 </Col>
                 <Col md="auto">
                     {current ? <Card Name={current.Name} Description={current.Description} PreferredSkills={current.PreferredSkills} RequiredSkills={current.RequiredSkills} /> : <div> No more stuff for you to checkout </div>}
                 </Col>  
                 <Col>
-                    <Button onClick={() => {meme(true)}}> Accept </Button>
+                    <CardButtons onClick={() => {meme(true)}}> Accept </CardButtons>
                 </Col>
             </Row>
         </Container>
