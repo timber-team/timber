@@ -3,7 +3,9 @@ package middlewares
 import (
 	"errors"
 	"strings"
+	"time"
 
+	"github.com/Strum355/log"
 	"github.com/gal/timber/controllers"
 	"github.com/gal/timber/utils"
 	"github.com/gal/timber/utils/customresponse"
@@ -92,5 +94,33 @@ func AuthUser(tokenControl controllers.TokenController) gin.HandlerFunc {
 		c.Set("user", user)
 
 		c.Next()
+	}
+}
+func JSONLogMiddleware() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		// Start timer
+		start := time.Now()
+
+		// Process Request
+		c.Next()
+
+		// Stop timer
+		duration := utils.GetDurationInMillseconds(start)
+
+		entry := log.WithFields(log.Fields{
+			"client_ip":  utils.GetClientIP(c),
+			"duration":   duration,
+			"method":     c.Request.Method,
+			"path":       c.Request.RequestURI,
+			"status":     c.Writer.Status(),
+			"referrer":   c.Request.Referer(),
+			"request_id": c.Writer.Header().Get("Request-Id"),
+		})
+
+		if c.Writer.Status() >= 500 {
+			entry.Error(c.Errors.String())
+		} else {
+			entry.Info("")
+		}
 	}
 }

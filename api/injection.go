@@ -5,6 +5,7 @@ import (
 
 	"github.com/Strum355/log"
 	"github.com/gal/timber/controllers"
+	"github.com/gal/timber/middlewares"
 	"github.com/gal/timber/models"
 	"github.com/gal/timber/views"
 	"github.com/gin-gonic/gin"
@@ -47,7 +48,9 @@ func inject(d *dataSources) (*gin.Engine, error) {
 	tokenController := controllers.NewTokenController(*tokenStore, *userStore, authKey, accessTokenExp, refreshTokenExp)
 
 	// Initialize router
-	router := gin.Default()
+	router := gin.New()
+	router.Use(middlewares.JSONLogMiddleware())
+	router.Use(gin.Recovery())
 
 	views.NewHandler(&views.Config{
 		R:                     router,
