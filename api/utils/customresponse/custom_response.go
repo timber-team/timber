@@ -89,20 +89,20 @@ func NewCreated() *Response {
 }
 
 // NewBadRequest ->	code 400
-func NewBadRequest(reason string) *Response {
+func NewBadRequest(message string) *Response {
 	return &Response{
 		Type:    BadRequest,
 		Detail:  "error",
-		Message: fmt.Sprintf("Bad request. Reason: %v", reason),
+		Message: message,
 	}
 }
 
 // NewAuthorization ->	code 401
-func NewAuthorization(reason string) *Response {
+func NewAuthorization(message string) *Response {
 	return &Response{
 		Type:    Authorization,
 		Detail:  "error",
-		Message: fmt.Sprintf("Authorization failed. Reason: %v", reason),
+		Message: message,
 	}
 }
 

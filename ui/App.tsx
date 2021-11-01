@@ -4,10 +4,11 @@ import {
     Switch,
     Route
   } from "react-router-dom"
-import OAuthCallback from './src/OAuthCallback'
+
 import Applications from './pages/Applications'
 import Browse from './pages/Browse'
 import LandingPage from './pages/LandingPage'
+import OAuthCallback from './src/OAuthCallback'
 
 // import 'bootstrap/dist/css/bootstrap.css'
 const App: React.FC = () => {

@@ -37,7 +37,6 @@ export interface Tag {
   id: number;
   name: string;
 }
-
 export interface TokenResponse {
   access_token: string;
   refresh_token: string;

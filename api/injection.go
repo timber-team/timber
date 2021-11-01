@@ -22,6 +22,24 @@ func inject(d *dataSources) (*gin.Engine, error) {
 	d.DB.Preload("Collaborators").Preload("Applications").Find(&models.Project{})
 	d.DB.Preload("Tags").Find(&models.User{})
 
+	//// Drop all exising tables from the postgres database (d.DB) using raw SQL
+	//err := d.DB.Unscoped().Where("id > ?", -1).Delete(&models.Tag{}).Error
+	//if err != nil {
+	//	log.WithError(err).Error("Error dropping tags")
+	//}
+	//err = d.DB.Unscoped().Where("id > ?", -1).Delete(&models.User{}).Error
+	//if err != nil {
+	//	log.WithError(err).Error("Error dropping users")
+	//}
+	//err = d.DB.Unscoped().Where("id > ?", -1).Delete(&models.Project{}).Error
+	//if err != nil {
+	//	log.WithError(err).Error("Error dropping projects")
+	//}
+	//err = d.DB.Unscoped().Where("id > ?", -1).Delete(&models.Application{}).Error
+	//if err != nil {
+	//	log.WithError(err).Error("Error dropping applications")
+	//}
+
 	/*
 	 * Model layer
 	 */
@@ -30,6 +48,10 @@ func inject(d *dataSources) (*gin.Engine, error) {
 	tagStore := models.NewTagStore(d.DB)
 	applicationStore := models.NewApplicationStore(d.DB)
 	tokenStore := models.NewTokenStore(d.RedisClient)
+
+	// Seeding
+	seedStore := models.NewSeedStore(d.DB)
+	seedStore.Seed()
 
 	/*
 	 * Controller layer

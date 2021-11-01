@@ -1,6 +1,20 @@
 {
   "folders": [
     {
+      "name": "api",
+      "path": "./api",
+      "expanded": true
+    },
+    {
+      "name": "ui",
+      "path": "./ui"
+    },
+    {
+      "name": "docs",
+      "path": "./design_doc"
+    },
+    {
+      "name": "Timber",
       "path": "./ui"
     },
     {

@@ -25,3 +25,7 @@ func (appControl *ApplicationController) Create(ctx context.Context, a *models.A
 func (appControl *ApplicationController) Update(ctx context.Context, a *models.Application) error {
 	return appControl.Applications.Patch(ctx, a)
 }
+
+func (appControl *ApplicationController) Delete(ctx context.Context, a *models.Application) error {
+	return appControl.Applications.Delete(ctx, a)
+}

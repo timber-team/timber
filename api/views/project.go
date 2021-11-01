@@ -193,8 +193,7 @@ func (h *Handler) GetProjects(c *gin.Context) {
 		utils.Respond(c, customresponse.NewNotFound("user", fmt.Sprintf("%d", u.ID)), nil)
 		return
 	}
-	projects := u.Projects
-	err = h.ProjectController.GetAll(ctx, projects)
+	projects, err := h.ProjectController.GetAll(ctx)
 
 	if err != nil {
 		// log.WithContext(ctx).WithError(err).Error(fmt.Sprintf("Unable to find user: %v", u.ID))
@@ -210,5 +209,6 @@ func (h *Handler) GetProjects(c *gin.Context) {
 	// c.JSON(http.StatusCreated, gin.H{
 	// 	"projects": projects,
 	// })
+	log.WithContext(ctx).Info(fmt.Sprintf("%+v", projects))
 	utils.Respond(c, customresponse.NewOK(), projects)
 }
