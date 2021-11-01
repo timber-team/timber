@@ -1,6 +1,7 @@
 version: "3.8"
 services:
   reverse-proxy:
+    container_name: reverse-proxy
     image: traefik:latest
     command:
       - "--api.insecure=true"
@@ -33,6 +34,7 @@ services:
         "log_min_error_statement=ERROR",
       ]
   redis-timber:
+    container_name: rdis
     image: "redis:alpine"
     command: >
       --requirepass ${REDIS_PASS}
@@ -41,15 +43,21 @@ services:
     volumes:
       - "rdbdata_timber:/data"
   timber-api:
+    command: modd
     container_name: timber-api
     image: timber-api
-    build: ./api
+    build:
+      context: ./api
+      target: dev
+    volumes:
+      - "./api:/app"
     environment:
       DB_HOST: ${DB_HOST}
       DB_PORT: ${DB_PORT}
       DB_USER: ${DB_USER}
       DB_PASS: ${DB_PASS}
       DB_NAME: ${DB_NAME}
+      API_URL: ${API_URL}
       AUTH_KEY: ${AUTH_KEY}
       REDIS_ADDRESS: ${REDIS_ADDRESS}
       REDIS_PORT: ${REDIS_PORT}
@@ -70,13 +78,20 @@ services:
       - redis-timber
       - reverse-proxy
   timber-client:
-    build: ./ui
-    image: timber-client
+    container_name: timber-client
+    build:
+      context: ./ui
+      target: dev
+    volumes:
+      - ./ui:/app
+    # image: timber-client
+    command: npm start
     stdin_open: true
     expose:
       - "3000"
+      - "1234"
     ports:
-      - "3003:3000"
+      - "1234:1234"
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.timber-client.rule=Host(`localhost`)"
