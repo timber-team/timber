@@ -1,29 +1,26 @@
-import {APIResponse, simple_api_request} from "./init"
+import { doRequest, NoData } from "./init"
+import { User } from "./types"
 
-export function get_user(user_id: string): APIResponse{
-    return simple_api_request("/users/" + user_id,"GET", null, false)
-}
-
-
-// export function get_self(): APIResponse{
-//     return simple_api_request()
-// }
-
-export function make_user(email_address: string, username: string): APIResponse{
-
-    let user_details = {
-        email_address: email_address,
-        username: username
+// Finds logged-in user's profile
+const GetProfile = async <T>() => {
+    const [response, err] = await doRequest("/profile", "GET", null)
+    if (err !== null) {
+        return err
     }
-
-    return simple_api_request("/users/", "POST", user_details, false)
+    if (response.data === null) {
+        return NoData
+    }
+    return response.data as User
 }
 
-
-// export function edit_user(): APIResponse{
-
-// }
-
-export function delete_user(user_id: string): APIResponse{
-    return simple_api_request("/users/" + user_id, "DELETE", null)
+// Finds user by id
+const GetUser = async <T>(userId: Number) => {
+    const [response, err] = await doRequest(`/profile/${userId}`, "GET", null)
+    if (err !== null) {
+        return err
+    }
+    if (response.data === null) {
+        return NoData
+    }
+    return response.data as User
 }

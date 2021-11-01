@@ -1,6 +1,7 @@
 version: "3.8"
 services:
   reverse-proxy:
+    container_name: reverse-proxy
     image: traefik:latest
     command:
       - "--api.insecure=true"
@@ -33,6 +34,7 @@ services:
         "log_min_error_statement=ERROR",
       ]
   redis-timber:
+    container_name: rdis
     image: "redis:alpine"
     command: >
       --requirepass ${REDIS_PASS}
@@ -76,6 +78,7 @@ services:
       - redis-timber
       - reverse-proxy
   timber-client:
+    container_name: timber-client
     build:
       context: ./ui
       target: dev

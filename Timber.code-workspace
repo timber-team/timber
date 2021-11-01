@@ -1,0 +1,17 @@
+{
+  "folders": [
+    {
+      "path": "./ui"
+    },
+    {
+      "path": "./api"
+    },
+    {
+      "path": "./design_doc"
+    },
+    {
+      "path": "."
+    }
+  ],
+  "settings": {}
+}
