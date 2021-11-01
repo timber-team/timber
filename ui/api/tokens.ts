@@ -1,4 +1,4 @@
-import { doRequest, NoData } from "./init"
+import { doRequest, NoData } from "."
 import { TokenResponse } from "./types"
 
 export const GetAccessToken = async <T>(query: string, provider: string) => {
