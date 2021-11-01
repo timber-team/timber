@@ -8,6 +8,7 @@ import Applications from './pages/Applications'
 import Browse from './pages/Browse'
 import LandingPage from './pages/LandingPage'
 
+// import 'bootstrap/dist/css/bootstrap.css'
 const App: React.FC = () => {
     return (
         <Router>
@@ -26,4 +27,4 @@ const App: React.FC = () => {
     )
 }
 
-export default App
+export default App;

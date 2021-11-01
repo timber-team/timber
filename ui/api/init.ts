@@ -1,38 +1,60 @@
-export * as user from "./user"
-export * as project from "./project"
-export * as application from "./application"
+import axios, { AxiosRequestConfig } from "axios";
+import { GenericResponse } from "./types";
 
+export const NoData = new Error("no data")
 
-const API_DOMAIN = "localhost:1234"
+export const doRequest = async (
+  path: string, method: "GET" | "POST" | "PATCH" | "DELETE", body: any):
+  Promise<[GenericResponse, Error | null]> => {
 
+  const noResp: GenericResponse = {
+    code: 0,
+    detail: "error",
+    msg: "",
+    data: null,
+  }
 
-// stolen generic api respone i guess
-
-
-export interface APIResponse {
-    status_code:    number,
-    status_text:    string,
-    body:           any,
-    err:            boolean
-}
-
-interface GenericResponse{
-    detail: string,
-    msg: string,
-    payload: any,
-    status: number
-}
-
-export function simple_api_request(endpoint: string, method: string, body: any, authenticated = true) : APIResponse{
-
-
-
-
-
-    return {
-        status_code: null,
-        status_text: "yes",
-        body: "string",
-        err: false
+  const access_token = await localStorage.getItem("access_token")
+  // cause loginDialog to come up
+  if (access_token === null) {
+    const err = new Error("Invalid token")
+    const noResp: GenericResponse = {
+      code: 0,
+      detail: "error",
+      msg: "",
+      data: null,
     }
-}
+    return [noResp, err]
+  }
+
+  const reqOptions: AxiosRequestConfig = {
+    method: method,
+    url: path,
+    baseURL: 'http://localhost',
+    headers: {"Authorization": `Bearer ${access_token}`},
+    data: (method === "GET") ? null:body, // dont try to send a json body if GET
+  }
+
+  let error: Error | null;
+  let resp: GenericResponse;
+
+  try {
+    const response = await axios.request(reqOptions);
+    resp = response.data as GenericResponse;
+    error = null
+  } catch (e: any) {
+    if (e.response) {
+      error = e.response;
+    } else if (e.request) {
+      error = e.request;
+    } else {
+      error = e;
+    }
+    resp = noResp
+  }
+
+  return [
+    resp,
+    error,
+  ];
+};

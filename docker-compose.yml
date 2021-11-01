@@ -1,5 +1,18 @@
 version: "3.8"
 services:
+  reverse-proxy:
+    image: traefik:latest
+    command:
+      - "--api.insecure=true"
+      - "--providers.docker"
+      - "--providers.docker.exposedByDefault=false"
+    ports:
+      # HTTP Port
+      - "80:80"
+      # Web UI
+      - "8080:8080"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
   postgres-timber:
     container_name: pgres
     image: "postgres"
@@ -27,10 +40,10 @@ services:
       - "6379:6379"
     volumes:
       - "rdbdata_timber:/data"
-  timber:
-    container_name: timber
-    image: "ghcr.io/gal/timber:latest"
-    build: .
+  timber-api:
+    container_name: timber-api
+    image: timber-api
+    build: ./api
     environment:
       DB_HOST: ${DB_HOST}
       DB_PORT: ${DB_PORT}
@@ -45,13 +58,31 @@ services:
       OAUTH_GOOGLE_SECRET: ${OAUTH_GOOGLE_SECRET}
       OAUTH_GITHUB_ID: ${OAUTH_GITHUB_ID}
       OAUTH_GITHUB_SECRET: ${OAUTH_GITHUB_SECRET}
-    ports:
-      - "8080:8080"
+    expose:
+      - "8080"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.timber-api.rule=Host(`localhost`) && PathPrefix(`/api`)"
     volumes:
-      - ./:/go/src/app
+      - ./api:/go/src/app
     depends_on:
       - postgres-timber
       - redis-timber
+      - reverse-proxy
+  timber-client:
+    build: ./ui
+    image: timber-client
+    stdin_open: true
+    expose:
+      - "3000"
+    ports:
+      - "3003:3000"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.timber-client.rule=Host(`localhost`)"
+    volumes:
+      - ./ui:/app
+      - /app/node_modules
 volumes:
   pgdata_timber:
   rdbdata_timber:
