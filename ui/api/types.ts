@@ -38,6 +38,11 @@ export interface Tag {
   name: string;
 }
 
+export interface TokenResponse {
+  access_token: string;
+  refresh_token: string;
+}
+
 export interface GenericResponse {
   detail: "success" | "changed" | "error" | "authorization";
   msg: string;
