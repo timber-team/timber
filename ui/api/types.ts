@@ -4,13 +4,12 @@ export interface User {
   modified_at: number;
   username: string;
   email: string;
-  password: string;
   verified: boolean;
   description: string;
   avatar_url: string;
-  tags: Tag[];
-  projects: Project[];
-  applications: Application[];
+  tags?: Tag[];
+  projects?: Project[];
+  applications?: Application[];
 }
 
 export interface Project {
@@ -20,10 +19,10 @@ export interface Project {
   name: string;
   description: string;
   owner_id: number;
-  collaborators: User[];
+  collaborators?: User[];
   preferred_skills: Tag[];
   required_skills: Tag[];
-  applications: Application[];
+  applications?: Application[];
 }
 
 export interface Application {
@@ -40,8 +39,8 @@ export interface Tag {
 }
 
 export interface GenericResponse {
-  detail: string;
+  detail: "success" | "changed" | "error" | "authorization";
   msg: string;
-  data: any;
+  data?: any;
   code: number;
 }
