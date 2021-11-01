@@ -1,19 +1,44 @@
 import { doRequest, NoData } from "./init"
 import { TokenResponse } from "./types"
 
-export const GetAccessToken = async <T>(code: string, provider: string) => {
-    const [response, err] = await doRequest(`/auth/callback/${provider}?code=${code}`, "GET", null)
+export const GetAccessToken = async <T>(query: string, provider: string) => {
+    const [response, err] = await doRequest(`/auth/callback/${provider}${query}`, "GET", null)
     if (err !== null) {
+        console.log(err)
         return err
     }
+    console.log("Test")
 
     if (response.data === null) {
         return NoData
     }
 
-    const tokens = response.data as TokenResponse
-    await localStorage.setItem("access_token", tokens.access_token)
-    await localStorage.setItem("refresh_token", tokens.refresh_token)
+    const token_pair = response.data as TokenResponse
+    console.log({token_pair})
+    await localStorage.setItem("access_token", token_pair.access_token)
+    await localStorage.setItem("refresh_token", token_pair.refresh_token)
+
+    return true
+}
+
+export const RefreshTokens = async <T>() => {
+    const [response, err] = await doRequest(`/auth`, "POST", {
+        refresh_token: localStorage.getItem("refresh_token")
+    })
+    if (err !== null) {
+        console.log(err)
+        return err
+    }
+    console.log("Test")
+
+    if (response.data === null) {
+        return NoData
+    }
+
+    const token_pair = response.data as TokenResponse
+    console.log({token_pair})
+    await localStorage.setItem("access_token", token_pair.access_token)
+    await localStorage.setItem("refresh_token", token_pair.refresh_token)
 
     return true
 }

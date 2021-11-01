@@ -4,6 +4,7 @@ import {
     Switch,
     Route
   } from "react-router-dom"
+import OAuthCallback from './src/OAuthCallback'
 import Applications from './pages/Applications'
 import Browse from './pages/Browse'
 import LandingPage from './pages/LandingPage'
@@ -18,6 +19,9 @@ const App: React.FC = () => {
                 </Route>
                 <Route path="/applications">
                     <Applications />
+                </Route>
+                <Route path="/oauth/callback/google">
+                    <OAuthCallback />
                 </Route>
                 <Route path="/">
                     <LandingPage />

@@ -1,12 +1,16 @@
-FROM node as build
-
-# ENV NODE_ENV=production
+FROM node as dev
 
 WORKDIR /app
 
 COPY . .
 
 RUN npm i
+
+FROM node as build
+
+WORKDIR /app
+
+COPY --from=dev /app /app
 
 RUN npm run build
 
