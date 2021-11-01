@@ -1,5 +1,10 @@
 import axios, { AxiosRequestConfig } from "axios";
 import { GenericResponse } from "./types";
+import * as tokens from './tokens'
+
+export * as tokens from './tokens'
+export * as users from './users'
+export * as projects from './projects'
 
 export const NoData = new Error("no data")
 
@@ -16,7 +21,7 @@ export const doRequest = async (
 
   const access_token = await localStorage.getItem("access_token")
   // cause loginDialog to come up
-  if (access_token === null) {
+  if (access_token === null && !path.includes("/auth/callback/")) {
     const err = new Error("Invalid token")
     const noResp: GenericResponse = {
       code: 0,
@@ -30,7 +35,7 @@ export const doRequest = async (
   const reqOptions: AxiosRequestConfig = {
     method: method,
     url: path,
-    baseURL: 'http://localhost',
+    baseURL: 'http://localhost/api',
     headers: {"Authorization": `Bearer ${access_token}`},
     data: (method === "GET") ? null:body, // dont try to send a json body if GET
   }
@@ -51,6 +56,20 @@ export const doRequest = async (
       error = e;
     }
     resp = noResp
+  }
+
+  // development testing
+  console.log({resp, error})
+
+  if (resp.detail === "authorization") {
+    if (localStorage.getItem("refresh_token") !== null) {
+      if ( (await tokens.RefreshTokens()) instanceof Error) {
+        return [resp, error]
+      } else {
+        return doRequest(path, method, body)
+      }
+    }
+    return [resp, error]
   }
 
   return [

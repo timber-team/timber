@@ -53,11 +53,11 @@ type GenericResponse struct {
 type RefreshToken struct {
 	ID  uuid.UUID `json:"-"`
 	UID int       `json:"-"`
-	SS  string    `json:"refreshToken"`
+	SS  string    `json:"refresh_token"`
 }
 
 type AccessToken struct {
-	SS string `json:"accessToken"`
+	SS string `json:"access_token"`
 }
 
 type TokenPair struct {

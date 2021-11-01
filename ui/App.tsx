@@ -4,9 +4,11 @@ import {
     Switch,
     Route
   } from "react-router-dom"
+
 import Applications from './pages/Applications'
 import Browse from './pages/Browse'
 import LandingPage from './pages/LandingPage'
+import OAuthCallback from './src/OAuthCallback'
 
 // import 'bootstrap/dist/css/bootstrap.css'
 const App: React.FC = () => {
@@ -18,6 +20,9 @@ const App: React.FC = () => {
                 </Route>
                 <Route path="/applications">
                     <Applications />
+                </Route>
+                <Route path="/oauth/callback/google">
+                    <OAuthCallback />
                 </Route>
                 <Route path="/">
                     <LandingPage />

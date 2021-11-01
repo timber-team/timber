@@ -6,7 +6,6 @@ import (
 	"encoding/json"
 	"net/http"
 
-	"github.com/Strum355/log"
 	"github.com/gin-gonic/gin"
 	"github.com/spf13/viper"
 	"golang.org/x/oauth2"
@@ -22,11 +21,10 @@ var googleConfig *oauth2.Config
 var githubConfig *oauth2.Config
 
 func InitOauth() {
-	log.Info(viper.GetString("api.url"))
 	googleConfig = &oauth2.Config{
 		ClientID:     viper.GetString("oauth.google.id"),
 		ClientSecret: viper.GetString("oauth.google.secret"),
-		RedirectURL:  viper.GetString("api.url") + "/auth/callback/google",
+		RedirectURL:  "http://localhost/oauth/callback/google",
 		Scopes: []string{
 			"https://www.googleapis.com/auth/userinfo.email",
 		},
@@ -36,7 +34,7 @@ func InitOauth() {
 	githubConfig = &oauth2.Config{
 		ClientID:     viper.GetString("oauth.github.id"),
 		ClientSecret: viper.GetString("oauth.github.secret"),
-		RedirectURL:  viper.GetString("api.url") + "/auth/callback/github",
+		RedirectURL:  "http://localhost/oauth/callback/github",
 		Scopes: []string{
 			"user:email",
 		},
@@ -218,7 +216,7 @@ func (h *Handler) GithubOauthCallback(c *gin.Context) {
 }
 
 type tokensRequest struct {
-	RefreshToken string `json:"refreshToken" binding:"required"`
+	RefreshToken string `json:"refresh_token" binding:"required"`
 }
 
 // Tokens handler, generates a new tokenPair for the user, then responds with the new tokenPair
