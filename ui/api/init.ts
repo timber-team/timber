@@ -1,33 +1,24 @@
-export * as users from "./users";
+import axios, { AxiosRequestConfig } from "axios";
 
-const API_DOMAIN = "localhost:1234";
+export const doRequest = async <T>(reqOptions: AxiosRequestConfig) => {
+  let error: Error | undefined;
+  let resp: T | undefined;
 
-// stolen generic api respone i guess
+  try {
+    const response = await axios.request<T>(reqOptions);
+    resp = response.data;
+  } catch (e: any) {
+    if (e.response) {
+      error = e.response;
+    } else if (e.request) {
+      error = e.request;
+    } else {
+      error = e;
+    }
+  }
 
-export interface APIResponse {
-  status_code: number;
-  status_text: string;
-  body: any;
-  err: boolean;
-}
-
-interface GenericResponse {
-  detail: string;
-  msg: string;
-  payload: any;
-  status: number;
-}
-
-export function simple_api_request(
-  endpoint: string,
-  method: string,
-  body: any,
-  authenticated = true
-): APIResponse {
   return {
-    status_code: null,
-    status_text: "yes",
-    body: "string",
-    err: false,
+    resp,
+    error,
   };
-}
+};

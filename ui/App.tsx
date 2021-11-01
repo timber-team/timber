@@ -1,17 +1,17 @@
-import React from "react";
-// import 'bootstrap/dist/css/bootstrap.css'
 import "./style/custom.scss";
 
+import React from "react";
 import {
-  Navbar,
-  Nav,
+  Col,
   Container,
   Dropdown,
   Image,
+  Nav,
+  Navbar,
   Row,
-  Col,
 } from "react-bootstrap";
 
+// import 'bootstrap/dist/css/bootstrap.css'
 const App: React.FC = () => {
   return (
     <div>
