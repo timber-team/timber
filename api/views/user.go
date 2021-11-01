@@ -4,6 +4,7 @@ package views
 
 import (
 	"fmt"
+	"strconv"
 
 	"github.com/gal/timber/models"
 	"github.com/gal/timber/utils"
@@ -46,5 +47,28 @@ func (h *Handler) Profile(c *gin.Context) {
 	// c.JSON(http.StatusOK, gin.H{
 	// 	"user": u,
 	// })
+	utils.Respond(c, customresponse.NewOK(), u)
+}
+
+func (h *Handler) ProfileByID(c *gin.Context) {
+	uidStr := c.Param("userID")
+
+	ctx := c.Request.Context()
+
+	// cast uid to an int
+	uid, err := strconv.Atoi(uidStr)
+	if err != nil {
+		utils.Respond(c, customresponse.NewBadRequest("userID must be an integer"), nil)
+		return
+	}
+
+	u := &models.User{ID: uid}
+
+	err = h.UserController.Get(ctx, u)
+	if err != nil {
+		utils.Respond(c, customresponse.NewNotFound("user", fmt.Sprintf("%d", uid)), nil)
+		return
+	}
+
 	utils.Respond(c, customresponse.NewOK(), u)
 }

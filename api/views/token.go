@@ -4,7 +4,6 @@ package views
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
 
 	"github.com/Strum355/log"
@@ -222,10 +221,9 @@ type tokensRequest struct {
 	RefreshToken string `json:"refreshToken" binding:"required"`
 }
 
-// Tokens handler
-func (h *Handler) Tokens(c *gin.Context) { // Bind incoming JSON to request of type tokensRequest
+// Tokens handler, generates a new tokenPair for the user, then responds with the new tokenPair
+func (h *Handler) Tokens(c *gin.Context) {
 	var req tokensRequest
-
 	if ok := utils.BindData(c, &req); !ok {
 		return
 	}
@@ -234,43 +232,40 @@ func (h *Handler) Tokens(c *gin.Context) { // Bind incoming JSON to request of t
 
 	// Verify refresh JWT
 	refreshToken, err := h.TokenController.ValidateRefreshToken(req.RefreshToken)
-
 	if err != nil {
-		// c.JSON(customresponse.Status(err), gin.H{
-		// 	"error": err,
-		// })
-		utils.Respond(c, customresponse.NewInternal(), nil)
-		return
-	}
-	u := &models.User{
-		ID: refreshToken.UID,
-	}
-	// Get up-to-date user
-	err = h.UserController.Users.Get(ctx, u)
-
-	if err != nil {
-		// c.JSON(customresponse.Status(err), gin.H{
-		// 	"error": err,
-		// })
-		utils.Respond(c, customresponse.NewNotFound("user", fmt.Sprintf("%d", refreshToken.UID)), nil)
-		return
-	}
-
-	// Create fresh pair of tokens
-	tokens, err := h.TokenController.NewPairFromUser(ctx, u, refreshToken.ID.String())
-
-	if err != nil {
-		// log.WithContext(ctx).WithError(err).Error(fmt.Sprintf("Failed to create tokens for user: %+v", u))
-
-		// c.JSON(customresponse.Status(err), gin.H{
-		// 	"error": err,
-		// })
 		utils.Respond(c, customresponse.NewInternal(), nil)
 		return
 	}
 
-	// c.JSON(http.StatusOK, gin.H{
-	// 	"tokens": tokens,
-	// })
-	utils.Respond(c, customresponse.NewOK(), tokens)
+	// Get user from refresh token UID
+	user, err := h.UserController.Users.GetByID(ctx, refreshToken.UID)
+	if err != nil {
+		utils.Respond(c, customresponse.NewInternal(), nil)
+		return
+	}
+
+	// Create fresh pair of tokens (h.TokenController.NewPairFromUser())
+	tokenPair, err := h.TokenController.NewPairFromUser(ctx, user, refreshToken.ID.String())
+	if err != nil {
+		utils.Respond(c, customresponse.NewInternal(), nil)
+		return
+	}
+
+	utils.Respond(c, customresponse.NewCreated(), tokenPair)
+}
+
+func (h *Handler) Delete(c *gin.Context) {
+	ctx := c.Request.Context()
+	user := &models.User{}
+	if ok := utils.BindData(c, user); !ok {
+		return
+	}
+
+	err := h.UserController.Users.Delete(ctx, user)
+	if err != nil {
+		utils.Respond(c, customresponse.NewInternal(), nil)
+		return
+	}
+
+	utils.Respond(c, customresponse.NewOK(), nil)
 }

@@ -3,6 +3,8 @@ package views
 import (
 	"github.com/gal/timber/controllers"
 	"github.com/gal/timber/middlewares"
+	"github.com/gal/timber/utils"
+	"github.com/gal/timber/utils/customresponse"
 	"github.com/gin-gonic/gin"
 )
 
@@ -37,6 +39,7 @@ func NewHandler(c *Config) {
 
 	if gin.Mode() != gin.TestMode {
 		g.GET("/profile", middlewares.AuthUser(h.TokenController), h.Profile)
+		g.GET("/profile/:userID", middlewares.AuthUser(h.TokenController), h.ProfileByID)
 		g.POST("/projects", middlewares.AuthUser(h.TokenController), h.NewProject)
 		g.GET("/projects/:projectID", middlewares.AuthUser(h.TokenController), h.GetProject)
 		g.GET("/projects", middlewares.AuthUser(h.TokenController), h.GetProjects)
@@ -45,6 +48,7 @@ func NewHandler(c *Config) {
 		g.POST("/tags", middlewares.AuthUser(h.TokenController), h.NewTag)
 	} else {
 		g.GET("/profile", h.Profile)
+		g.GET("/profile/:userID", h.ProfileByID)
 		g.POST("/projects", h.NewProject)
 		g.GET("/projects/:projectID", h.GetProject)
 		g.GET("/projects", h.GetProjects)
@@ -52,6 +56,10 @@ func NewHandler(c *Config) {
 		g.GET("/tags", h.GetTags)
 		g.POST("/tags", h.NewTag)
 	}
+
+	c.R.NoRoute(func(c *gin.Context) {
+		utils.Respond(c, customresponse.NewInternal(), nil)
+	})
 
 	authHandler := g.Group("/auth")
 

@@ -26,6 +26,13 @@ func (userStore *UserStore) GetByEmail(ctx context.Context, email string) (*User
 	return user, err
 }
 
+// GetByID returns a user by id
+func (userStore *UserStore) GetByID(ctx context.Context, id int) (*User, error) {
+	var user *User
+	err := userStore.db.WithContext(ctx).Preload("Projects").Preload("Applications").Preload("Tags").Omit("Projects.Collaborators").First(&user, "id = ?", id).Error
+	return user, err
+}
+
 func (userStore *UserStore) CheckExistsByEmail(ctx context.Context, user *User) error {
 	return userStore.db.WithContext(ctx).Preload("Projects").Preload("Applications").Preload("Tags").Omit("Projects.Collaborators").First(&user, "email = ?", user.Email).Error
 }
@@ -49,4 +56,10 @@ func (userStore *UserStore) Patch(ctx context.Context, user *User) error {
 func (userStore *UserStore) Delete(ctx context.Context, user *User) error {
 	userStore.Get(ctx, user)
 	return userStore.db.WithContext(ctx).Delete(user).Error
+}
+
+func (userStore *UserStore) GetAll(ctx context.Context) ([]User, error) {
+	var users []User
+	err := userStore.db.WithContext(ctx).Preload("Projects").Preload("Applications").Preload("Tags").Omit("Projects.Collaborators").Find(&users).Error
+	return users, err
 }

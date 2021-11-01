@@ -36,3 +36,9 @@ func (tagStore *TagStore) Delete(ctx context.Context, tag *Tag) error {
 	tagStore.Get(ctx, tag)
 	return tagStore.db.WithContext(ctx).Delete(&tag).Error
 }
+
+func (tagStore *TagStore) GetByName(ctx context.Context, name string) (*Tag, error) {
+	var tag Tag
+	err := tagStore.db.WithContext(ctx).Where("name = ?", name).First(&tag).Error
+	return &tag, err
+}

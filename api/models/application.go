@@ -30,3 +30,11 @@ func (appStore *ApplicationStore) Delete(ctx context.Context, app *Application) 
 	appStore.Get(ctx, app)
 	return appStore.db.WithContext(ctx).Delete(&app).Error
 }
+
+func (appStore *ApplicationStore) GetAll(ctx context.Context, apps *[]Application) error {
+	return appStore.db.WithContext(ctx).Find(apps).Error
+}
+
+func (appStore *ApplicationStore) GetByUserID(ctx context.Context, userID uint, apps *[]Application) error {
+	return appStore.db.WithContext(ctx).Where("user_id = ?", userID).Find(apps).Error
+}

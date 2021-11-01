@@ -38,17 +38,6 @@ func (h *Handler) NewTag(c *gin.Context) {
 		return
 	}
 
-	if !u.Verified {
-		// log.WithContext(ctx).Error(fmt.Sprintf("User %v not enabled", u.ID))
-		// e := customresponse.NewAuthorization("user not enabled")
-
-		// c.JSON(e.Status(), gin.H{
-		// 	"error": e,
-		// })
-		utils.Respond(c, customresponse.NewAuthorization("user not enabled"), nil)
-		return
-	}
-
 	var tag *models.Tag
 
 	if ok := utils.BindData(c, &tag); !ok {
@@ -104,16 +93,6 @@ func (h *Handler) GetTags(c *gin.Context) {
 		// 	"error": err,
 		// })
 		utils.Respond(c, customresponse.NewInternal(), nil)
-		return
-	}
-
-	if !u.Verified {
-		// log.WithContext(ctx).Error(fmt.Sprintf("User %v not enabled", u.ID))
-		// err := customresponse.NewAuthorization("user not enabled")
-		// c.JSON(err.Status(), gin.H{
-		// 	"error": err,
-		// })
-		utils.Respond(c, customresponse.NewAuthorization("user not enabled"), nil)
 		return
 	}
 
