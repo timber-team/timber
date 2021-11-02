@@ -1,6 +1,5 @@
 import React, { useEffect } from 'react'
-import { Redirect } from 'react-router'
-import { tokens } from '../api/init'
+import { tokens } from '../api'
 
 const OAuthCallback = () => {
     useEffect( () => {
