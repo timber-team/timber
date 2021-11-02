@@ -11,7 +11,7 @@ type User struct {
 	Username     string        `json:"username"`
 	Email        string        `gorm:"unique" json:"email"`
 	Description  string        `json:"description"`
-	AvatarURL    string        `json:"avatar_url"`
+	AvatarURL    string        `json:"avatar_url,omitempty"`
 	Tags         []Tag         `gorm:"many2many:user_tags" json:"tags,omitempty"`
 	Projects     []*Project    `gorm:"many2many:user_project;" json:"projects,omitempty"`
 	Applications []Application `json:"applications,omitempty"`

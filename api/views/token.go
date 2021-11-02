@@ -24,7 +24,7 @@ func InitOauth() {
 	googleConfig = &oauth2.Config{
 		ClientID:     viper.GetString("oauth.google.id"),
 		ClientSecret: viper.GetString("oauth.google.secret"),
-		RedirectURL:  "http://localhost/oauth/callback/google",
+		RedirectURL:  viper.GetString("base.url") + "/oauth/callback/google",
 		Scopes: []string{
 			"https://www.googleapis.com/auth/userinfo.email",
 		},
@@ -34,7 +34,7 @@ func InitOauth() {
 	githubConfig = &oauth2.Config{
 		ClientID:     viper.GetString("oauth.github.id"),
 		ClientSecret: viper.GetString("oauth.github.secret"),
-		RedirectURL:  "http://localhost/oauth/callback/github",
+		RedirectURL:  viper.GetString("base.url") + "/oauth/callback/github",
 		Scopes: []string{
 			"user:email",
 		},
@@ -216,7 +216,7 @@ func (h *Handler) GithubOauthCallback(c *gin.Context) {
 }
 
 type tokensRequest struct {
-	RefreshToken string `json:"refresh_token" binding:"required"`
+	RefreshToken string `json:"refreshToken" binding:"required"`
 }
 
 // Tokens handler, generates a new tokenPair for the user, then responds with the new tokenPair

@@ -22,6 +22,7 @@ require (
 )
 
 require (
+	github.com/brianvoe/gofakeit/v6 v6.9.0
 	golang.org/x/net v0.0.0-20210503060351-7fd8e65b6420
 	golang.org/x/oauth2 v0.0.0-20211005180243-6b3c2da341f1
 	gorm.io/gorm v1.21.16
@@ -42,7 +43,6 @@ require (
 
 require (
 	cloud.google.com/go v0.93.3 // indirect
-	github.com/brianvoe/gofakeit/v6 v6.9.0 // indirect
 	github.com/cespare/xxhash/v2 v2.1.2 // indirect
 	github.com/dgryski/go-rendezvous v0.0.0-20200823014737-9f7001d12a5f // indirect
 	github.com/gin-contrib/sse v0.1.0 // indirect

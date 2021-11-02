@@ -59,6 +59,7 @@ services:
       DB_NAME: ${DB_NAME}
       API_URL: ${API_URL}
       AUTH_KEY: ${AUTH_KEY}
+      BASE_URL: ${BASE_URL}
       REDIS_ADDRESS: ${REDIS_ADDRESS}
       REDIS_PORT: ${REDIS_PORT}
       REDIS_PASS: ${REDIS_PASS}
@@ -84,9 +85,11 @@ services:
       target: dev
     volumes:
       - ./ui:/app
-    # image: timber-client
+    image: timber-client
     command: npm start
     stdin_open: true
+    environment:
+      BASE_URL: ${BASE_URL}
     expose:
       - "3000"
       - "1234"

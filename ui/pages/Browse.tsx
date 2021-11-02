@@ -1,9 +1,7 @@
-const Browse: React.FC = () => {
-    return(
-        <div>
-            Browse
-        </div>
-    )
-}
+import React from "react";
 
-export default Browse
+const Browse: React.FC = () => {
+  return <div>Browse</div>;
+};
+
+export default Browse;
