@@ -1,6 +1,6 @@
-import axios, { AxiosRequestConfig } from 'axios';
+import axios, { AxiosRequestConfig } from "axios";
 
-import { GenericResponse } from './types';
+import { GenericResponse } from "./types";
 
 export async function doRequest(
   config: AxiosRequestConfig

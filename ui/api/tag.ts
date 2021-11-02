@@ -1,6 +1,6 @@
-import { doRequest, NoData } from '.';
-import { useAuth } from '../store/auth';
-import { Tag } from './types';
+import { doRequest, NoData } from ".";
+import { useAuth } from "../store/auth";
+import { Tag } from "./types";
 
 // Get all tags from the database (GET /api/tags) using doRequest with AxiosRequestConfig
 export const GetAllTags = async (): Promise<Tag[]> => {
@@ -18,5 +18,5 @@ export const GetAllTags = async (): Promise<Tag[]> => {
     throw error;
   }
 
-  return resp?.data as Tag[]?? NoData;
+  return (resp?.data as Tag[]) ?? NoData;
 };

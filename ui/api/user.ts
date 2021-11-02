@@ -1,5 +1,5 @@
-import { doRequest, NoData } from '.';
-import { User } from './types';
+import { doRequest, NoData } from ".";
+import { User } from "./types";
 
 // Finds logged-in user's profile
 export const GetProfile = async <T>() => {

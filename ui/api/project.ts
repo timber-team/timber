@@ -1,5 +1,5 @@
-import { doRequest, NoData } from '.';
-import { Project } from './types';
+import { doRequest, NoData } from ".";
+import { Project } from "./types";
 
 export const GetProjectByID = async (projID: number): Promise<Project> => {
   const [resp, error] = await doRequest({
@@ -14,7 +14,7 @@ export const GetProjectByID = async (projID: number): Promise<Project> => {
     throw error;
   }
 
-  return resp?.data as Project;
+  return (resp?.data as Project) ?? NoData;
 };
 
 export const GetProjectsByOwnerID = async (
@@ -32,7 +32,7 @@ export const GetProjectsByOwnerID = async (
     throw error;
   }
 
-  return resp?.data as Project[] ?? NoData;
+  return (resp?.data as Project[]) ?? NoData;
 };
 
 export const GetProjectsByRequiredSkill = async (
@@ -50,7 +50,7 @@ export const GetProjectsByRequiredSkill = async (
     throw error;
   }
 
-  return resp?.data as Project[]?? NoData;
+  return (resp?.data as Project[]) ?? NoData;
 };
 
 export const GetProjectsByPreferredSkill = async (
@@ -68,5 +68,5 @@ export const GetProjectsByPreferredSkill = async (
     throw error;
   }
 
-  return resp?.data as Project[]?? NoData;
+  return (resp?.data as Project[]) ?? NoData;
 };
