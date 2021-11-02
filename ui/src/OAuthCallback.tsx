@@ -1,5 +1,6 @@
-import React, { useEffect } from 'react'
-import { tokens } from '../api'
+import React, { useEffect } from "react";
+
+import { tokens } from "../api";
 
 const OAuthCallback = () => {
   useEffect(() => {
