@@ -1,5 +1,4 @@
-import { Card } from "react-bootstrap"
-import Tag from "./Tag"
+import { Badge, Card } from "react-bootstrap"
 
 interface viableProps {
     Name: string,
@@ -19,7 +18,13 @@ export default (props: viableProps) => {
             <Card.Img variant="top" src="holder.js/100px180" />
             <Card.Body>
                 <Card.Title>{props.Name}</Card.Title>
-                <Card.Text style={style}>{props.PreferredSkills.map(x => <Tag skill={x} />)}</Card.Text>
+                <Card.Text style={style}> 
+                    {props.RequiredSkills.map(x => <Badge pill bg="primary"> {x} </Badge>)}
+                    {props.PreferredSkills
+                        .filter(x => !props.RequiredSkills.includes(x))
+                        .map(x => <Badge pill bg="secondary"> {x} </Badge>)
+                    } 
+                </Card.Text>
                 <Card.Text style={{ overflow: 'auto' }}>{props.Description}</Card.Text>
             </Card.Body>
         </Card>
