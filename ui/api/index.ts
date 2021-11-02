@@ -4,6 +4,7 @@ import { GenericResponse } from "./types";
 export * as tokens from './tokens'
 export * as users from './users'
 export * as projects from './projects'
+export * as types from './types'
 
 export const NoData = new Error("no data")
 

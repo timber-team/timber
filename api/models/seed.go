@@ -87,7 +87,7 @@ func (ss *SeedStore) Seed() error {
 		user.Username = gofakeit.Username()
 		user.Email = gofakeit.Email()
 		user.Description = gofakeit.Sentence(10)
-		user.AvatarURL = "https://www.gravatar.com/avatar/" + strconv.Itoa(i)
+		user.AvatarURL = "https://www.gravatar.com/avatar/" + strconv.Itoa(i) + "?d=identicon"
 
 		// Set the users Tags field to a slice of Tags randomly chosen from the slice of generatedTags
 		for j := 0; j < 3; j++ {
