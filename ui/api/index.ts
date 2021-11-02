@@ -13,7 +13,7 @@ export async function doRequest(
   }
 }
 
-export * as types from './types'
+export * as types from "./types";
 export * as tokens from "./tokens";
 export * as users from "./users";
 export * as projects from "./projects";
