@@ -18,14 +18,16 @@ $font-family-monospace: "Playfair Display";
     background-color: #C7493A; /* Green */
     border: none;
     color: white;
-    padding: 16px 4px;
+    padding: 24px 20px;
+    margin-top: 256px;
+    border-radius: 50%;
     text-align: center;
     text-decoration: none;
     display: flex;
     font-size: 16px;
-    margin: 4px;
     text-orientation: upright;
     writing-mode: vertical-rl;
+    position: fixed;
     
 }
 

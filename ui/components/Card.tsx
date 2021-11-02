@@ -14,7 +14,7 @@ const style = {
 
 export default (props: viableProps) => {
     return (
-        <Card style={{ width: '18rem' }}>
+        <Card style={{ width: '32rem' }}>
             <Card.Img variant="top" src="holder.js/100px180" />
             <Card.Body>
                 <Card.Title>{props.Name}</Card.Title>

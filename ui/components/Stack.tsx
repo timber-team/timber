@@ -1,5 +1,5 @@
 import { useState } from "react"
-import { Button, Col, Container, Row } from "react-bootstrap"
+import { Col, Container, Row } from "react-bootstrap"
 import Card from "./Card"
 import CardButtons from "./CardButtons"
 
@@ -47,7 +47,7 @@ export default () => {
         setCurrent(cards[cards.length - 1])
     }
 
-    const meme = (e) => {
+    const cardChoice = (e) => {
         if (e) {
             // DO ACCEPT
         } else {
@@ -60,13 +60,13 @@ export default () => {
         <Container>
             <Row className='justify-content-md-center'>
                 <Col style={colStyle}>
-                    <CardButtons onClick={() => {meme(false)}}> Reject </CardButtons>
+                    <CardButtons onClick={() => {cardChoice(false)}}> ✗ </CardButtons>
                 </Col>
                 <Col md="auto">
                     {current ? <Card Name={current.Name} Description={current.Description} PreferredSkills={current.PreferredSkills} RequiredSkills={current.RequiredSkills} /> : <div> No more stuff for you to checkout </div>}
                 </Col>  
                 <Col>
-                    <CardButtons onClick={() => {meme(true)}}> Accept </CardButtons>
+                    <CardButtons onClick={() => {cardChoice(true)}}> ✓ </CardButtons>
                 </Col>
             </Row>
         </Container>
