@@ -18,5 +18,12 @@
       "path": "."
     }
   ],
-  "settings": {}
+  "settings": {
+    "typescript.preferences.importModuleSpecifier": "relative",
+    "prettier.singleQuote": false,
+    "prettier.jsxSingleQuote": false,
+    "prettier.semi": true,
+    "tsimporter.doubleQuotes": true,
+    "typescript.preferences.quotePreference": "double"
+  }
 }
