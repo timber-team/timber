@@ -1,13 +1,13 @@
 {
   "folders": [
     {
-      "name": "api",
-      "path": "./api",
+      "name": "ui",
+      "path": "./ui",
       "expanded": true
     },
     {
-      "name": "ui",
-      "path": "./ui"
+      "name": "api",
+      "path": "./api"
     },
     {
       "name": "docs",
@@ -15,15 +15,6 @@
     },
     {
       "name": "Timber",
-      "path": "./ui"
-    },
-    {
-      "path": "./api"
-    },
-    {
-      "path": "./design_doc"
-    },
-    {
       "path": "."
     }
   ],

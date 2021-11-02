@@ -1,14 +1,13 @@
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display&family=Rubik&display=swap'); // Playfair Display & Rubik
+@import url("https://fonts.googleapis.com/css2?family=Playfair+Display&family=Rubik&display=swap"); // Playfair Display & Rubik
 
 $theme-colors: (
-    "primary": #C7493A,
-    "secondary": #A33327
-    // "success": $success,
-    // "info": $info,
-    // "warning": $warning,
-    // "danger": $danger,
-    // "light": $light,
-    // "dark": $dark
+  "primary": #c7493a,
+  "secondary": #a33327 // "success": $success,
+  // "info": $info,
+  // "warning": $warning,
+  // "danger": $danger,
+  // "light": $light,
+  // "dark": $dark,,
 );
 
 $font-family-sans-serif: "Rubik";
@@ -32,4 +31,4 @@ $font-family-monospace: "Playfair Display";
 }
 
 // Keep this on the bottom
-@import '~bootstrap/scss/bootstrap.scss';
+@import "~bootstrap/scss/bootstrap.scss";
