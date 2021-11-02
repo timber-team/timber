@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import React from "react";
 import { Container, Dropdown, Image, Nav, Navbar } from "react-bootstrap";
 
@@ -13,6 +14,35 @@ const Navcustom: React.FC = () => {
           fluid
         >
           <Navbar.Brand>Timber</Navbar.Brand>
+=======
+import React from 'react'
+import { useEffect, useState } from 'react'
+import { Navbar, Nav, Container, Dropdown, Image } from 'react-bootstrap'
+import * as API from '../api'
+
+const Navcustom: React.FC = () => {
+
+    const [user, setUser] = useState<API.types.User | undefined>()
+    useEffect(()=>{
+        (async()=>{
+            const response = await API.users.GetUser(40);
+            if(response instanceof Error){
+                API.tokens.RefreshTokens();
+                console.log("Please login")
+            }else{
+                setUser(response);
+            }
+        })()
+    },[])
+    return (
+        <div>
+            <Navbar expand="sm" bg="primary">
+            <Container style={{
+                width: "95%",
+                margin: "auto"
+            }} fluid>
+                <Navbar.Brand>Timber</Navbar.Brand>
+>>>>>>> main
 
           {/* <Navbar.Toggle aria-controls="responsive-navbar-nav">
                 </Navbar.Toggle> */}
@@ -24,6 +54,7 @@ const Navcustom: React.FC = () => {
             </Nav>
           </Navbar.Collapse>
 
+<<<<<<< HEAD
           <Dropdown align="end">
             <Dropdown.Toggle
               style={{
@@ -51,6 +82,33 @@ const Navcustom: React.FC = () => {
           </Dropdown>
         </Container>
       </Navbar>
+=======
+            <Dropdown align="end">
+                    <Dropdown.Toggle
+                        style={{
+                            background: "none",
+                            border: "none",
+                        }}
+                    >
+                        <Image
+                            roundedCircle
+                            style={{
+                                maxHeight: "42px",
+                                width: "auto"
+                            }}
+                            src={user?.avatar_url}
+                        ></Image>
+                    </Dropdown.Toggle>
+                    <Dropdown.Menu>
+                        <Dropdown.Item href="/user/settings">Settings</Dropdown.Item>
+                        <Dropdown.Item href="/teams">View teams</Dropdown.Item>
+                        <Dropdown.Item href="/new/project">Create New Project</Dropdown.Item>
+                        <Dropdown.Item href="/logout">Logout</Dropdown.Item>
+                    </Dropdown.Menu>
+                </Dropdown>
+            </Container>
+        </Navbar>
+>>>>>>> main
     </div>
   );
 };

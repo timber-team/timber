@@ -1,4 +1,4 @@
-import { doRequest, NoData } from "./init";
+import { doRequest, NoData } from ".";
 import { Project } from "./types";
 
 // Finds project by id

@@ -1,4 +1,4 @@
-import { doRequest, NoData } from "./init";
+import { doRequest, NoData } from ".";
 import { User } from "./types";
 
 // Finds logged-in user's profile
