@@ -1,6 +1,6 @@
-import axios, { AxiosRequestConfig } from "axios";
+import axios, { AxiosRequestConfig } from 'axios';
 
-import { GenericResponse } from "./types";
+import { GenericResponse } from './types';
 
 export async function doRequest(
   config: AxiosRequestConfig
@@ -15,7 +15,7 @@ export async function doRequest(
 
 export * as types from "./types";
 export * as tokens from "./tokens";
-export * as users from "./users";
-export * as projects from "./projects";
+export * as users from "./user";
+export * as projects from "./project";
 
 export const NoData = new Error("no data");

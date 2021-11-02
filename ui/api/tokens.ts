@@ -1,3 +1,4 @@
+import { storeTokens } from "../utils";
 import { doRequest, NoData } from ".";
 import { TokenResponse } from "./types";
 
@@ -16,8 +17,8 @@ export const GetAccessToken = async <T>(query: string, provider: string) => {
   }
 
   const token_pair = response.data as TokenResponse;
-  await localStorage.setItem("access_token", token_pair.access_token);
-  await localStorage.setItem("refresh_token", token_pair.refresh_token);
+
+  storeTokens(token_pair.access_token, token_pair.refresh_token);
 
   return true;
 };
@@ -40,9 +41,8 @@ export const RefreshTokens = async <T>() => {
   }
 
   const token_pair = response.data as TokenResponse;
-  console.log(token_pair);
-  await localStorage.setItem("access_token", token_pair.access_token);
-  await localStorage.setItem("refresh_token", token_pair.refresh_token);
+
+  storeTokens(token_pair.access_token, token_pair.refresh_token);
 
   return true;
 };

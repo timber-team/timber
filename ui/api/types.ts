@@ -41,10 +41,9 @@ export interface TokenResponse {
   access_token: string;
   refresh_token: string;
 }
-
 export interface GenericResponse {
-  detail: "success" | "changed" | "error" | "authorization";
+  detail: string;
   msg: string;
-  data?: any;
+  data: any;
   code: number;
 }
