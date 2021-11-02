@@ -1,6 +1,22 @@
+import React from 'react'
+import { useEffect, useState } from 'react'
 import { Navbar, Nav, Container, Dropdown, Image } from 'react-bootstrap'
+import * as API from '../api'
 
 const Navcustom: React.FC = () => {
+
+    const [user, setUser] = useState<API.types.User | undefined>()
+    useEffect(()=>{
+        (async()=>{
+            const response = await API.users.GetUser(40);
+            if(response instanceof Error){
+                API.tokens.RefreshTokens();
+                console.log("Please login")
+            }else{
+                setUser(response);
+            }
+        })()
+    },[])
     return (
         <div>
             <Navbar expand="sm" bg="primary">
@@ -33,7 +49,7 @@ const Navcustom: React.FC = () => {
                                 maxHeight: "42px",
                                 width: "auto"
                             }}
-                            src="https://eu.ui-avatars.com/api/?name=John+Doe"
+                            src={user?.avatar_url}
                         ></Image>
                     </Dropdown.Toggle>
                     <Dropdown.Menu>

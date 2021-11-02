@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/gal/timber/utils/customerror"
+	"github.com/gal/timber/utils/customresponse"
 	"github.com/go-redis/redis/v8"
 
 	"time"
@@ -24,7 +24,7 @@ func (tokenStore *TokenStore) SetRefreshToken(ctx context.Context, userID string
 	key := fmt.Sprintf("%s:%s", userID, tokenID)
 	if err := tokenStore.rdb.Set(ctx, key, 0, expiresIn).Err(); err != nil {
 		log.WithContext(ctx).WithError(err).Error(fmt.Sprintf("Could not SET refresh token to redis for userID/tokenID: %s/%s", userID, tokenID))
-		return customerror.NewInternal()
+		return customresponse.NewInternal()
 	}
 	return nil
 }
@@ -36,13 +36,13 @@ func (tokenStore *TokenStore) DeleteRefreshToken(ctx context.Context, userID str
 
 	if err := result.Err(); err != nil {
 		log.WithContext(ctx).WithError(err).Error(fmt.Sprintf("Could not DELETE refresh token to redis for userID/tokenID: %s/%s", userID, tokenID))
-		return customerror.NewInternal()
+		return customresponse.NewInternal()
 	}
 
 	// Val returns a count of deleted keys
 	if result.Val() < 1 {
 		log.WithContext(ctx).Error(fmt.Sprintf("Refresh token to redis for userID/tokenID: %s/%s does not exist", userID, tokenID))
-		return customerror.NewAuthorization("Invalid refresh token")
+		return customresponse.NewAuthorization("Invalid refresh token")
 	}
 
 	return nil
@@ -66,7 +66,7 @@ func (tokenStore *TokenStore) DeleteUserRefreshTokens(ctx context.Context, userI
 	}
 
 	if failCount > 0 {
-		return customerror.NewInternal()
+		return customresponse.NewInternal()
 	}
 
 	return nil

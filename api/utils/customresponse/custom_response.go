@@ -1,4 +1,4 @@
-package customerror
+package customresponse
 
 import (
 	"errors"
@@ -11,6 +11,8 @@ type Type string
 
 // valid errorTypes
 const (
+	Ok                 Type = "OK"                  // OK Response - 200
+	Created            Type = "CREATED"             // Creation Response - 201
 	Authorization      Type = "AUTHORIZATION"       // Authentication Failures - 401
 	BadRequest         Type = "BAD_REQUEST"         // Validation errors / BadInput - 400
 	Conflict           Type = "CONFLICT"            // Already exists (e.g create account with existent email) - 409
@@ -20,19 +22,24 @@ const (
 )
 
 // Error Custom error
-type Error struct {
+type Response struct {
 	Type    Type   `json:"type"`
+	Detail  string `json:"detail"`
 	Message string `json:"message"`
 }
 
 // Standard error interface
-func (e *Error) Error() string {
-	return e.Message
+func (r *Response) Error() string {
+	return r.Message
 }
 
 // Status Mapping errors to status codes
-func (e *Error) Status() int {
-	switch e.Type {
+func (r *Response) Status() int {
+	switch r.Type {
+	case Ok:
+		return http.StatusOK
+	case Created:
+		return http.StatusCreated
 	case Authorization:
 		return http.StatusUnauthorized
 	case BadRequest:
@@ -52,61 +59,85 @@ func (e *Error) Status() int {
 
 // Status checks the runtime type of the error and returns a http status code
 func Status(err error) int {
-	var e *Error
-	if errors.As(err, &e) {
-		return e.Status()
+	var r *Response
+	if errors.As(err, &r) {
+		return r.Status()
 	}
 	return http.StatusInternalServerError
 }
 
 /*
-* Error Generators
+* Response Generators
  */
 
-// NewAuthorization ->	code 401
-func NewAuthorization(reason string) *Error {
-	return &Error{
-		Type:    Authorization,
-		Message: reason,
+// NewOK ->	code 200
+func NewOK() *Response {
+	return &Response{
+		Type:    Ok,
+		Detail:  "success",
+		Message: "",
+	}
+}
+
+// NewCreated ->	code 201
+func NewCreated() *Response {
+	return &Response{
+		Type:    Created,
+		Detail:  "created",
+		Message: "",
 	}
 }
 
 // NewBadRequest ->	code 400
-func NewBadRequest(reason string) *Error {
-	return &Error{
+func NewBadRequest(message string) *Response {
+	return &Response{
 		Type:    BadRequest,
-		Message: fmt.Sprintf("Bad request. Reason: %v", reason),
+		Detail:  "error",
+		Message: message,
+	}
+}
+
+// NewAuthorization ->	code 401
+func NewAuthorization(message string) *Response {
+	return &Response{
+		Type:    Authorization,
+		Detail:  "error",
+		Message: message,
 	}
 }
 
 // NewConflict ->	code 409
-func NewConflict(name string, value string) *Error {
-	return &Error{
+func NewConflict(name string, value string) *Response {
+	return &Response{
 		Type:    Conflict,
+		Detail:  "error",
 		Message: fmt.Sprintf("resource: %v with value: %v already exists", name, value),
 	}
 }
 
 // NewInternal ->	code 500
-func NewInternal() *Error {
-	return &Error{
+func NewInternal() *Response {
+	return &Response{
 		Type:    Internal,
+		Detail:  "error",
 		Message: fmt.Sprintln("Internal server error."),
 	}
 }
 
 // NewNotFound ->	code 404
-func NewNotFound(name string, value string) *Error {
-	return &Error{
+func NewNotFound(name string, value string) *Response {
+	return &Response{
 		Type:    NotFound,
-		Message: fmt.Sprintf("resource: %v with value: %v not found", name, value),
+		Detail:  "error",
+		Message: fmt.Sprintf("resource not found\n%s : %s", name, value),
 	}
 }
 
 // NewServiceUnavailable ->	code 503
-func NewServiceUnavailable() *Error {
-	return &Error{
+func NewServiceUnavailable() *Response {
+	return &Response{
 		Type:    ServiceUnavailable,
+		Detail:  "error",
 		Message: "Service unavailable or timed out",
 	}
 }

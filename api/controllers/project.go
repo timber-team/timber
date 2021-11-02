@@ -14,69 +14,37 @@ func NewProjectController(pStore models.ProjectStore) *ProjectController {
 	return &ProjectController{pStore}
 }
 
-func (projectControl *ProjectController) NewProject(ctx context.Context, p *models.Project) error {
-	return projectControl.Projects.Create(p)
+func (projectControl *ProjectController) Get(ctx context.Context, p *models.Project) error {
+	return projectControl.Projects.Get(ctx, p)
 }
 
-// TODO: Project Controller functions
+func (projectControl *ProjectController) GetAll(ctx context.Context) ([]*models.Project, error) {
+	return projectControl.Projects.GetAll(ctx)
+}
 
-//func (h *Handler) GetProject(w http.ResponseWriter, r *http.Request) {
-//	projId, err := strconv.Atoi(chi.URLParam(r, "id"))
-//	if err != nil {
-//		utils.RespondJSON(w, nil, "error",
-//			"failed to deccode id", http.StatusBadRequest,
-//		)
-//
-//		log.WithContext(r.Context()).WithError(err).
-//			Info("failed to decode project id")
-//		return
-//	}
-//	proj := &models.Project{
-//		ID: projId,
-//	}
-//
-//	if err = h.ProjectHandler.Projects.Get(proj.ID); err != nil {
-//		utils.RespondJSON(w, nil, "error",
-//			"failed to get project", http.StatusNotFound,
-//		)
-//
-//		log.WithContext(r.Context()).WithError(err).
-//			Info("failed to fetch project by id")
-//		return
-//	}
-//
-//	utils.RespondJSON(w, proj, "success", "", http.StatusOK)
-//	log.WithContext(r.Context()).Info("served get project")
-//}
-//
-//func (h *Handler) CreateProject(w http.ResponseWriter, r *http.Request) {
-//	var proj *models.Project
-//
-//	if err := json.NewDecoder(r.Body).Decode(
-//		&proj,
-//	); err != nil {
-//		utils.RespondJSON(w, nil, "err",
-//			"invalid request", http.StatusBadRequest,
-//		)
-//		proj.ID = 0
-//		// proj.CreatedAt = 0
-//		// proj.UpdatedAt = 0
-//
-//		projOwnerId, _ := utils.GetUID(r)
-//		projOwner := &models.User{ID: projOwnerId}
-//		h.UserHandler.UserInfo.Get(projOwner.ID)
-//
-//		proj.OwnerID = projOwner.ID
-//
-//		if err := h.ProjectHandler.Projects.Create(proj); err != nil {
-//			utils.RespondJSON(w, nil, "error",
-//				"failed to create project", http.StatusInternalServerError,
-//			)
-//			log.WithContext(r.Context()).WithError(err).Info("failed to create project")
-//			return
-//		}
-//
-//		utils.RespondJSON(w, proj, "success", "", http.StatusOK)
-//		log.WithContext(r.Context()).Info("served create project")
-//	}
-//}
+func (projectControl *ProjectController) Create(ctx context.Context, p *models.Project) error {
+	return projectControl.Projects.Create(ctx, p)
+}
+
+func (projectControl *ProjectController) Update(ctx context.Context, p *models.Project) error {
+	return projectControl.Projects.Patch(ctx, p)
+}
+
+func (projectControl *ProjectController) Delete(ctx context.Context, p *models.Project) error {
+	return projectControl.Projects.Delete(ctx, p)
+}
+
+// Function called GetTrending that takes in a context, and returns a slice of projects ordered by how many users have applied to the project
+func (projectControl *ProjectController) GetTrending(ctx context.Context) ([]*models.Project, error) {
+	return projectControl.Projects.GetTrending(ctx)
+}
+
+// Function called GetRecommended that takes in a context, and a user, and returns a slice of projects ordered by how many tags are shared between the projects RequiredSkills and the users Tags
+func (projectControl *ProjectController) GetRecommended(ctx context.Context, u *models.User) ([]*models.Project, error) {
+	return projectControl.Projects.GetRecommended(ctx, u)
+}
+
+// Function called GetByTag that takes in a context, and a tag, and returns a slice of projects that have that tag
+func (projectControl *ProjectController) GetByTag(ctx context.Context, t *models.Tag) ([]*models.Project, error) {
+	return projectControl.Projects.GetByTag(ctx, t)
+}
