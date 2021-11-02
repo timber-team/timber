@@ -1,6 +1,6 @@
 import create, { SetState } from "zustand";
 
-import { doRequest } from "../api/init";
+import { doRequest } from "../api";
 import { TokenResponse, User } from "../api/types";
 import {
   AccessTokenClaims,
