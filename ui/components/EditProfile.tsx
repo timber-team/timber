@@ -33,7 +33,7 @@ const technologyOptions = [
   }
 ];
 
-export default () => {
+const EditProfile = () => {
   const onSubmit = (values: FormValues, actions: FormikHelpers<FormValues>) => {
     alert(JSON.stringify(values, null, 2));
     actions.setSubmitting(false);
@@ -97,3 +97,5 @@ export default () => {
     />
   );
 };
+
+export default EditProfile

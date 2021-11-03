@@ -11,7 +11,7 @@ interface CustomSelectProps {
   className?: string;
 }
 
-export default (props: CustomSelectProps) => {
+const FormText = (props: CustomSelectProps) => {
   return (
     <Form.Group className={props.className} controlId={props.name}>
       <Form.Label>{props.label}</Form.Label>
@@ -22,3 +22,5 @@ export default (props: CustomSelectProps) => {
     </Form.Group>
   )
 }
+
+export default FormText

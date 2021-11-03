@@ -5,7 +5,7 @@ import { faGithub, faGoogle } from "@fortawesome/free-brands-svg-icons"
 
 const style = {margin: 4}
 
-export default () => {
+const ModalLogin = () => {
   return (
     <Modal show={true} aria-labelledby="contained-modal-title-vcenter" centered >
       <Modal.Header>
@@ -22,3 +22,5 @@ export default () => {
     </Modal>
   )
 }
+
+export default ModalLogin

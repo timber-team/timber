@@ -16,7 +16,7 @@ Axios.defaults.withCredentials = true;
 
 const App: React.FC = () => {
   return (
-    <div>
+    <>
       <Nav />
       <Router>
         <Switch>
@@ -35,7 +35,7 @@ const App: React.FC = () => {
         </Switch>
       </Router>
       <Legal />
-    </div>
+    </>
   );
 };
 
