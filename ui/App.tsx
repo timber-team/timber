@@ -16,22 +16,26 @@ Axios.defaults.withCredentials = true;
 
 const App: React.FC = () => {
   return (
-    <Router>
-      <Switch>
-        {/* Oauth callback */}
-        <Route path="/oauth/callback/google" component={OAuthCallback} />
-        <Route exact path="/login" component={LoginPage}/>
-        {/* Protected routes */}
-        <ProtectedRoute>
-          {/* Landing page */}
-          <Route exact path="/" component={LandingPage} />
-          {/* Browse page */}
-          <Route exact path="/browse" component={Browse} />
-          {/* Applications page */}
-          <Route exact path="/applications" component={Applications} />
-        </ProtectedRoute>
-      </Switch>
-    </Router>
+    <div>
+      <Nav />
+      <Router>
+        <Switch>
+          {/* Oauth callback */}
+          <Route path="/oauth/callback/google" component={OAuthCallback} />
+          <Route exact path="/login" component={LoginPage}/>
+          {/* Protected routes */}
+          <ProtectedRoute>
+            {/* Landing page */}
+            <Route exact path="/" component={LandingPage} />
+            {/* Browse page */}
+            <Route exact path="/browse" component={Browse} />
+            {/* Applications page */}
+            <Route exact path="/applications" component={Applications} />
+          </ProtectedRoute>
+        </Switch>
+      </Router>
+      <Legal />
+    </div>
   );
 };
 

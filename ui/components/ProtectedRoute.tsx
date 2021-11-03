@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Redirect, Route } from "react-router-dom";
 
 import { useAuth } from "../store/auth";
+import ModalLogin from "./ModalLogin";
 
 const ProtectedRoute = ({ children }: { children: any }) => {
   const getUser = useAuth((state) => state.getUser);
@@ -22,12 +23,7 @@ const ProtectedRoute = ({ children }: { children: any }) => {
         ) : currentUser ? (
           children
         ) : (
-          <Redirect
-            to={{
-              pathname: "/login",
-              state: { from: location },
-            }}
-          />
+          <ModalLogin />
         )
       }
     />

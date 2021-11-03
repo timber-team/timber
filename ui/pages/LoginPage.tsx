@@ -1,12 +1,14 @@
-import LoginForm from "../components/LoginForm"
+import EditProfile from "../components/EditProfile"
 import React from "react"
 import { Container } from "react-bootstrap"
+import ModalLogin from "../components/ModalLogin"
 
 const LoginPage: React.FC = () => {
   return(
     <div>
       <Container>
-        <LoginForm />
+        <ModalLogin />
+        <EditProfile />
       </Container>
     </div>
   )
