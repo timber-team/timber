@@ -28,6 +28,10 @@ type Project struct {
 	PreferredSkills []Tag         `gorm:"many2many:project_preferred" json:"preferred_skills,omitempty"`
 	RequiredSkills  []Tag         `gorm:"many2many:project_required" json:"required_skills,omitempty"`
 	Applications    []Application `json:"applications,omitempty"`
+	// Virtual fields
+	OwnerUsername  string `gorm:"-" json:"owner_username,omitempty"`
+	OwnerAvatarURL string `gorm:"-" json:"owner_avatar_url,omitempty"`
+	UserApplied    bool   `gorm:"-" json:"user_applied,omitempty"`
 }
 
 type Application struct {
