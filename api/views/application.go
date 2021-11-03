@@ -18,12 +18,6 @@ func (h *Handler) NewApplication(c *gin.Context) {
 	pid, err := strconv.Atoi(urlPID)
 	ctx := c.Request.Context()
 	if err != nil {
-		// log.WithContext(ctx).WithError(err).Error(fmt.Sprintf("Unable to parse ID from url: %v", urlPID))
-		// e := customresponse.NewInternal()
-
-		// c.JSON(e.Status(), gin.H{
-		// 	"error": e,
-		// })
 		utils.Respond(c, customresponse.NewInternal(), nil)
 		return
 	}
@@ -41,11 +35,6 @@ func (h *Handler) NewApplication(c *gin.Context) {
 
 	if err != nil {
 		log.WithContext(ctx).WithError(err).Error(fmt.Sprintf("Unable to find user: %v", u.ID))
-		// e := customresponse.NewNotFound("user", fmt.Sprintf("%d", u.ID))
-
-		// c.JSON(e.Status(), gin.H{
-		// 	"error": e,
-		// })
 		utils.Respond(c, customresponse.NewNotFound("user", fmt.Sprintf("%d", u.ID)), nil)
 		return
 	}
@@ -57,10 +46,6 @@ func (h *Handler) NewApplication(c *gin.Context) {
 	err = h.ProjectController.Projects.Get(ctx, p)
 
 	if err != nil {
-		// log.WithContext(ctx).WithError(err).Error("Failed to get project")
-		// c.JSON(customresponse.Status(err), gin.H{
-		// 	"error": err,
-		// })
 		utils.Respond(c, customresponse.NewInternal(), nil)
 		return
 	}
@@ -73,16 +58,91 @@ func (h *Handler) NewApplication(c *gin.Context) {
 	err = h.ApplicationController.Applications.Create(ctx, application)
 
 	if err != nil {
-		// log.WithContext(ctx).WithError(err).Error("Failed to create application")
-		// c.JSON(customresponse.Status(err), gin.H{
-		// 	"error": err,
-		// })
 		utils.Respond(c, customresponse.NewInternal(), nil)
 		return
 	}
 
-	// c.JSON(http.StatusCreated, gin.H{
-	// 	"application": application,
-	// })
 	utils.Respond(c, customresponse.NewCreated(), application)
+}
+
+// get all applications by project id by getting the project and then returning the project's applications
+func (h *Handler) GetApplicationsByProjectID(c *gin.Context) {
+	urlPID := c.Param("projectID")
+	pid, err := strconv.Atoi(urlPID)
+	ctx := c.Request.Context()
+	if err != nil {
+		utils.Respond(c, customresponse.NewInternal(), nil)
+		return
+	}
+
+	user, exists := c.Get("user")
+
+	if !exists {
+		log.WithContext(c).Error("Unable to extract user from the request context")
+		return
+	}
+
+	u := user.(*models.User)
+
+	err = h.UserController.Get(ctx, u)
+
+	if err != nil {
+		log.WithContext(ctx).WithError(err).Error(fmt.Sprintf("Unable to find user: %v", u.ID))
+		utils.Respond(c, customresponse.NewNotFound("user", fmt.Sprintf("%d", u.ID)), nil)
+		return
+	}
+
+	p := &models.Project{
+		ID: pid,
+	}
+
+	err = h.ProjectController.Projects.Get(ctx, p)
+
+	if err != nil {
+		utils.Respond(c, customresponse.NewInternal(), nil)
+		return
+	}
+
+	utils.Respond(c, customresponse.NewOK(), p.Applications)
+}
+
+// get application by id
+func (h *Handler) GetApplicationByID(c *gin.Context) {
+	urlAID := c.Param("appID")
+	aid, err := strconv.Atoi(urlAID)
+	ctx := c.Request.Context()
+	if err != nil {
+		utils.Respond(c, customresponse.NewInternal(), nil)
+		return
+	}
+
+	user, exists := c.Get("user")
+
+	if !exists {
+		log.WithContext(c).Error("Unable to extract user from the request context")
+		return
+	}
+
+	u := user.(*models.User)
+
+	err = h.UserController.Get(ctx, u)
+
+	if err != nil {
+		log.WithContext(ctx).WithError(err).Error(fmt.Sprintf("Unable to find user: %v", u.ID))
+		utils.Respond(c, customresponse.NewNotFound("user", fmt.Sprintf("%d", u.ID)), nil)
+		return
+	}
+
+	a := &models.Application{
+		ID: aid,
+	}
+
+	err = h.ApplicationController.Applications.Get(ctx, a)
+
+	if err != nil {
+		utils.Respond(c, customresponse.NewInternal(), nil)
+		return
+	}
+
+	utils.Respond(c, customresponse.NewOK(), a)
 }
