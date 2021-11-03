@@ -5,22 +5,78 @@ import React, { useEffect, useState } from "react";
 import Legal from "../components/Legal";
 import Nav from "../components/Nav";
 import { useAuth } from "../store/auth";
-
+import { Col, Container, Row } from "react-bootstrap"
+import Card from "../components/Card"
+import CardButtons from "../components/CardButtons"
+import { GetProjectByID } from "../api/project";
 const LandingPage: React.FC = () => {
   const currentUser = useAuth((state) => state.currentUser);
+  const colStyle = {
+    display: 'flex',
+    alignItems: 'end',
+    flexDirection: 'column'
+  }
 
+  const [cards, setCards] = useState([{
+      ID: '1',
+      CreatedAt: '1412312',
+      UpdatedAt: '190241024',
+      Name: 'Shanghai1\'s Gust Project',
+      Description: 'Gust Gust Gust Gust Gust Gust Gust',
+      OwnerID: '1',
+      Collaborators: [],
+      PreferredSkills: ['Gust', 'Ro', 'Postgres', 'Redis'],
+      RequiredSkills: ['Gust', 'Ro'],
+      Applications: []
+  },
+  {
+      ID: '2',
+      CreatedAt: '14123132',
+      UpdatedAt: '1902410234',
+      Name: 'Thomas\'s Go Project',
+      Description: 'Golang Yum',
+      OwnerID: '2',
+      Collaborators: [],
+      PreferredSkills: ['Go'],
+      RequiredSkills: ['Go'],
+      Applications: []
+  }
+  ])
+
+  // FIX later
+  const [current, setCurrent] = useState(cards[cards.length - 1])
+
+  const nextCard = () => {
+      setCards(cards.slice(0, -1))
+      setCurrent(cards[cards.length - 1])
+  }
+
+  const cardChoice = (e) => {
+      if (e) {
+          // DO ACCEPT
+      } else {
+          // DONT ACCEPT
+      }
+      nextCard()
+  }
   return (
     <div>
       <Nav />
-      <img
-        alt="userImage"
-        src={
-          currentUser?.avatar_url
-            ? currentUser.avatar_url
-            : "https://www.gravatar.com/avatar/205e460b479e2e5b48aec07710c08d50"
-        }
-      />
-      <main style={{ minHeight: "100%" }}></main>
+      <main style={{ minHeight: "100%" }}>
+      <Container>
+            <Row className='justify-content-md-center'>
+                <Col style={colStyle}>
+                    <CardButtons onClick={() => {cardChoice(false)}}> ✗ </CardButtons>
+                </Col>
+                <Col md="auto">
+                    {current ? <Card Name={current.Name} Description={current.Description} PreferredSkills={current.PreferredSkills} RequiredSkills={current.RequiredSkills} /> : <div> No more stuff for you to checkout </div>}
+                </Col>  
+                <Col>
+                    <CardButtons onClick={() => {cardChoice(true)}}> ✓ </CardButtons>
+                </Col>
+            </Row>
+        </Container>
+      </main>
       <Legal />
     </div>
   );

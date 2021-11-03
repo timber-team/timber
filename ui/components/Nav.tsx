@@ -1,32 +1,19 @@
-import React from "react";
-import { useEffect, useState } from "react";
-import { Navbar, Nav, Container, Dropdown, Image } from "react-bootstrap";
-import * as API from "../api";
+import React from 'react'
+import { useEffect, useState } from 'react'
+import { Navbar, Nav, Container, Dropdown, Image } from 'react-bootstrap'
+import * as API from '../api'
+import { useAuth } from "../store/auth";
 
 const Navcustom: React.FC = () => {
-  const [user, setUser] = useState<API.types.User | undefined>();
-  useEffect(() => {
-    (async () => {
-      const response = await API.users.GetUser(40);
-      if (response instanceof Error) {
-        API.tokens.RefreshTokens();
-        console.log("Please login");
-      } else {
-        setUser(response);
-      }
-    })();
-  }, []);
-  return (
-    <div>
-      <Navbar expand="sm" bg="primary">
-        <Container
-          style={{
-            width: "95%",
-            margin: "auto",
-          }}
-          fluid
-        >
-          <Navbar.Brand>Timber</Navbar.Brand>
+    const currentUser = useAuth((state) => state.currentUser);
+    return (
+        <div>
+            <Navbar expand="sm" bg="primary">
+            <Container style={{
+                width: "95%",
+                margin: "auto"
+            }} fluid>
+                <Navbar.Brand>Timber</Navbar.Brand>
 
           {/* <Navbar.Toggle aria-controls="responsive-navbar-nav">
                 </Navbar.Toggle> */}
@@ -51,7 +38,11 @@ const Navcustom: React.FC = () => {
                   maxHeight: "42px",
                   width: "auto",
                 }}
-                src="https://eu.ui-avatars.com/api/?name=John+Doe"
+                src={
+                    currentUser?.avatar_url
+                      ? currentUser.avatar_url
+                      : "https://www.gravatar.com/avatar/205e460b479e2e5b48aec07710c08d50"
+                  }
               ></Image>
             </Dropdown.Toggle>
             <Dropdown.Menu>
