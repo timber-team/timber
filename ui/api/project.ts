@@ -1,12 +1,15 @@
 import { doRequest, NoData } from ".";
+import { useAuth } from "../store/auth";
 import { Project } from "./types";
 
 export const GetProjectByID = async (projID: number): Promise<Project> => {
+  const accessToken = useAuth((state) => state.accessToken);
   const [resp, error] = await doRequest({
     method: "GET",
-    url: `/api/project/${projID}`,
+    url: `/api/projects/${projID}`,
     headers: {
       "Content-Type": "application/json",
+      "Authorization": `Bearer ${accessToken}`,
     },
   });
 
