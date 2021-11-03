@@ -4,7 +4,7 @@ import { Col, Container, Nav, Navbar, Row } from "react-bootstrap";
 const Legal: React.FC = () => {
   return (
     <div>
-      <Navbar fixed="bottom" bg="primary" style={{ color: "#fff8" }}>
+      <Navbar bg="primary" style={{ color: "#fff8", position: 'relative', bottom: 0, left: 0, right: 0 }}>
         <Container style={{ width: "100%" }}>
           <Row>
             <Col>
