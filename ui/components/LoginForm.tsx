@@ -1,37 +1,35 @@
 import React from "react";
 import { Field, Form, Formik, FormikHelpers, FormikProps } from "formik";
 import CustomSelect from "./CustomSelect";
+import FormText from "./FormText";
+import { Button } from "react-bootstrap";
 
 export interface FormValues {
-  singleLanguage: string;
-  multiLanguages: string[];
+  avatarURL: string;
+  name: string;
+  username: string;
+  technologies: string[];
 }
 
 const defaultValues: FormValues = {
-  singleLanguage: "",
-  multiLanguages: []
+  avatarURL: "",
+  name: "",
+  username: "",
+  technologies: []
 };
 
-const languageOptions = [
+const technologyOptions = [
   {
-    label: "Chinese",
-    value: "zh-CN"
+    label: "Golang",
+    value: "1"
   },
   {
-    label: "English (US)",
-    value: "en-US"
+    label: "Python",
+    value: "2"
   },
   {
-    label: "English (GB)",
-    value: "en-GB"
-  },
-  {
-    label: "French",
-    value: "fr-FR"
-  },
-  {
-    label: "Spanish",
-    value: "es-ES"
+    label: "Javascript",
+    value: "3"
   }
 ];
 
@@ -44,30 +42,50 @@ const LoginForm = () => {
   const renderForm = (formikBag: FormikProps<FormValues>) => (
     <Form>
       <Field
-        className="custom-select"
-        name="singleLanguage"
-        options={languageOptions}
-        component={CustomSelect}
-        placeholder="Select a language..."
-        isMulti={false}
+        name="avatarURL"
+        component={FormText}
+        label="Avatar URL"
+        type="text"
+        placeholder="Avatar URL"
+        description="Please enter your avatar URL, you can use a website like imgur to host it"
+        muted={true}
       />
       <Field
-        className="custom-select"
-        name="multiLanguages"
-        options={languageOptions}
+        name="name"
+        component={FormText}
+        label="Avatar name"
+        type="text"
+        placeholder="First and Second Name"
+        description="Enter your name"
+        muted={true}
+      />
+      <Field
+        name="username"
+        component={FormText}
+        label="Username"
+        type="text"
+        placeholder="Please choose an alias"
+        description="Enter your username"
+        muted={true}
+      />
+      <Field
+        className="form-select"
+        name="technologies"
+        options={technologyOptions}
         component={CustomSelect}
-        placeholder="Select multi languages..."
+        placeholder="Select from multiple technologies"
         isMulti={true}
       />
-      <button
+      <Button
+        variant="primary"
         type="button"
         className="outline"
         onClick={formikBag.handleReset}
         disabled={!formikBag.dirty || formikBag.isSubmitting}
       >
         Reset
-      </button>
-      <button type="submit">Submit Form</button>
+      </Button>
+      <Button variant="primary" type="submit">Submit</Button>
     </Form>
   );
 

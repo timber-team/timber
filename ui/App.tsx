@@ -16,29 +16,6 @@ Axios.defaults.withCredentials = true;
 
 const App: React.FC = () => {
   return (
-<<<<<<< Updated upstream
-    <>
-      <Nav />
-      <div style={{minHeight: '100%'}}>
-        <Router>
-          <Switch>
-            {/* Oauth callback */}
-            <Route path="/oauth/callback/google" component={OAuthCallback} />
-            {/* Protected routes */}
-            <ProtectedRoute>
-              {/* Landing page */}
-              <Route exact path="/" component={LandingPage} />
-              {/* Browse page */}
-              <Route exact path="/browse" component={Browse} />
-              {/* Applications page */}
-              <Route exact path="/applications" component={Applications} />
-            </ProtectedRoute>
-          </Switch>
-        </Router>
-      </div>
-      <Legal />
-    </>
-=======
     <Router>
       <Switch>
         {/* Oauth callback */}
@@ -55,7 +32,6 @@ const App: React.FC = () => {
         </ProtectedRoute>
       </Switch>
     </Router>
->>>>>>> Stashed changes
   );
 };
 

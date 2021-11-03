@@ -8,12 +8,14 @@ interface Option {
 }
 
 interface CustomSelectProps extends FieldProps {
+  className?: string;
   options: Option[];
   isMulti?: boolean;
   placeholder?: string;
 }
 
 export const CustomSelect = ({
+  className,
   placeholder,
   field,
   form,
@@ -41,7 +43,7 @@ export const CustomSelect = ({
 
   return (
     <Select
-      className="form-select"
+      className={className}
       name={field.name}
       value={getValue()}
       onChange={onChange}

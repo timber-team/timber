@@ -1,10 +1,13 @@
 import LoginForm from "../components/LoginForm"
 import React from "react"
+import { Container } from "react-bootstrap"
 
 const LoginPage: React.FC = () => {
   return(
     <div>
-      <LoginForm />
+      <Container>
+        <LoginForm />
+      </Container>
     </div>
   )
 }
