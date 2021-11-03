@@ -1,13 +1,12 @@
-import create, { SetState } from "zustand";
-
-import { doRequest } from "../api";
-import { TokenResponse, User } from "../api/types";
+import create, {SetState} from 'zustand';
+import {doRequest} from '../api';
+import {TokenResponse, User} from '../api/types';
 import {
   AccessTokenClaims,
   getTokenPayload,
   RefreshTokenClaims,
   storeTokens,
-} from "../utils";
+} from '../utils';
 
 type AuthState = {
   currentUser?: User;
@@ -20,10 +19,10 @@ type AuthState = {
 export const useAuth = create<AuthState>((set) => {
   return {
     currentUser: undefined,
-    accessToken: "",
+    accessToken: '',
     isLoading: false,
     error: undefined,
-    getUser: (forceRefresh: boolean = false) => getUser({ set, forceRefresh }),
+    getUser: (forceRefresh: boolean = false) => getUser({set, forceRefresh}),
   };
 });
 
@@ -31,10 +30,10 @@ const getUser = async (options: {
   set: SetState<AuthState>;
   forceRefresh: boolean;
 }) => {
-  const { set, forceRefresh } = options;
-  set({ isLoading: true, error: undefined });
+  const {set, forceRefresh} = options;
+  set({isLoading: true, error: undefined});
 
-  const accessToken = localStorage.getItem("access_token") ?? undefined;
+  const accessToken = localStorage.getItem('access_token') ?? undefined;
   const accessTokenClaims = getTokenPayload<AccessTokenClaims>(accessToken);
 
   if (accessTokenClaims && !forceRefresh) {
@@ -47,17 +46,17 @@ const getUser = async (options: {
     return;
   }
 
-  const refreshToken = localStorage.getItem("refresh_token") ?? undefined;
+  const refreshToken = localStorage.getItem('refresh_token') ?? undefined;
   const refreshTokenClaims = getTokenPayload<RefreshTokenClaims>(refreshToken);
 
   if (!refreshTokenClaims) {
-    set({ currentUser: undefined, accessToken: undefined, isLoading: false });
+    set({currentUser: undefined, accessToken: undefined, isLoading: false});
     return;
   }
 
   const [data, error] = await doRequest({
-    url: "/api/auth/tokens",
-    method: "post",
+    url: '/api/auth/tokens',
+    method: 'post',
     data: {
       refreshToken,
     },
@@ -67,19 +66,19 @@ const getUser = async (options: {
     set({
       currentUser: undefined,
       accessToken: undefined,
-      error: error || Error("Could not fetch tokens"),
+      error: error || Error('Could not fetch tokens'),
       isLoading: false,
     });
     return;
   }
 
-  const token_pair = data.data as TokenResponse;
-  storeTokens(token_pair.access_token, token_pair.refresh_token);
+  const tokenPair = data.data as TokenResponse;
+  storeTokens(tokenPair.access_token, tokenPair.refresh_token);
   const tokenClaims = getTokenPayload<AccessTokenClaims>(
-    token_pair.access_token
+      tokenPair.access_token,
   );
   set({
-    accessToken: token_pair.access_token,
+    accessToken: tokenPair.access_token,
     currentUser: tokenClaims!.user,
     isLoading: false,
   });
