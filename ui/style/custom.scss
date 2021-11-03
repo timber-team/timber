@@ -1,34 +1,7 @@
-@import url("https://fonts.googleapis.com/css2?family=Playfair+Display&family=Rubik&display=swap"); // Playfair Display & Rubik
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display&family=Rubik&display=swap');
 
-$theme-colors: (
-  "primary": #c7493a,
-  "secondary": #a33327 // "success": $success,
-  // "info": $info,
-  // "warning": $warning,
-  // "danger": $danger,
-  // "light": $light,
-  // "dark": $dark,,
-);
+// custom scss react-bootstrap theme variables
+$primary: #c74b4b;
+$secondary: #689775;
 
-$font-family-sans-serif: "Rubik";
-$font-family-monospace: "Playfair Display";
-
-.Card-Buttons {
-    background-color: #C7493A; /* Green */
-    border: none;
-    color: white;
-    padding: 24px 20px;
-    margin-top: 256px;
-    border-radius: 50%;
-    text-align: center;
-    text-decoration: none;
-    display: flex;
-    font-size: 16px;
-    text-orientation: upright;
-    writing-mode: vertical-rl;
-    position: fixed;
-
-}
-
-// Keep this on the bottom
-@import "~bootstrap/scss/bootstrap.scss";
+@import '~bootstrap/scss/bootstrap';
