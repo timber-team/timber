@@ -1,22 +1,87 @@
-import { doRequest, NoData } from ".";
-import { useAuth } from "../store/auth";
-import { Tag } from "./types";
+import {useState} from 'react';
+import {doRequest} from '.';
+import {useAuth} from '../store/auth';
+import {Tag} from './types';
 
-// Get all tags from the database (GET /api/tags) using doRequest with AxiosRequestConfig
-export const GetAllTags = async (): Promise<Tag[]> => {
+export const useTags = () => {
   const accessToken = useAuth((state) => state.accessToken);
-  const [resp, error] = await doRequest({
-    method: "GET",
-    url: `/api/tags`,
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${accessToken}`,
-    },
-  });
+  const [tags, setTags] = useState<Tag[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  if (error) {
-    throw error;
-  }
+  const getAllTags = async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const response = await doRequest({
+        url: '/api/tags',
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+      if (response[0] === null) {
+        setError(response[1]!.message);
+      } else {
+        setTags(response[0]!.data);
+      }
+    } catch (error) {
+      setError(error.message);
+    }
+    setLoading(false);
+  };
 
-  return (resp?.data as Tag[]) ?? NoData;
+  // get tag by id using the doRequest with AxiosRequestConfig
+  const getTagById = async (id: number) => {
+    setLoading(true);
+    setError(null);
+    try {
+      const response = await doRequest({
+        url: `/api/tags/${id}`,
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+      if (response[0] === null) {
+        setError(response[1]!.message);
+      } else {
+        setTags(response[0]!.data);
+      }
+    } catch (error) {
+      setError(error.message);
+    }
+    setLoading(false);
+  };
+
+  const getTagByProjectId = async (projectId: number) => {
+    setLoading(true);
+    setError(null);
+    try {
+      const response = await doRequest({
+        url: `/api/projects/${projectId}/tags`,
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+      if (response[0] === null) {
+        setError(response[1]!.message);
+      } else {
+        setTags(response[0]!.data);
+      }
+    } catch (error) {
+      setError(error.message);
+    }
+    setLoading(false);
+  };
+
+  return {
+    tags,
+    loading,
+    error,
+    getAllTags,
+    getTagById,
+    getTagByProjectId,
+  };
 };

@@ -1,29 +1,23 @@
-import { doRequest, NoData } from ".";
-import { User } from "./types";
+import {doRequest} from '.';
 
-// Finds logged-in user's profile
-export const GetProfile = async <T>() => {
-  const [response, err] = await doRequest({ url: "/profile", method: "GET" });
-  if (err !== null) {
-    return err;
+export const getUserById = async (id: number) => {
+  setLoading(true);
+  setError(null);
+  try {
+    const response = await doRequest({
+      url: `/api/users/${id}`,
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
+    if (response[0] === null) {
+      setError(response[1]!.message);
+    } else {
+      setUser(response[0]!.data);
+    }
+  } catch (error) {
+    setError(error.message);
   }
-  if (response === null) {
-    return NoData;
-  }
-  return response.data as User;
-};
-
-// Finds user by id
-export const GetUser = async <T>(userId: Number) => {
-  const [response, err] = await doRequest({
-    url: `/profile/${userId}`,
-    method: "GET",
-  });
-  if (err !== null) {
-    return err;
-  }
-  if (response === null) {
-    return NoData;
-  }
-  return response.data as User;
+  setLoading(false);
 };
