@@ -1,15 +1,16 @@
-import { User } from "api/types";
-import jwt_decode from "jwt-decode";
+import {User} from 'api/types';
+// eslint-disable-next-line camelcase
+import jwt_decode from 'jwt-decode';
 
 // storeTokens Utility function for storing accessToken and refreshToken
 export const storeTokens = (accessToken: string, refreshToken: string) => {
-  localStorage.setItem("access_token", accessToken);
-  localStorage.setItem("refresh_token", refreshToken);
+  localStorage.setItem('access_token', accessToken);
+  localStorage.setItem('refresh_token', refreshToken);
 };
 
 export const deleteTokens = () => {
-  localStorage.removeItem("access_token");
-  localStorage.removeItem("refresh_token");
+  localStorage.removeItem('access_token');
+  localStorage.removeItem('refresh_token');
 };
 
 interface TokenClaims {
@@ -28,7 +29,7 @@ export interface RefreshTokenClaims extends TokenClaims {
 
 // getTokenPayload Gets the token's payload/claims, returns null if invalid
 export const getTokenPayload = <T extends TokenClaims>(
-  token: string | undefined
+  token: string | undefined,
 ) => {
   if (!token) {
     return undefined;
