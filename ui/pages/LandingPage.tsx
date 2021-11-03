@@ -1,82 +1,55 @@
-import "../style/custom.scss";
+import React, {useEffect} from 'react';
+import {Col, Container} from 'react-bootstrap';
+import {useProjects} from '../api/project';
+import {ProjectCard} from '../components/Card';
+import Legal from '../components/Legal';
+import NavBar from '../components/Nav';
 
-import React, { useEffect, useState } from "react";
-
-import Legal from "../components/Legal";
-import Nav from "../components/Nav";
-import { useAuth } from "../store/auth";
-import { Col, Container, Row } from "react-bootstrap"
-import Card from "../components/Card"
-import CardButtons from "../components/CardButtons"
-import { GetProjectByID } from "../api/project";
 const LandingPage: React.FC = () => {
-  const currentUser = useAuth((state) => state.currentUser);
-  const colStyle = {
-    display: 'flex',
-    alignItems: 'end',
-    flexDirection: 'column'
+  const {projects, loading, error, getAllProjects} = useProjects();
+
+  useEffect(() => {
+    getAllProjects();
+  }, []);
+
+  // if the loading state is true, display a loading message
+  if (loading) {
+    return (
+      <div>
+        <NavBar />
+        <h1>Loading...</h1>
+      </div>
+    );
   }
 
-  const [cards, setCards] = useState([{
-      ID: '1',
-      CreatedAt: '1412312',
-      UpdatedAt: '190241024',
-      Name: 'Shanghai1\'s Gust Project',
-      Description: 'Gust Gust Gust Gust Gust Gust Gust',
-      OwnerID: '1',
-      Collaborators: [],
-      PreferredSkills: ['Gust', 'Ro', 'Postgres', 'Redis'],
-      RequiredSkills: ['Gust', 'Ro'],
-      Applications: []
-  },
-  {
-      ID: '2',
-      CreatedAt: '14123132',
-      UpdatedAt: '1902410234',
-      Name: 'Thomas\'s Go Project',
-      Description: 'Golang Yum',
-      OwnerID: '2',
-      Collaborators: [],
-      PreferredSkills: ['Go'],
-      RequiredSkills: ['Go'],
-      Applications: []
-  }
-  ])
-
-  // FIX later
-  const [current, setCurrent] = useState(cards[cards.length - 1])
-
-  const nextCard = () => {
-      setCards(cards.slice(0, -1))
-      setCurrent(cards[cards.length - 1])
+  // if there is an error, display the error message
+  if (error) {
+    return <h1>{error}</h1>;
   }
 
-  const cardChoice = (e) => {
-      if (e) {
-          // DO ACCEPT
-      } else {
-          // DONT ACCEPT
-      }
-      nextCard()
+  // if there are no projects, display a message
+  if (projects.length === 0) {
+    return (
+      <div>
+        <NavBar />
+        <h1>No projects to display</h1>
+      </div>
+    );
   }
   return (
     <div>
-      <Nav />
-      <main style={{ minHeight: "100%" }}>
-      <Container>
-            <Row className='justify-content-md-center'>
-                <Col style={colStyle}>
-                    <CardButtons onClick={() => {cardChoice(false)}}> ✗ </CardButtons>
-                </Col>
-                <Col md="auto">
-                    {current ? <Card Name={current.Name} Description={current.Description} PreferredSkills={current.PreferredSkills} RequiredSkills={current.RequiredSkills} /> : <div> No more stuff for you to checkout </div>}
-                </Col>  
-                <Col>
-                    <CardButtons onClick={() => {cardChoice(true)}}> ✓ </CardButtons>
-                </Col>
-            </Row>
-        </Container>
-      </main>
+      <NavBar />
+      <Container fluid="lg">
+        {projects.map((project) => (
+          <Col md="auto" key={project.id} style={{marginBottom: '1rem'}}>
+            <ProjectCard
+              project={project}
+              onApply={getAllProjects}
+              onReject={getAllProjects}
+            />
+          </Col>
+        ))}
+      </Container>
       <Legal />
     </div>
   );
