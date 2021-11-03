@@ -13,7 +13,7 @@ const Navcustom: React.FC = () => {
                 width: "95%",
                 margin: "auto"
             }} fluid>
-                <Navbar.Brand>Timber</Navbar.Brand>
+                <Navbar.Brand onClick={() => {location.href = "/"}}>Timber</Navbar.Brand>
 
           {/* <Navbar.Toggle aria-controls="responsive-navbar-nav">
                 </Navbar.Toggle> */}
