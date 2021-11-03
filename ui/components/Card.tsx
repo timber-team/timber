@@ -1,33 +1,76 @@
-import React from "react"
-import { Badge, Card } from "react-bootstrap"
+import {Project, Tag} from 'api/types';
+import React from 'react';
+import {Badge, Card} from 'react-bootstrap';
 
-interface viableProps {
-    Name: string,
-    Description: string,
-    PreferredSkills: string[] | Tag[],
-    RequiredSkills: string[] | Tag[]
+interface Props {
+  project: Project;
+  onApply: (project: Project) => void;
+  onReject: (project: Project) => void;
 }
 
-const style = {
-    display: 'flex',
-    flexDirection: 'row'
-}
-
-export default (props: viableProps) => {
-    return (
-        <Card style={{ width: '32rem' }}>
-            <Card.Img variant="top" src="holder.js/100px180" />
-            <Card.Body>
-                <Card.Title>{props.Name}</Card.Title>
-                <Card.Text style={style}> 
-                    {props.RequiredSkills.map(x => <Badge pill bg="primary"> {x} </Badge>)}
-                    {props.PreferredSkills
-                        .filter(x => !props.RequiredSkills.includes(x))
-                        .map(x => <Badge pill bg="secondary"> {x} </Badge>)
-                    } 
-                </Card.Text>
-                <Card.Text style={{ overflow: 'auto' }}>{props.Description}</Card.Text>
-            </Card.Body>
-        </Card>
-    )
-}
+export const ProjectCard: React.FC<Props> = ({
+  project,
+  onApply,
+  onReject,
+}) => {
+  return (
+    <Card style={{width: '100%', margin: '0 auto'}}>
+      <Card.Body>
+        <Card.Title>{project.name}</Card.Title>
+        <Card.Text>{project.description}</Card.Text>
+        <Card.Text>
+          <b>Required Skills: </b>
+          {project.required_skills.map((skill: Tag) => (
+            <Badge bg="secondary" key={skill.id} style={{marginRight: '5px'}}>
+              {skill.name}
+            </Badge>
+          ))}
+        </Card.Text>
+        <Card.Text>
+          <b>Preferred Skills: </b>
+          {project.preferred_skills.map((skill: Tag) => (
+            <Badge bg="secondary" key={skill.id} style={{marginRight: '5px'}}>
+              {skill.name}
+            </Badge>
+          ))}
+        </Card.Text>
+        {project.owner && (
+          <Card.Text>
+            <b>Owner: </b>
+            {project.owner.username}
+          </Card.Text>
+        )}
+        <Card.Text>
+          <b>Collaborators: </b>
+          {project.collaborators?.map((collaborator: any) => (
+            <Badge
+              bg="secondary"
+              key={collaborator.id}
+              style={{marginRight: '5px'}}
+            >
+              {collaborator.username}
+            </Badge>
+          ))}
+        </Card.Text>
+      </Card.Body>
+      <Card.Footer>
+        <button
+          className="btn btn-primary"
+          onClick={() => onApply(project)}
+          disabled={project.user_applied === true}
+          style={{marginRight: '5px'}}
+        >
+          {project.user_applied === true ? 'Applied' : 'Apply'}
+        </button>
+        <button
+          className="btn btn-danger"
+          onClick={() => onReject(project)}
+          disabled={project.user_applied === true}
+          style={{marginRight: '5px'}}
+        >
+          {'Reject'}
+        </button>
+      </Card.Footer>
+    </Card>
+  );
+};
