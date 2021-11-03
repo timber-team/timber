@@ -19,11 +19,57 @@
     }
   ],
   "settings": {
-    "typescript.preferences.importModuleSpecifier": "relative",
-    "prettier.singleQuote": false,
-    "prettier.jsxSingleQuote": false,
-    "prettier.semi": true,
-    "tsimporter.doubleQuotes": true,
-    "typescript.preferences.quotePreference": "double"
+    "editor.defaultFormatter": "rvest.vs-code-prettier-eslint",
+    "editor.formatOnSave": true,
+    "editor.formatOnSaveMode": "file",
+    "eslint.validate": [
+      "javascript",
+      "javascriptreact",
+      "typescript",
+      "typescriptreact"
+    ],
+    "eslint.validate.enable": true,
+    "eslint.validate.onType": true,
+    "eslint.validate.options": {
+      "overrides": [
+        {
+          "files": "*.js",
+          "language": "javascriptreact"
+        },
+        {
+          "files": "*.ts",
+          "language": "typescriptreact"
+        }
+      ]
+    },
+
+    "editor.codeActionsOnSave": {
+      "source.fixAll.eslint": true,
+      "source.fixAll.eslint.validate": true,
+      "source.fixAll.eslint.validate.enable": true,
+      "source.fixAll.eslint.validate.onType": true,
+      "source.fixAll.eslint.validate.options": {
+        "overrides": [
+          {
+            "files": "*.js",
+            "language": "javascriptreact"
+          },
+          {
+            "files": "*.ts",
+            "language": "typescriptreact"
+          }
+        ]
+      },
+      "source.organizeImports": true
+    },
+    "[typescriptreact]": {
+      "editor.defaultFormatter": "rvest.vs-code-prettier-eslint"
+    },
+    "[typescript]": {
+      "editor.defaultFormatter": "rvest.vs-code-prettier-eslint"
+    },
+    "[go]": {
+      "editor.defaultFormatter": "golang.go"
+    }
   }
 }
