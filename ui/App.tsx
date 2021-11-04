@@ -1,5 +1,5 @@
 import Axios from "axios";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import Nav from "./components/Nav";
 import Legal from "./components/Legal";
@@ -9,6 +9,7 @@ import Applications from "./pages/Applications";
 import Browse from "./pages/Browse";
 import LandingPage from "./pages/LandingPage";
 import OAuthCallback from "./src/OAuthCallback";
+import LoginPage from "./pages/LoginPage";
 
 Axios.defaults.baseURL = process.env.BASE_URL;
 Axios.defaults.withCredentials = true;
@@ -38,5 +39,6 @@ const App: React.FC = () => {
     </>
   );
 };
+
 
 export default App;
