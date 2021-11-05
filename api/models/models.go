@@ -23,7 +23,9 @@ type Project struct {
 	UpdatedAt       int64         `gorm:"autoUpdateTime;<-:create" json:"modified_at"`
 	Name            string        `gorm:"unique" json:"name"`
 	Description     string        `json:"description"`
+	ImageURL        string        `json:"image_url,omitempty"`
 	OwnerID         int           `gorm:"not null;<-:create" json:"owner_id"`
+	Owner           User          `gorm:"foreignkey:OwnerID;association_foreignkey:ID" json:"owner,omitempty"`
 	Collaborators   []*User       `gorm:"many2many:user_project;" json:"collaborators,omitempty"`
 	PreferredSkills []Tag         `gorm:"many2many:project_preferred" json:"preferred_skills,omitempty"`
 	RequiredSkills  []Tag         `gorm:"many2many:project_required" json:"required_skills,omitempty"`

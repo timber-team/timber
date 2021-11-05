@@ -17,24 +17,24 @@ func NewUserStore(db *gorm.DB) *UserStore {
 }
 
 func (userStore *UserStore) Get(ctx context.Context, user *User) error {
-	return userStore.db.WithContext(ctx).Preload("Projects").Preload("Applications").Preload("Tags").Omit("Projects.Collaborators").First(&user).Error
+	return userStore.db.WithContext(ctx).Preload("Projects").Preload("Applications").Preload("Tags").Omit("Projects.Collaborators").Omit("Projects.Owner").First(&user).Error
 }
 
 func (userStore *UserStore) GetByEmail(ctx context.Context, email string) (*User, error) {
 	var user *User
-	err := userStore.db.WithContext(ctx).Preload("Projects").Preload("Applications").Preload("Tags").Omit("Projects.Collaborators").First(&user, "email = ?", email).Error
+	err := userStore.db.WithContext(ctx).Preload("Projects").Preload("Applications").Preload("Tags").Omit("Projects.Collaborators").Omit("Projects.Owner").First(&user, "email = ?", email).Error
 	return user, err
 }
 
 // GetByID returns a user by id
 func (userStore *UserStore) GetByID(ctx context.Context, id int) (*User, error) {
 	var user *User
-	err := userStore.db.WithContext(ctx).Preload("Projects").Preload("Applications").Preload("Tags").Omit("Projects.Collaborators").First(&user, "id = ?", id).Error
+	err := userStore.db.WithContext(ctx).Preload("Projects").Preload("Applications").Preload("Tags").Omit("Projects.Collaborators").Omit("Projects.Owner").First(&user, "id = ?", id).Error
 	return user, err
 }
 
 func (userStore *UserStore) CheckExistsByEmail(ctx context.Context, user *User) error {
-	return userStore.db.WithContext(ctx).Preload("Projects").Preload("Applications").Preload("Tags").Omit("Projects.Collaborators").First(&user, "email = ?", user.Email).Error
+	return userStore.db.WithContext(ctx).Preload("Projects").Preload("Applications").Preload("Tags").Omit("Projects.Collaborators").Omit("Projects.Owner").First(&user, "email = ?", user.Email).Error
 }
 
 func (userStore *UserStore) Create(ctx context.Context, user *User) error {
@@ -60,6 +60,6 @@ func (userStore *UserStore) Delete(ctx context.Context, user *User) error {
 
 func (userStore *UserStore) GetAll(ctx context.Context) ([]User, error) {
 	var users []User
-	err := userStore.db.WithContext(ctx).Preload("Projects").Preload("Applications").Preload("Tags").Omit("Projects.Collaborators").Find(&users).Error
+	err := userStore.db.WithContext(ctx).Preload("Projects").Preload("Applications").Preload("Tags").Omit("Projects.Collaborators").Omit("Projects.Owner").Find(&users).Error
 	return users, err
 }
