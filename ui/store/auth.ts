@@ -22,7 +22,7 @@ export const useAuth = create<AuthState>((set) => {
     accessToken: '',
     isLoading: false,
     error: undefined,
-    getUser: (forceRefresh: boolean = false) => getUser({set, forceRefresh}),
+    getUser: (forceRefresh = false) => getUser({set, forceRefresh}),
   };
 });
 
@@ -36,7 +36,7 @@ const getUser = async (options: {
   const accessToken = localStorage.getItem('access_token') ?? undefined;
   const accessTokenClaims = getTokenPayload<AccessTokenClaims>(accessToken);
 
-  if (accessTokenClaims && !forceRefresh) {
+  if (accessTokenClaims !== undefined && !forceRefresh) {
     set({
       accessToken: accessToken,
       currentUser: accessTokenClaims.user,
