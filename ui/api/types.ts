@@ -19,14 +19,14 @@ export interface Project {
   modified_at: number;
   name: string;
   description: string;
+  image_url: string;
   owner_id: number;
+  owner: User;
   collaborators?: User[];
   preferred_skills: Tag[];
   required_skills: Tag[];
   applications?: Application[];
   // Virtual fields
-  owner_username: string;
-  owner_avatar_url: string;
   user_applied?: boolean;
 }
 

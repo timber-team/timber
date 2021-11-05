@@ -29,7 +29,7 @@ export const doRequest = async (
   }
 };
 
-export * as projects from './project';
+export * as project from './project';
 export * as tokens from './tokens';
 export * as types from './types';
 export * as users from './user';

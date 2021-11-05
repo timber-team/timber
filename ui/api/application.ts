@@ -1,4 +1,7 @@
+import {useState} from 'react';
+import {useAuth} from '../store/auth';
 import {doRequest} from '.';
+import {Application} from './types';
 
 // useApplications custom hook
 export const useApplications = () => {
