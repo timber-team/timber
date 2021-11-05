@@ -1,2 +1,16 @@
-// @import '~bootstrap/scss/bootstrap';
-@import 'custom';
+@import "custom";
+
+:root {
+  --bs-full-height: 100vh;
+  --bs-full-width: 100vw;
+
+  --bs-navbar-height: 76px;
+  --bs-navbar-height-mobile: 76px;
+
+  --bs-footer-height: 116px;
+  --bs-footer-height-mobile: 116px;
+
+  --bs-content-height: calc(
+    100vh - var(--bs-navbar-height) - var(--bs-footer-height)
+  );
+}

@@ -1,7 +1,12 @@
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display&family=Rubik&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Playfair+Display&family=Rubik&display=swap");
 
-// custom scss react-bootstrap theme variables
+:root {
+  font-family: "Playfair Display", serif, "Rubik", sans-serif;
+  --primary-color: #c74b4b;
+  --secondary-color: #689775;
+}
+
 $primary: #c74b4b;
 $secondary: #689775;
 
-@import '~bootstrap/scss/bootstrap';
+@import "~bootstrap/scss/bootstrap";
