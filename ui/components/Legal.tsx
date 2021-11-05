@@ -9,13 +9,17 @@ const Legal = () => {
       fixed="bottom"
       className="footer"
       expand="lg"
-      style={{position: 'sticky', bottom: 0}}
+      style={{
+        position: 'sticky',
+        bottom: 0,
+        height: 'var(--bs-footer-height)',
+      }}
     >
       <Container>
         <Row className="justify-content-center align-items-center text-light">
           <Col>
             <p className="text-center" style={{margin: 'auto'}}>
-              Copyright © 2020 - {new Date().getFullYear()}
+              Copyright © 2021 - {new Date().getFullYear()}
             </p>
           </Col>
           <Col>

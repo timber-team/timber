@@ -7,7 +7,13 @@ const NavBar = () => {
   const currentUser = useAuth((state) => state.currentUser);
 
   return (
-    <Navbar bg="primary" variant="dark" sticky="top">
+    <Navbar
+      bg="primary"
+      variant="dark"
+      sticky="top"
+      expand="lg"
+      style={{height: 'var(--bs-navbar-height)'}}
+    >
       <Container fluid className="navbar-container" style={{width: '95%'}}>
         <Navbar.Brand href="/">Timber</Navbar.Brand>
         <Navbar.Toggle aria-controls="responsive-navbar-nav" />
@@ -26,7 +32,7 @@ const NavBar = () => {
                     currentUser?.avatar_url ||
                     'https://www.gravatar.com/avatar/' +
                       Math.floor(Math.random() * 100000) +
-                      '?d=identicon&s=30'
+                      '?d=identicon&s=50'
                   }
                   alt="avatar"
                   className="rounded-circle"
