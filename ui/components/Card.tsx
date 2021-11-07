@@ -1,6 +1,7 @@
-import {Project, Tag, User} from '../api/types';
 import React from 'react';
-import {Badge, Card, Popover, OverlayTrigger} from 'react-bootstrap';
+import {Badge, Card, OverlayTrigger, Popover} from 'react-bootstrap';
+
+import {Project, Tag} from '../api/types';
 
 interface ProjectCardProps {
   project: Project;

@@ -1,11 +1,11 @@
+/* eslint-disable max-len */
 import React from 'react';
 import {Container} from 'react-bootstrap';
 
 const LandingPage = () => {
   return (
     <Container
-      className="d-flex flex-column
-      align-items-center justify-content-center text-center"
+      className="d-flex flex-column align-items-center justify-content-center text-center"
       style={{
         height: 'var(--bs-content-height)',
         minHeight: 'var(--bs-content-height)',
