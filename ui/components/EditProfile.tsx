@@ -1,8 +1,10 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Field, Form, Formik, FormikHelpers, FormikProps } from "formik";
 import CustomSelect from "./CustomSelect";
 import FormText from "./FormText";
 import { Button } from "react-bootstrap";
+import { GetAllTags } from "../api/tag";
+import { Tag } from "../api/types"
 
 export interface FormValues {
   avatarURL: string;
@@ -18,26 +20,21 @@ const defaultValues: FormValues = {
   technologies: []
 };
 
-const technologyOptions = [
-  {
-    label: "Golang",
-    value: "1"
-  },
-  {
-    label: "Python",
-    value: "2"
-  },
-  {
-    label: "Javascript",
-    value: "3"
-  }
-];
-
 const EditProfile = () => {
+  const [tags, setTags] = useState<Tag[]>();
+
   const onSubmit = (values: FormValues, actions: FormikHelpers<FormValues>) => {
     alert(JSON.stringify(values, null, 2));
     actions.setSubmitting(false);
   };
+
+  useEffect(() => {async () => {
+      if (!tags) {
+        setTags(await GetAllTags())
+        console.log(tags)
+      }
+    }
+  })
 
   const renderForm = (formikBag: FormikProps<FormValues>) => (
     <Form>
@@ -71,7 +68,7 @@ const EditProfile = () => {
       <Field
         className=""
         name="technologies"
-        options={technologyOptions}
+        options={tags}
         component={CustomSelect}
         label="Select Technologies"
         placeholder="Select from multiple technologies"
