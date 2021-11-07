@@ -53,7 +53,7 @@ const EditProfile = () => {
       <Field
         name="name"
         component={FormText}
-        label="Avatar name"
+        label="Name"
         type="text"
         placeholder="First and Second Name"
         description="Enter your name"
@@ -69,11 +69,13 @@ const EditProfile = () => {
         muted={true}
       />
       <Field
-        className="form-select"
+        className=""
         name="technologies"
         options={technologyOptions}
         component={CustomSelect}
+        label="Select Technologies"
         placeholder="Select from multiple technologies"
+        description="Please select technologies that you prefer to work with"
         isMulti={true}
       />
       <Button

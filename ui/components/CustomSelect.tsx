@@ -1,5 +1,6 @@
 import { FieldProps } from "formik";
 import React from "react";
+import { Form } from "react-bootstrap";
 import Select from "react-select";
 
 interface Option {
@@ -12,6 +13,9 @@ interface CustomSelectProps extends FieldProps {
   options: Option[];
   isMulti?: boolean;
   placeholder?: string;
+  label: string;
+  muted: boolean;
+  description: string;
 }
 
 export const CustomSelect = ({
@@ -20,6 +24,9 @@ export const CustomSelect = ({
   field,
   form,
   options,
+  label,
+  muted,
+  description,
   isMulti = false
 }: CustomSelectProps) => {
   const onChange = (option: Option | Option[]) => {
@@ -42,15 +49,21 @@ export const CustomSelect = ({
   };
 
   return (
-    <Select
-      className={className}
-      name={field.name}
-      value={getValue()}
-      onChange={onChange}
-      placeholder={placeholder}
-      options={options}
-      isMulti={isMulti}
-    />
+    <Form.Group>
+      <Form.Label>{label}</Form.Label>
+      <Select
+        className={className}
+        name={field.name}
+        value={getValue()}
+        onChange={onChange}
+        placeholder={placeholder}
+        options={options}
+        isMulti={isMulti}
+      />
+      <Form.Text className={muted ? "text-muted" : ""}>
+        {description}
+      </Form.Text>
+    </Form.Group>
   );
 };
 

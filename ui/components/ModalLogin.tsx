@@ -2,7 +2,6 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import React from "react"
 import { Button, Modal} from "react-bootstrap"
 import { faGithub, faGoogle } from "@fortawesome/free-brands-svg-icons"
-import { Link } from "react-router-dom"
 
 const style = {margin: 4, width: "100%"}
 

@@ -10,6 +10,7 @@ import Browse from "./pages/Browse";
 import LandingPage from "./pages/LandingPage";
 import OAuthCallback from "./src/OAuthCallback";
 import LoginPage from "./pages/LoginPage";
+import UserSettings from "./pages/UserSettings";
 
 Axios.defaults.baseURL = process.env.BASE_URL;
 Axios.defaults.withCredentials = true;
@@ -31,6 +32,8 @@ const App: React.FC = () => {
               <Route exact path="/browse" component={Browse} />
               {/* Applications page */}
               <Route exact path="/applications" component={Applications} />
+              {/* User Settings Page */}
+              <Route exact path="/user/settings" component={UserSettings}/>
             </ProtectedRoute>
           </Switch>
         </Router>
