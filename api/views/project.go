@@ -147,8 +147,8 @@ func (h *Handler) GetProjects(c *gin.Context) {
 		projects = append(projects, project)
 	}
 
-	log.WithContext(ctx).Info(fmt.Sprintf("%+v", queryProjects))
-	utils.Respond(c, customresponse.NewOK(), queryProjects)
+	log.WithContext(ctx).Info(fmt.Sprintf("%+v", projects))
+	utils.Respond(c, customresponse.NewOK(), projects)
 }
 
 // get projects by ownerID handler

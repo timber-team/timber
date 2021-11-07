@@ -146,3 +146,24 @@ func (h *Handler) GetApplicationByID(c *gin.Context) {
 
 	utils.Respond(c, customresponse.NewOK(), a)
 }
+
+func (h *Handler) GetOwnApplications(c *gin.Context) {
+	user, exists := c.Get("user")
+
+	if !exists {
+		log.WithContext(c).Error("Unable to extract user from the request context")
+		return
+	}
+
+	ctx := c.Request.Context()
+
+	u := user.(*models.User)
+
+	err := h.UserController.Get(ctx, u)
+	if err != nil {
+		utils.Respond(c, customresponse.NewNotFound("user", fmt.Sprintf("%d", u.ID)), nil)
+		return
+	}
+
+	utils.Respond(c, customresponse.NewOK(), u.Applications)
+}
