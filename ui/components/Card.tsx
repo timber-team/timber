@@ -1,11 +1,14 @@
+/* eslint-disable max-len */
 import React from 'react';
 import {Badge, Card, OverlayTrigger, Popover} from 'react-bootstrap';
+import ReactMarkdown from 'react-markdown';
 
 import {Project, Tag} from '../api/types';
 
 interface ProjectCardProps {
   project: Project;
 }
+
 const ProjectCard: React.FC<ProjectCardProps> = ({project}) => {
   return (
     <Card
@@ -24,7 +27,9 @@ const ProjectCard: React.FC<ProjectCardProps> = ({project}) => {
         <Card.Title>
           <a href={`/projects/${project.id}`}>{project.name}</a>
         </Card.Title>
-        <Card.Text>{project.description}</Card.Text>
+        <Card.Text>
+          <ReactMarkdown>{project.description}</ReactMarkdown>
+        </Card.Text>
         <Card.Text>
           <span style={{fontWeight: 'bold'}}>Required Skills:</span>{' '}
           {project.required_skills.map((skill: Tag) => (
@@ -60,8 +65,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({project}) => {
               <Popover id={`popover-positioned-${project.owner.id}`}>
                 <Popover.Header
                   as="div"
-                  className="d-flex flex-column
-                  align-items-center justify-content-center"
+                  className="d-flex flex-column align-items-center justify-content-center"
                 >
                   <img
                     src={
@@ -77,7 +81,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({project}) => {
                 </Popover.Header>
                 <Popover.Body>
                   <Popover.Header as="h5">
-                    {project.owner.description}
+                    <ReactMarkdown>{project.owner.description}</ReactMarkdown>
                   </Popover.Header>
                   <Popover.Body as="p" className="text-center">
                     {project.owner?.tags?.map((tag) => (
@@ -125,8 +129,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({project}) => {
                   <Popover id={`popover-positioned-${collaborator.id}`}>
                     <Popover.Header
                       as="div"
-                      className="d-flex flex-column
-                      align-items-center justify-content-center"
+                      className="d-flex flex-column align-items-center justify-content-center"
                     >
                       <img
                         src={
@@ -142,7 +145,9 @@ const ProjectCard: React.FC<ProjectCardProps> = ({project}) => {
                     </Popover.Header>
                     <Popover.Body>
                       <Popover.Header as="h5">
-                        {collaborator.description}
+                        <ReactMarkdown>
+                          {collaborator.description}
+                        </ReactMarkdown>
                       </Popover.Header>
                       <Popover.Body as="p" className="text-center">
                         {collaborator.tags?.map((tag) => (
