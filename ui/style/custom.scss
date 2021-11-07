@@ -1,4 +1,17 @@
-@import url("https://fonts.googleapis.com/css2?family=Playfair+Display&family=Rubik&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Playfair+Display&family=Rubik&display=swap"); // Playfair Display & Rubik
+
+$theme-colors: (
+  "primary": #c7493a,
+  "secondary": #689775 // "success": $success,
+  // "info": $info,
+  // "warning": $warning,
+  // "danger": $danger,
+  // "light": $light,
+  // "dark": $dark,,
+);
+
+$font-family-sans-serif: "Rubik";
+$font-family-monospace: "Playfair Display";
 
 :root {
   font-family: "Playfair Display", serif, "Rubik", sans-serif;

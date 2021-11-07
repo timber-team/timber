@@ -1,4 +1,3 @@
-/* eslint-disable max-len */
 import React from 'react';
 import {Badge, Card, OverlayTrigger, Popover} from 'react-bootstrap';
 import ReactMarkdown from 'react-markdown';
