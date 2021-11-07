@@ -167,3 +167,33 @@ func (h *Handler) GetOwnApplications(c *gin.Context) {
 
 	utils.Respond(c, customresponse.NewOK(), u.Applications)
 }
+
+// get all applications in the database
+func (h *Handler) GetAllApplications(c *gin.Context) {
+	ctx := c.Request.Context()
+
+	user, exists := c.Get("user")
+
+	if !exists {
+		log.WithContext(c).Error("Unable to extract user from the request context")
+		return
+	}
+
+	u := user.(*models.User)
+
+	err := h.UserController.Get(ctx, u)
+
+	if err != nil {
+		log.WithContext(ctx).WithError(err).Error(fmt.Sprintf("Unable to find user: %v", u.ID))
+		utils.Respond(c, customresponse.NewNotFound("user", fmt.Sprintf("%d", u.ID)), nil)
+		return
+	}
+
+	apps, err := h.ApplicationController.Applications.GetAll(ctx)
+	if err != nil {
+		utils.Respond(c, customresponse.NewInternal(), nil)
+		return
+	}
+
+	utils.Respond(c, customresponse.NewOK(), apps)
+}

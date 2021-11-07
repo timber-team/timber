@@ -10,6 +10,29 @@ export const useApplications = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  // getAllApplications function
+  const getAllApplications = async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const response = await doRequest<Application[]>({
+        url: '/api/applications/all',
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+         if (response[0] === null) {
+        setError(response[1]!.message);
+      } else {
+        setApplications(response[0]!.data);
+      }
+    } catch (error) {
+      setError(error.message);
+    }
+    setLoading(false);
+  }; 
+
   const getAllApplicationsByUserId = async (userId: number) => {
     setLoading(true);
     setError(null);
@@ -31,7 +54,7 @@ export const useApplications = () => {
     }
     setLoading(false);
   };
-
+  
   const getApplicationById = async (id: number) => {
     setLoading(true);
     setError(null);
@@ -81,8 +104,13 @@ export const useApplications = () => {
     applications,
     loading,
     error,
+    getAllApplications,
     getAllApplicationsByUserId,
     getApplicationById,
     getAllApplicationsByProjectId,
   };
 };
+
+export const getOwnApplications = async () => {
+  return useAuth((state) => state.currentUser?.applications);
+}

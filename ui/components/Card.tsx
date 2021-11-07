@@ -26,7 +26,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({project}) => {
         <Card.Title>
           <a href={`/projects/${project.id}`}>{project.name}</a>
         </Card.Title>
-        <Card.Text>
+        <Card.Text as="div">
           <ReactMarkdown>{project.description}</ReactMarkdown>
         </Card.Text>
         <Card.Text>
@@ -78,7 +78,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({project}) => {
                   />
                   <h3>{project.owner.username}</h3>
                 </Popover.Header>
-                <Popover.Body>
+                <Popover.Body as="div">
                   <Popover.Header as="h5">
                     <ReactMarkdown>{project.owner.description}</ReactMarkdown>
                   </Popover.Header>
@@ -142,7 +142,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({project}) => {
                       />
                       <h3>{collaborator.username}</h3>
                     </Popover.Header>
-                    <Popover.Body>
+                    <Popover.Body as="div" className="">
                       <Popover.Header as="h5">
                         <ReactMarkdown>
                           {collaborator.description}

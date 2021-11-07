@@ -31,8 +31,13 @@ func (appStore *ApplicationStore) Delete(ctx context.Context, app *Application) 
 	return appStore.db.WithContext(ctx).Delete(&app).Error
 }
 
-func (appStore *ApplicationStore) GetAll(ctx context.Context, apps *[]Application) error {
-	return appStore.db.WithContext(ctx).Find(apps).Error
+func (appStore *ApplicationStore) GetAll(ctx context.Context) ([]*Application, error) {
+	var apps []*Application
+	var err error
+	if err = appStore.db.WithContext(ctx).Find(&apps).Error; err != nil {
+		return apps, err
+	}
+	return apps, nil
 }
 
 func (appStore *ApplicationStore) GetByUserID(ctx context.Context, userID uint, apps *[]Application) error {

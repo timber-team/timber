@@ -83,9 +83,6 @@ services:
     build:
       context: ./ui
       target: dev
-    volumes:
-      - ./ui:/app
-      - /app/node_modules/
     image: timber-client
     command: npm start
     stdin_open: true
