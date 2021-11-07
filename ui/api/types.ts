@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 export interface User {
   id: number;
   created_at: number;
@@ -18,11 +19,15 @@ export interface Project {
   modified_at: number;
   name: string;
   description: string;
+  image_url: string;
   owner_id: number;
+  owner: User;
   collaborators?: User[];
   preferred_skills: Tag[];
   required_skills: Tag[];
   applications?: Application[];
+  // Virtual fields
+  user_applied?: boolean;
 }
 
 export interface Application {
@@ -37,10 +42,12 @@ export interface Tag {
   id: number;
   name: string;
 }
+
 export interface TokenResponse {
   access_token: string;
   refresh_token: string;
 }
+
 export interface GenericResponse {
   detail: string;
   msg: string;

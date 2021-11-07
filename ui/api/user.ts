@@ -1,29 +1,42 @@
-import { doRequest, NoData } from ".";
-import { User } from "./types";
+import {useAuth} from '../store/auth';
+import {doRequest} from '.';
+import {useState} from 'react';
+import {User} from './types';
 
-// Finds logged-in user's profile
-export const GetProfile = async <T>() => {
-  const [response, err] = await doRequest({ url: "/profile", method: "GET" });
-  if (err !== null) {
-    return err;
-  }
-  if (response === null) {
-    return NoData;
-  }
-  return response.data as User;
-};
+// useUser custom hook
+export const useUser = () => {
+  const accessToken = useAuth((state) => state.accessToken);
+  const [user, setUser] = useState<User>();
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-// Finds user by id
-export const GetUser = async <T>(userId: Number) => {
-  const [response, err] = await doRequest({
-    url: `/profile/${userId}`,
-    method: "GET",
-  });
-  if (err !== null) {
-    return err;
-  }
-  if (response === null) {
-    return NoData;
-  }
-  return response.data as User;
+  // get user by id using doRequest with AxiosRequestConfig
+  const getUserById = async (id: number) => {
+    setLoading(true);
+    setError(null);
+    try {
+      const response = await doRequest({
+        url: `/api/users/${id}`,
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+      if (response[0] === null) {
+        setError(response[1]!.message);
+      } else {
+        setUser(response[0]!.data);
+      }
+    } catch (error) {
+      setError(error.message);
+    }
+    setLoading(false);
+  };
+
+  return {
+    user,
+    loading,
+    error,
+    getUserById,
+  };
 };

@@ -1,5 +1,3 @@
-// TODO: Project Handler functions
-
 package views
 
 import (
@@ -28,11 +26,6 @@ func (h *Handler) NewProject(c *gin.Context) {
 	user, exists := c.Get("user")
 
 	if !exists {
-		// log.WithContext(c).Error("Unable to extract user from the request context")
-		// err := customresponse.NewInternal()
-		// c.JSON(err.Status(), gin.H{
-		// 	"error": err,
-		// })
 		utils.Respond(c, customresponse.NewInternal(), nil)
 		return
 	}
@@ -46,12 +39,6 @@ func (h *Handler) NewProject(c *gin.Context) {
 	err := h.UserController.Get(ctx, u)
 
 	if err != nil {
-		// log.WithContext(ctx).WithError(err).Error(fmt.Sprintf("Unable to find user: %v", uid))
-		// e := customresponse.NewNotFound("user", fmt.Sprintf("%d", uid))
-
-		// c.JSON(e.Status(), gin.H{
-		// 	"error": e,
-		// })
 		utils.Respond(c, customresponse.NewNotFound("user", fmt.Sprintf("%d", uid)), nil)
 		return
 	}
@@ -65,10 +52,6 @@ func (h *Handler) NewProject(c *gin.Context) {
 	err = h.ProjectController.Projects.Create(ctx, p)
 
 	if err != nil {
-		// log.WithContext(ctx).WithError(err).Error("Failed to create project")
-		// c.JSON(customresponse.Status(err), gin.H{
-		// 	"error": err,
-		// })
 		utils.Respond(c, customresponse.NewInternal(), nil)
 		return
 	}
@@ -76,10 +59,6 @@ func (h *Handler) NewProject(c *gin.Context) {
 	err = h.ProjectController.Projects.Patch(ctx, p)
 
 	if err != nil {
-		// log.WithContext(ctx).WithError(err).Error("Failed to create project")
-		// c.JSON(customresponse.Status(err), gin.H{
-		// 	"error": err,
-		// })
 		utils.Respond(c, customresponse.NewInternal(), nil)
 		return
 	}
@@ -87,17 +66,10 @@ func (h *Handler) NewProject(c *gin.Context) {
 	err = h.ProjectController.Projects.Get(ctx, p)
 
 	if err != nil {
-		// log.WithContext(ctx).WithError(err).Error("Failed to create project")
-		// c.JSON(customresponse.Status(err), gin.H{
-		// 	"error": err,
-		// })
 		utils.Respond(c, customresponse.NewInternal(), nil)
 		return
 	}
 
-	// c.JSON(http.StatusCreated, gin.H{
-	// 	"project": p,
-	// })
 	utils.Respond(c, customresponse.NewCreated(), p)
 }
 
@@ -106,12 +78,6 @@ func (h *Handler) GetProject(c *gin.Context) {
 	pid, err := strconv.Atoi(urlPID)
 	ctx := c.Request.Context()
 	if err != nil {
-		// log.WithContext(ctx).WithError(err).Error(fmt.Sprintf("Unable to parse ID from url: %v", urlPID))
-		// e := customresponse.NewInternal()
-
-		// c.JSON(e.Status(), gin.H{
-		// 	"error": e,
-		// })
 		utils.Respond(c, customresponse.NewInternal(), nil)
 		return
 	}
@@ -119,11 +85,6 @@ func (h *Handler) GetProject(c *gin.Context) {
 	user, exists := c.Get("user")
 
 	if !exists {
-		// log.WithContext(c).Error("Unable to extract user from the request context")
-		// err := customresponse.NewInternal()
-		// c.JSON(err.Status(), gin.H{
-		// 	"error": err,
-		// })
 		utils.Respond(c, customresponse.NewInternal(), nil)
 		return
 	}
@@ -133,12 +94,6 @@ func (h *Handler) GetProject(c *gin.Context) {
 	err = h.UserController.Get(ctx, u)
 
 	if err != nil {
-		// log.WithContext(ctx).WithError(err).Error(fmt.Sprintf("Unable to find user: %v", u.ID))
-		// e := customresponse.NewNotFound("user", fmt.Sprintf("%d", u.ID))
-
-		// c.JSON(e.Status(), gin.H{
-		// 	"error": e,
-		// })
 		utils.Respond(c, customresponse.NewNotFound("user", fmt.Sprintf("%d", u.ID)), nil)
 		return
 	}
@@ -150,17 +105,10 @@ func (h *Handler) GetProject(c *gin.Context) {
 	err = h.ProjectController.Projects.Get(ctx, p)
 
 	if err != nil {
-		// log.WithContext(ctx).WithError(err).Error("Failed to get project")
-		// c.JSON(customresponse.Status(err), gin.H{
-		// 	"error": err,
-		// })
 		utils.Respond(c, customresponse.NewInternal(), nil)
 		return
 	}
 
-	// c.JSON(http.StatusCreated, gin.H{
-	// 	"project": p,
-	// })
 	utils.Respond(c, customresponse.NewOK(), p)
 }
 
@@ -168,11 +116,6 @@ func (h *Handler) GetProjects(c *gin.Context) {
 	user, exists := c.Get("user")
 
 	if !exists {
-		// log.WithContext(c).Error("Unable to extract user from the request context")
-		// err := customresponse.NewInternal()
-		// c.JSON(err.Status(), gin.H{
-		// 	"error": err,
-		// })
 		utils.Respond(c, customresponse.NewInternal(), nil)
 		return
 	}
@@ -184,31 +127,67 @@ func (h *Handler) GetProjects(c *gin.Context) {
 	err := h.UserController.Get(ctx, u)
 
 	if err != nil {
-		// log.WithContext(ctx).WithError(err).Error(fmt.Sprintf("Unable to find user: %v", u.ID))
-		// e := customresponse.NewNotFound("user", fmt.Sprintf("%d", u.ID))
-
-		// c.JSON(e.Status(), gin.H{
-		// 	"error": e,
-		// })
 		utils.Respond(c, customresponse.NewNotFound("user", fmt.Sprintf("%d", u.ID)), nil)
 		return
 	}
-	projects, err := h.ProjectController.GetAll(ctx)
+	queryProjects, err := h.ProjectController.GetAll(ctx)
 
 	if err != nil {
-		// log.WithContext(ctx).WithError(err).Error(fmt.Sprintf("Unable to find user: %v", u.ID))
-		// e := customresponse.NewNotFound("user", fmt.Sprintf("%d", u.ID))
-
-		// c.JSON(e.Status(), gin.H{
-		// 	"error": e,
-		// })
 		utils.Respond(c, customresponse.NewNotFound("user", fmt.Sprintf("%d", u.ID)), nil)
 		return
 	}
 
-	// c.JSON(http.StatusCreated, gin.H{
-	// 	"projects": projects,
-	// })
-	log.WithContext(ctx).Info(fmt.Sprintf("%+v", projects))
-	utils.Respond(c, customresponse.NewOK(), projects)
+	var projects []*models.Project
+	for _, project := range queryProjects {
+		for _, application := range u.Applications {
+			if project.ID == application.ProjectID {
+				project.UserApplied = true
+			}
+		}
+		projects = append(projects, project)
+	}
+
+	log.WithContext(ctx).Info(fmt.Sprintf("%+v", queryProjects))
+	utils.Respond(c, customresponse.NewOK(), queryProjects)
+}
+
+// get projects by ownerID handler
+func (h *Handler) GetProjectsByOwnerID(c *gin.Context) {
+	user, exists := c.Get("user")
+
+	if !exists {
+		utils.Respond(c, customresponse.NewInternal(), nil)
+		return
+	}
+
+	ctx := c.Request.Context()
+
+	u := user.(*models.User)
+
+	err := h.UserController.Get(ctx, u)
+
+	if err != nil {
+		utils.Respond(c, customresponse.NewNotFound("user", fmt.Sprintf("%d", u.ID)), nil)
+		return
+	}
+
+	ownerID := c.Param("ownerID")
+	pid, err := strconv.Atoi(ownerID)
+	if err != nil {
+		utils.Respond(c, customresponse.NewInternal(), nil)
+		return
+	}
+
+	p := &models.Project{
+		OwnerID: pid,
+	}
+
+	err = h.ProjectController.Projects.Get(ctx, p)
+
+	if err != nil {
+		utils.Respond(c, customresponse.NewNotFound("user", fmt.Sprintf("%d", u.ID)), nil)
+		return
+	}
+
+	utils.Respond(c, customresponse.NewOK(), p)
 }

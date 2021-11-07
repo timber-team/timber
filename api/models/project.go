@@ -14,13 +14,13 @@ func NewProjectStore(db *gorm.DB) *ProjectStore {
 }
 
 func (projectStore *ProjectStore) Get(ctx context.Context, project *Project) error {
-	return projectStore.db.WithContext(ctx).Preload("Collaborators").Preload("Applications").Preload("PreferredSkills").Preload("RequiredSkills").Omit("Collaborators.Projects").First(&project).Error
+	return projectStore.db.WithContext(ctx).Preload("Collaborators").Preload("Applications").Preload("PreferredSkills").Preload("RequiredSkills").Preload("Owner").Omit("Collaborators.Projects").Omit("Owner.Projects").First(&project).Error
 }
 
 func (projectStore *ProjectStore) GetAll(ctx context.Context) ([]*Project, error) {
 	var projects []*Project
 	var err error
-	if err = projectStore.db.WithContext(ctx).Preload("Collaborators").Preload("Applications").Preload("PreferredSkills").Preload("RequiredSkills").Omit("Collaborators.Projects").Find(&projects).Error; err != nil {
+	if err = projectStore.db.WithContext(ctx).Preload("Collaborators").Preload("Applications").Preload("PreferredSkills").Preload("RequiredSkills").Preload("Owner").Preload("Collaborators.Projects").Preload("Owner.Projects").Preload("Collaborators.Tags").Preload("Owner.Tags").Find(&projects).Error; err != nil {
 		return nil, err
 	}
 	return projects, nil
@@ -42,7 +42,7 @@ func (projectStore *ProjectStore) Delete(ctx context.Context, project *Project) 
 func (projectStore *ProjectStore) GetRecommended(ctx context.Context, user *User) ([]*Project, error) {
 	var projects []*Project
 	var err error
-	if err = projectStore.db.WithContext(ctx).Preload("Collaborators").Preload("Applications").Preload("PreferredSkills").Preload("RequiredSkills").Omit("Collaborators.Projects").Find(&projects).Error; err != nil {
+	if err = projectStore.db.WithContext(ctx).Preload("Collaborators").Preload("Applications").Preload("PreferredSkills").Preload("RequiredSkills").Preload("Owner").Omit("Collaborators.Projects").Omit("Owner.Projects").Find(&projects).Error; err != nil {
 		return nil, err
 	}
 
@@ -71,7 +71,7 @@ func (projectStore *ProjectStore) GetRecommended(ctx context.Context, user *User
 
 func (projectStore *ProjectStore) GetTrending(ctx context.Context) ([]*Project, error) {
 	var projects []*Project
-	err := projectStore.db.WithContext(ctx).Preload("Collaborators").Preload("Applications").Preload("PreferredSkills").Preload("RequiredSkills").Omit("Collaborators.Projects").Order("count(applications) desc").Find(&projects).Error
+	err := projectStore.db.WithContext(ctx).Preload("Collaborators").Preload("Applications").Preload("PreferredSkills").Preload("RequiredSkills").Preload("Owner").Omit("Collaborators.Projects").Omit("Owner.Projects").Order("count(applications) desc").Find(&projects).Error
 	if err != nil {
 		return nil, err
 	}

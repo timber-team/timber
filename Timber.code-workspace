@@ -12,18 +12,41 @@
     {
       "name": "docs",
       "path": "./design_doc"
-    },
-    {
-      "name": "Timber",
-      "path": "."
     }
+    // {
+    //   "name": "Timber",
+    //   "path": ".",
+    //   "ignore": ["**/*.code-workspace"]
+    // }
   ],
   "settings": {
-    "typescript.preferences.importModuleSpecifier": "relative",
-    "prettier.singleQuote": false,
-    "prettier.jsxSingleQuote": false,
-    "prettier.semi": true,
-    "tsimporter.doubleQuotes": true,
-    "typescript.preferences.quotePreference": "double"
+    "files.exclude": {
+      "*.code-workspace": true
+    },
+    "tsimporter.preferRelative": false,
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.formatOnSave": true,
+    "editor.formatOnSaveMode": "file",
+    "editor.formatOnPaste": true,
+    "tsimporter.doubleQuotes": false,
+    // "eslint.autoFixOnSave": true,
+    "[typescriptreact]": {
+      "editor.defaultFormatter": "rvest.vs-code-prettier-eslint"
+    },
+    "[typescript]": {
+      "editor.defaultFormatter": "rvest.vs-code-prettier-eslint"
+    },
+    "[javascript]": {
+      "editor.defaultFormatter": "rvest.vs-code-prettier-eslint"
+    },
+    "[javascriptreact]": {
+      "editor.defaultFormatter": "rvest.vs-code-prettier-eslint"
+    },
+    "[go]": {
+      "editor.defaultFormatter": "golang.go"
+    },
+    "editor.codeActionsOnSave": {
+      "source.fixAll.eslint": true
+    }
   }
 }
