@@ -12,7 +12,7 @@ type User struct {
 	Email        string        `gorm:"unique" json:"email"`
 	Description  string        `json:"description"`
 	AvatarURL    string        `json:"avatar_url,omitempty"`
-	Tags         []Tag         `gorm:"many2many:user_tags" json:"tags,omitempty"`
+	Tags         []*Tag        `gorm:"many2many:user_tags" json:"tags,omitempty"`
 	Projects     []*Project    `gorm:"many2many:user_project;" json:"projects,omitempty"`
 	Applications []Application `json:"applications,omitempty"`
 }
@@ -27,8 +27,8 @@ type Project struct {
 	OwnerID         int           `gorm:"not null;<-:create" json:"owner_id"`
 	Owner           User          `gorm:"foreignkey:OwnerID;association_foreignkey:ID" json:"owner,omitempty"`
 	Collaborators   []*User       `gorm:"many2many:user_project;" json:"collaborators,omitempty"`
-	PreferredSkills []Tag         `gorm:"many2many:project_preferred" json:"preferred_skills,omitempty"`
-	RequiredSkills  []Tag         `gorm:"many2many:project_required" json:"required_skills,omitempty"`
+	PreferredSkills []*Tag        `gorm:"many2many:project_preferred" json:"preferred_skills,omitempty"`
+	RequiredSkills  []*Tag        `gorm:"many2many:project_required" json:"required_skills,omitempty"`
 	Applications    []Application `json:"applications,omitempty"`
 	// Virtual fields
 	OwnerUsername  string `gorm:"-" json:"owner_username,omitempty"`

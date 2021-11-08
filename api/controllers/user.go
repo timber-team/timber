@@ -17,3 +17,8 @@ func NewUserController(userStore models.UserStore) *UserController {
 func (userControl *UserController) Get(ctx context.Context, u *models.User) error {
 	return userControl.Users.Get(ctx, u)
 }
+
+//update
+func (userControl *UserController) Update(ctx context.Context, u *models.User, newUser *models.User) error {
+	return userControl.Users.Update(ctx, u, newUser)
+}

@@ -1,11 +1,14 @@
 import React from 'react';
-import {Container, Nav, Navbar, NavDropdown} from 'react-bootstrap';
+import {Container, Nav, Navbar, NavDropdown, Button} from 'react-bootstrap';
 
 import {useAuth} from '../store/auth';
 import {deleteTokens} from '../utils';
 
+import {CreateProjectForm} from './ProjectForms';
+
 const NavBar = () => {
   const currentUser = useAuth((state) => state.currentUser);
+  const [showForm, setShowForm] = React.useState(false);
 
   return (
     <Navbar
@@ -25,6 +28,13 @@ const NavBar = () => {
             <Nav.Link href="/applications">Applications</Nav.Link>
           </Nav>
           <Nav>
+            <CreateProjectForm show={showForm} setShow={setShowForm} />
+            <Button
+              variant="outline-light"
+              onClick={() => setShowForm(!showForm)}
+            >
+              Create Project
+            </Button>
             <NavDropdown
               align={'end'}
               title={
