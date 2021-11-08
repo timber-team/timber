@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 import {useState} from 'react';
 import {doRequest} from '.';
 import {useAuth} from '../store/auth';
@@ -5,7 +6,7 @@ import {Project} from './types';
 
 // useProjects custom hook
 export const useProjects = () => {
-  const accessToken = useAuth((state) => state.accessToken);
+  const {accessToken} = useAuth();
   const [projects, setProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -98,6 +99,29 @@ export const useProjects = () => {
     setLoading(false);
   };
 
+  const createProject = async (project: Partial<Project>) => {
+    setLoading(true);
+    setError(null);
+    try {
+      const response = await doRequest({
+        url: '/api/projects',
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+        data: project,
+      });
+      if (response[0] === null) {
+        setError(response[1]!.message);
+      } else {
+        setProjects(response[0]!.data);
+      }
+    } catch (error) {
+      setError(error.message);
+    }
+    setLoading(false);
+  };
+
   return {
     projects,
     loading,
@@ -106,5 +130,6 @@ export const useProjects = () => {
     getAllProjectsByUserId,
     getProjectById,
     getProjectByName,
+    createProject,
   };
 };
