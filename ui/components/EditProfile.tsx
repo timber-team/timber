@@ -20,6 +20,13 @@ const defaultValues: FormValues = {
   technologies: []
 };
 
+const stylesButton = {
+  display: 'flex',
+  justifyContent: 'space-around',
+  marginTop: 12
+
+}
+
 const EditProfile = () => {
   const [tags, setTags] = useState<Tag[]>();
 
@@ -30,7 +37,7 @@ const EditProfile = () => {
 
   useEffect(() => {async () => {
       if (!tags) {
-        setTags(await GetAllTags())
+        setTags(await GetAllTags()) // This doesn't get all tags? It only gets all user tags?
         console.log(tags)
       }
     }
@@ -75,16 +82,18 @@ const EditProfile = () => {
         description="Please select technologies that you prefer to work with"
         isMulti={true}
       />
-      <Button
-        variant="primary"
-        type="button"
-        className="outline"
-        onClick={formikBag.handleReset}
-        disabled={!formikBag.dirty || formikBag.isSubmitting}
-      >
-        Reset
-      </Button>
-      <Button variant="primary" type="submit">Submit</Button>
+      <div style={stylesButton}>
+        <Button
+          variant="primary"
+          type="button"
+          className="outline"
+          onClick={formikBag.handleReset}
+          disabled={!formikBag.dirty || formikBag.isSubmitting}
+        >
+          Reset
+        </Button>
+        <Button variant="primary" type="submit">Submit</Button>
+      </div>
     </Form>
   );
 
