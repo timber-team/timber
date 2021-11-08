@@ -1,7 +1,8 @@
 package models
 
 import (
-	"golang.org/x/net/context"
+	"context"
+
 	"gorm.io/gorm"
 )
 
@@ -13,30 +14,31 @@ func NewProjectStore(db *gorm.DB) *ProjectStore {
 	return &ProjectStore{db}
 }
 
-func (projectStore *ProjectStore) Get(ctx context.Context, project *Project) error {
-	return projectStore.db.WithContext(ctx).Preload("Collaborators").Preload("Applications").Preload("PreferredSkills").Preload("RequiredSkills").Preload("Owner").Omit("Collaborators.Projects").Omit("Owner.Projects").First(&project).Error
-}
-
-func (projectStore *ProjectStore) GetAll(ctx context.Context) ([]*Project, error) {
-	var projects []*Project
-	var err error
-	if err = projectStore.db.WithContext(ctx).Preload("Collaborators").Preload("Applications").Preload("PreferredSkills").Preload("RequiredSkills").Preload("Owner").Preload("Collaborators.Projects").Preload("Owner.Projects").Preload("Collaborators.Tags").Preload("Owner.Tags").Find(&projects).Error; err != nil {
-		return nil, err
-	}
-	return projects, nil
-}
-
 func (projectStore *ProjectStore) Create(ctx context.Context, project *Project) error {
 	return projectStore.db.WithContext(ctx).Create(&project).Error
 }
 
-func (projectStore *ProjectStore) Patch(ctx context.Context, project *Project) error {
-	return projectStore.db.WithContext(ctx).Save(&project).Error
+func (projectStore *ProjectStore) Get(ctx context.Context, project *Project) error {
+	return projectStore.db.WithContext(ctx).Preload("Collaborators").Preload("Applications").Preload("PreferredSkills").Preload("RequiredSkills").Preload("Owner").Preload("Collaborators.Projects").Preload("Collaborators.Tags").Preload("Owner.Projects").Preload("Owner.Tags").First(&project).Error
 }
 
-func (projectStore *ProjectStore) Delete(ctx context.Context, project *Project) error {
-	projectStore.Get(ctx, project)
-	return projectStore.db.WithContext(ctx).Delete(&project).Error
+// get all projects
+func (projectStore *ProjectStore) GetAll(ctx context.Context) ([]*Project, error) {
+	var projects []*Project
+	err := projectStore.db.WithContext(ctx).Preload("Collaborators").Preload("Applications").Preload("PreferredSkills").Preload("RequiredSkills").Preload("Owner").Preload("Collaborators.Projects").Preload("Collaborators.Tags").Preload("Owner.Projects").Preload("Owner.Tags").Find(&projects).Error
+	return projects, err
+}
+
+func (projectStore *ProjectStore) GetByOwnerID(ctx context.Context, project *Project) error {
+	return projectStore.db.WithContext(ctx).Preload("Collaborators").Preload("Applications").Preload("PreferredSkills").Preload("RequiredSkills").Preload("Owner").Preload("Collaborators.Projects").Preload("Collaborators.Tags").Preload("Owner.Projects").Preload("Owner.Tags").Where("owner_id = ?", project.OwnerID).First(&project).Error
+}
+
+func (projectStore *ProjectStore) GetByPopularity(ctx context.Context) ([]*Project, error) {
+	var projects []*Project
+	if err := projectStore.db.WithContext(ctx).Preload("Collaborators").Preload("Applications").Preload("PreferredSkills").Preload("RequiredSkills").Preload("Owner").Preload("Collaborators.Projects").Preload("Collaborators.Tags").Preload("Owner.Projects").Preload("Owner.Tags").Order("(SELECT count(*) FROM applications WHERE applications.project_id = projects.id) DESC").Find(&projects).Error; err != nil {
+		return nil, err
+	}
+	return projects, nil
 }
 
 func (projectStore *ProjectStore) GetRecommended(ctx context.Context, user *User) ([]*Project, error) {
@@ -45,7 +47,6 @@ func (projectStore *ProjectStore) GetRecommended(ctx context.Context, user *User
 	if err = projectStore.db.WithContext(ctx).Preload("Collaborators").Preload("Applications").Preload("PreferredSkills").Preload("RequiredSkills").Preload("Owner").Omit("Collaborators.Projects").Omit("Owner.Projects").Find(&projects).Error; err != nil {
 		return nil, err
 	}
-
 	var recommendedProjects []*Project
 	for _, project := range projects {
 		for _, tag := range user.Tags {
@@ -56,7 +57,6 @@ func (projectStore *ProjectStore) GetRecommended(ctx context.Context, user *User
 			}
 		}
 	}
-
 	// Sort recommendedProjects by number of applications
 	for i := 0; i < len(recommendedProjects)-1; i++ {
 		for j := i + 1; j < len(recommendedProjects); j++ {
@@ -65,31 +65,13 @@ func (projectStore *ProjectStore) GetRecommended(ctx context.Context, user *User
 			}
 		}
 	}
-
 	return recommendedProjects, nil
 }
 
-func (projectStore *ProjectStore) GetTrending(ctx context.Context) ([]*Project, error) {
-	var projects []*Project
-	err := projectStore.db.WithContext(ctx).Preload("Collaborators").Preload("Applications").Preload("PreferredSkills").Preload("RequiredSkills").Preload("Owner").Omit("Collaborators.Projects").Omit("Owner.Projects").Order("count(applications) desc").Find(&projects).Error
-	if err != nil {
-		return nil, err
-	}
-	return projects, nil
+func (projectStore *ProjectStore) Update(ctx context.Context, project *Project) error {
+	return projectStore.db.WithContext(ctx).Save(&project).Error
 }
 
-func (projectStore *ProjectStore) GetByTag(ctx context.Context, tag *Tag) ([]*Project, error) {
-	projects, err := projectStore.GetAll(ctx)
-	if err != nil {
-		return nil, err
-	}
-	var projectsWithTag []*Project
-	for _, project := range projects {
-		for _, requiredTag := range project.RequiredSkills {
-			if requiredTag.ID == tag.ID {
-				projectsWithTag = append(projectsWithTag, project)
-			}
-		}
-	}
-	return projectsWithTag, nil
+func (projectStore *ProjectStore) Delete(ctx context.Context, project *Project) error {
+	return projectStore.db.WithContext(ctx).Delete(&project).Error
 }

@@ -37,6 +37,7 @@ func NewHandler(c *Config) {
 	g := c.R.Group("/api")
 
 	if gin.Mode() != gin.TestMode {
+		g.PATCH("/users", middlewares.AuthUser(h.TokenController), h.UpdateUser)
 		g.GET("/profile", middlewares.AuthUser(h.TokenController), h.Profile)
 		g.GET("/profile/:userID", middlewares.AuthUser(h.TokenController), h.ProfileByID)
 		g.POST("/projects", middlewares.AuthUser(h.TokenController), h.NewProject)

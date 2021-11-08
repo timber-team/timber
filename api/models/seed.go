@@ -69,9 +69,9 @@ func (ss *SeedStore) Seed() error {
 	tagNames := []string{"Adaptability", "Communication", "Collaboration", "Creativity", "Decision Making", "Dependability", "Initiative", "Learning", "Organization", "Problem Solving", "Quality", "Teamwork", "Time Management", "C", "C++", "Java", "JavaScript", "Python", "SQL", "HTML", "CSS", "Go", "PHP", "Ruby", "Swift"}
 
 	// Generate 50 random Tags and store them in a slice
-	var generatedTags []Tag
+	var generatedTags []*Tag
 	for i := 0; i < len(tagNames); i++ {
-		generatedTags = append(generatedTags, Tag{Name: tagNames[i]})
+		generatedTags = append(generatedTags, &Tag{Name: tagNames[i]})
 	}
 
 	// Seed the database with the generated tags

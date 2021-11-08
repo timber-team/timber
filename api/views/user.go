@@ -54,3 +54,41 @@ func (h *Handler) ProfileByID(c *gin.Context) {
 
 	utils.Respond(c, customresponse.NewOK(), u)
 }
+
+// update user from a post request containing a user object in the body
+func (h *Handler) UpdateUser(c *gin.Context) {
+	user, exists := c.Get("user")
+
+	if !exists {
+		utils.Respond(c, customresponse.NewInternal(), nil)
+		return
+	}
+
+	ctx := c.Request.Context()
+
+	u := user.(*models.User)
+
+	err := h.UserController.Get(ctx, u)
+
+	if err != nil {
+		utils.Respond(c, customresponse.NewInternal(), nil)
+		return
+	}
+
+	// get the user from the request body
+	var newUser models.User
+	err = c.BindJSON(&newUser)
+	if err != nil {
+		utils.Respond(c, customresponse.NewBadRequest("user object is invalid"), nil)
+		return
+	}
+
+	// update the user
+	err = h.UserController.Update(ctx, u, &newUser)
+	if err != nil {
+		utils.Respond(c, customresponse.NewInternal(), nil)
+		return
+	}
+
+	utils.Respond(c, customresponse.NewOK(), u)
+}

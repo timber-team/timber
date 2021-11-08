@@ -49,8 +49,10 @@ func (userStore *UserStore) Create(ctx context.Context, user *User) error {
 	return customresponse.NewConflict("email", user.Email)
 }
 
-func (userStore *UserStore) Patch(ctx context.Context, user *User) error {
-	return userStore.db.WithContext(ctx).Save(&user).Error
+//update user with new data
+func (userStore *UserStore) Update(ctx context.Context, user *User, newUser *User) error {
+	userStore.Get(ctx, user)
+	return userStore.db.WithContext(ctx).Model(&user).Updates(newUser).Error
 }
 
 func (userStore *UserStore) Delete(ctx context.Context, user *User) error {
