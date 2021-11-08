@@ -1,75 +1,110 @@
-import { doRequest, NoData } from ".";
-import { useAuth } from "../store/auth";
-import { Project } from "./types";
+import {useState} from 'react';
+import {doRequest} from '.';
+import {useAuth} from '../store/auth';
+import {Project} from './types';
 
-export const GetProjectByID = async (projID: number): Promise<Project> => {
+// useProjects custom hook
+export const useProjects = () => {
   const accessToken = useAuth((state) => state.accessToken);
-  const [resp, error] = await doRequest({
-    method: "GET",
-    url: `/api/projects/${projID}`,
-    headers: {
-      "Content-Type": "application/json",
-      "Authorization": `Bearer ${accessToken}`,
-    },
-  });
+  const [projects, setProjects] = useState<Project[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  if (error) {
-    throw error;
-  }
+  const getAllProjects = async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const response = await doRequest({
+        url: '/api/projects',
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+      if (response[0] === null) {
+        setError(response[1]!.message);
+      } else {
+        setProjects(response[0]!.data);
+      }
+    } catch (error) {
+      setError(error.message);
+    }
+    setLoading(false);
+  };
 
-  return (resp?.data as Project) ?? NoData;
-};
+  const getAllProjectsByUserId = async (userId: number) => {
+    setLoading(true);
+    setError(null);
+    try {
+      const response = await doRequest({
+        url: `/api/users/${userId}/projects`,
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+      if (response[0] === null) {
+        setError(response[1]!.message);
+      } else {
+        setProjects(response[0]!.data);
+      }
+    } catch (error) {
+      setError(error.message);
+    }
+    setLoading(false);
+  };
 
-export const GetProjectsByOwnerID = async (
-  userID: number
-): Promise<Project[]> => {
-  const [resp, error] = await doRequest({
-    method: "GET",
-    url: `/api/user/${userID}/projects`,
-    headers: {
-      "Content-Type": "application/json",
-    },
-  });
+  const getProjectById = async (id: number) => {
+    setLoading(true);
+    setError(null);
+    try {
+      const response = await doRequest({
+        url: `/api/projects/${id}`,
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+      if (response[0] === null) {
+        setError(response[1]!.message);
+      } else {
+        setProjects(response[0]!.data);
+      }
+    } catch (error) {
+      setError(error.message);
+    }
+    setLoading(false);
+  };
 
-  if (error) {
-    throw error;
-  }
+  const getProjectByName = async (name: string) => {
+    setLoading(true);
+    setError(null);
+    try {
+      const response = await doRequest({
+        url: `/api/projects/name/${name}`,
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+      if (response[0] === null) {
+        setError(response[1]!.message);
+      } else {
+        setProjects(response[0]!.data);
+      }
+    } catch (error) {
+      setError(error.message);
+    }
+    setLoading(false);
+  };
 
-  return (resp?.data as Project[]) ?? NoData;
-};
-
-export const GetProjectsByRequiredSkill = async (
-  tagID: number
-): Promise<Project[]> => {
-  const [resp, error] = await doRequest({
-    method: "GET",
-    url: `/api/tag/${tagID}/projects`,
-    headers: {
-      "Content-Type": "application/json",
-    },
-  });
-
-  if (error) {
-    throw error;
-  }
-
-  return (resp?.data as Project[]) ?? NoData;
-};
-
-export const GetProjectsByPreferredSkill = async (
-  tagID: number
-): Promise<Project[]> => {
-  const [resp, error] = await doRequest({
-    method: "GET",
-    url: `/api/tag/${tagID}/projects`,
-    headers: {
-      "Content-Type": "application/json",
-    },
-  });
-
-  if (error) {
-    throw error;
-  }
-
-  return (resp?.data as Project[]) ?? NoData;
+  return {
+    projects,
+    loading,
+    error,
+    getAllProjects,
+    getAllProjectsByUserId,
+    getProjectById,
+    getProjectByName,
+  };
 };

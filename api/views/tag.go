@@ -2,6 +2,7 @@ package views
 
 import (
 	"fmt"
+	"strconv"
 
 	"github.com/Strum355/log"
 	"github.com/gin-gonic/gin"
@@ -14,12 +15,6 @@ import (
 func (h *Handler) NewTag(c *gin.Context) {
 	user, exists := c.Get("user")
 	if !exists {
-		// log.Info("burh")
-		// log.WithContext(c).Error("Unable to extract user from request context")
-		// err := customresponse.NewInternal()
-		// c.JSON(err.Status(), gin.H{
-		// 	"error": err,
-		// })
 		utils.Respond(c, customresponse.NewInternal(), nil)
 		return
 	}
@@ -28,12 +23,6 @@ func (h *Handler) NewTag(c *gin.Context) {
 	u := user.(*models.User)
 	err := h.UserController.Get(ctx, u)
 	if err != nil {
-		// log.WithContext(c).WithError(err).Error(fmt.Sprintf("Unable to find user: %v", u.ID))
-		// e := customresponse.NewNotFound("user", fmt.Sprintf("%d", u.ID))
-
-		// c.JSON(e.Status(), gin.H{
-		// 	"error": e,
-		// })
 		utils.Respond(c, customresponse.NewNotFound("user", fmt.Sprintf("%d", u.ID)), nil)
 		return
 	}
@@ -48,37 +37,20 @@ func (h *Handler) NewTag(c *gin.Context) {
 	tag.ID = 0
 	err = h.TagController.Tags.Create(ctx, tag)
 	if err != nil {
-		// log.WithContext(ctx).WithError(err).Error("Failed to create tag")
-		// c.JSON(customresponse.Status(err), gin.H{
-		// 	"error": err,
-		// })
 		utils.Respond(c, customresponse.NewInternal(), nil)
 		return
 	}
 
 	if err != nil {
-		// log.WithContext(ctx).WithError(err).Error("Failed to create tag")
-		// c.JSON(customresponse.Status(err), gin.H{
-		// 	"error": err,
-		// })
 		utils.Respond(c, customresponse.NewInternal(), nil)
 		return
 	}
-
-	// c.JSON(http.StatusCreated, gin.H{
-	// 	"tag": tag,
-	// })
 	utils.Respond(c, customresponse.NewCreated(), tag)
 }
 
 func (h *Handler) GetTags(c *gin.Context) {
 	user, exists := c.Get("user")
 	if !exists {
-		// log.WithContext(c).Error("Unable to extract user from request context")
-		// err := customresponse.NewInternal()
-		// c.JSON(err.Status(), gin.H{
-		// 	"error": err,
-		// })
 		utils.Respond(c, customresponse.NewInternal(), nil)
 		return
 	}
@@ -87,11 +59,6 @@ func (h *Handler) GetTags(c *gin.Context) {
 
 	u := user.(*models.User)
 	if err := h.UserController.Get(ctx, u); err != nil {
-		// log.WithContext(ctx).Error(fmt.Sprintf("User %v not found", u.ID))
-		// err := customresponse.NewInternal()
-		// c.JSON(err.Status(), gin.H{
-		// 	"error": err,
-		// })
 		utils.Respond(c, customresponse.NewInternal(), nil)
 		return
 	}
@@ -102,8 +69,76 @@ func (h *Handler) GetTags(c *gin.Context) {
 		return
 	}
 
-	// c.JSON(http.StatusOK, gin.H{
-	// 	"data": tags,
-	// })
 	utils.Respond(c, customresponse.NewOK(), tags)
+}
+
+// get tag by tagID handler
+func (h *Handler) GetTag(c *gin.Context) {
+	user, exists := c.Get("user")
+	if !exists {
+		utils.Respond(c, customresponse.NewInternal(), nil)
+		return
+	}
+
+	ctx := c.Request.Context()
+
+	u := user.(*models.User)
+	if err := h.UserController.Get(ctx, u); err != nil {
+		utils.Respond(c, customresponse.NewInternal(), nil)
+		return
+	}
+
+	tagIDstr := c.Param("tagID")
+	tagID, err := strconv.Atoi(tagIDstr)
+	if err != nil {
+		utils.Respond(c, customresponse.NewInternal(), nil)
+		return
+	}
+
+	tag := &models.Tag{
+		ID: tagID,
+	}
+	err = h.TagController.Tags.Get(ctx, tag)
+	if err != nil {
+		utils.Respond(c, customresponse.NewInternal(), nil)
+		return
+	}
+
+	utils.Respond(c, customresponse.NewOK(), tag)
+}
+
+func (h *Handler) GetTagsByProjectID(c *gin.Context) {
+	user, exists := c.Get("user")
+	if !exists {
+		utils.Respond(c, customresponse.NewInternal(), nil)
+		return
+	}
+
+	ctx := c.Request.Context()
+
+	u := user.(*models.User)
+	if err := h.UserController.Get(ctx, u); err != nil {
+		utils.Respond(c, customresponse.NewInternal(), nil)
+		return
+	}
+
+	projectIDstr := c.Param("projectID")
+	projectID, err := strconv.Atoi(projectIDstr)
+	if err != nil {
+		utils.Respond(c, customresponse.NewInternal(), nil)
+		return
+	}
+
+	project := &models.Project{
+		ID: projectID,
+	}
+
+	err = h.ProjectController.Projects.Get(ctx, project)
+
+	if err != nil {
+		utils.Respond(c, customresponse.NewInternal(), nil)
+		return
+	}
+
+	utils.Respond(c, customresponse.NewOK(), project.RequiredSkills)
 }

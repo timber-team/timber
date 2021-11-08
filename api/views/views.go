@@ -34,7 +34,6 @@ func NewHandler(c *Config) {
 		c.TagController,
 	}
 
-	// TODO: Routing and Handlers
 	g := c.R.Group("/api")
 
 	if gin.Mode() != gin.TestMode {
@@ -44,8 +43,13 @@ func NewHandler(c *Config) {
 		g.GET("/projects/:projectID", middlewares.AuthUser(h.TokenController), h.GetProject)
 		g.GET("/projects", middlewares.AuthUser(h.TokenController), h.GetProjects)
 		g.POST("/projects/:projectID/apply", middlewares.AuthUser(h.TokenController), h.NewApplication)
+		g.GET("/users/:ownerID/projects", middlewares.AuthUser(h.TokenController), h.GetProjectsByOwnerID)
+		g.GET("/applications/:appID", middlewares.AuthUser(h.TokenController), h.GetApplicationByID)
+		g.GET("/projects/:projectID/applications", middlewares.AuthUser(h.TokenController), h.GetApplicationsByProjectID)
 		g.GET("/tags", middlewares.AuthUser(h.TokenController), h.GetTags)
+		g.GET("/tags/:tagID", middlewares.AuthUser(h.TokenController), h.GetTag)
 		g.POST("/tags", middlewares.AuthUser(h.TokenController), h.NewTag)
+		g.GET("/projects/:projectID/tags", middlewares.AuthUser(h.TokenController), h.GetTagsByProjectID)
 	} else {
 		g.GET("/profile", h.Profile)
 		g.GET("/profile/:userID", h.ProfileByID)
@@ -53,8 +57,13 @@ func NewHandler(c *Config) {
 		g.GET("/projects/:projectID", h.GetProject)
 		g.GET("/projects", h.GetProjects)
 		g.POST("/projects/:projectID/apply", h.NewApplication)
+		g.GET("/users/:ownerID/projects", h.GetProjectsByOwnerID)
+		g.GET("/applications/:appID", h.GetApplicationByID)
+		g.GET("/projects/:projectID/applications", h.GetApplicationsByProjectID)
 		g.GET("/tags", h.GetTags)
+		g.GET("/tags/:tagID", h.GetTag)
 		g.POST("/tags", h.NewTag)
+		g.GET("/projects/:projectID/tags", h.GetTagsByProjectID)
 	}
 
 	c.R.NoRoute(func(c *gin.Context) {

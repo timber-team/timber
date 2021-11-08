@@ -91,6 +91,9 @@ services:
     stdin_open: true
     environment:
       BASE_URL: ${BASE_URL}
+      PROJECT_GITHUB_URL: ${PROJECT_GITHUB_URL}
+      PROJECT_MOTTO: ${PROJECT_MOTTO}
+      FOOTER_TEXT: ${FOOTER_TEXT}
     expose:
       - "3000"
       - "1234"

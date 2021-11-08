@@ -29,10 +29,12 @@ type Project struct {
 	UpdatedAt       int64         `gorm:"autoUpdateTime;<-:create" json:"modified_at"`
 	Name            string        `gorm:"unique" json:"name"`
 	Description     string        `json:"description"`
+	ImageURL        string        `json:"image_url,omitempty"`
 	OwnerID         int           `gorm:"not null;<-:create" json:"owner_id"`
+	Owner           User          `gorm:"foreignkey:OwnerID;association_foreignkey:ID" json:"owner,omitempty"`
 	Collaborators   []*User       `gorm:"many2many:user_project;" json:"collaborators,omitempty"`
-	PreferredSkills []Tag         `gorm:"many2many:project_preferred" json:"preferred_skills"`
-	RequiredSkills  []Tag         `gorm:"many2many:project_required" json:"required_skills"`
+	PreferredSkills []Tag         `gorm:"many2many:project_preferred" json:"preferred_skills,omitempty"`
+	RequiredSkills  []Tag         `gorm:"many2many:project_required" json:"required_skills,omitempty"`
 	Applications    []Application `json:"applications,omitempty"`
 }
 
@@ -87,7 +89,7 @@ func (ss *SeedStore) Seed() error {
 		user.Username = gofakeit.Username()
 		user.Email = gofakeit.Email()
 		user.Description = gofakeit.Sentence(10)
-		user.AvatarURL = "https://www.gravatar.com/avatar/" + strconv.Itoa(i) + "?d=identicon"
+		user.AvatarURL = "https://i.pravatar.cc/600?img=" + strconv.Itoa(i)
 
 		// Set the users Tags field to a slice of Tags randomly chosen from the slice of generatedTags
 		for j := 0; j < 3; j++ {
@@ -107,7 +109,7 @@ func (ss *SeedStore) Seed() error {
 	for i := 0; i < 50; i++ {
 		var project Project
 		project.Name = gofakeit.AppName()
-		project.Description = project.Name + " Description"
+		project.Description = gofakeit.Sentence(5)
 
 		owner := users[rand.Intn(len(users))]
 		// Set the projects Owner field to a randomly chosen User from the slice of users
@@ -139,6 +141,10 @@ func (ss *SeedStore) Seed() error {
 		for j := 0; j < 3; j++ {
 			project.RequiredSkills = append(project.RequiredSkills, generatedTags[rand.Intn(len(generatedTags))])
 		}
+
+		// Set the projects ImageURL field to a random image from the unsplash API
+		project.ImageURL = "https://source.unsplash.com/random/800x600?sig=" + strconv.Itoa(i)
+
 		projects = append(projects, project)
 	}
 

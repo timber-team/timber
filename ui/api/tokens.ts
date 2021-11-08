@@ -1,11 +1,11 @@
-import { storeTokens } from "../utils";
-import { doRequest, NoData } from ".";
-import { TokenResponse } from "./types";
+import {doRequest, NoData} from '.';
+import {storeTokens} from '../utils';
+import {TokenResponse} from './types';
 
-export const GetAccessToken = async <T>(query: string, provider: string) => {
+export const getAccessToken = async (query: string, provider: string) => {
   const [response, err] = await doRequest({
     url: `/api/auth/callback/${provider}${query}`,
-    method: "GET",
+    method: 'GET',
   });
   if (err !== null) {
     console.log(err);
@@ -16,19 +16,19 @@ export const GetAccessToken = async <T>(query: string, provider: string) => {
     return NoData;
   }
 
-  const token_pair = response.data as TokenResponse;
+  const tokenPair = response.data as TokenResponse;
 
-  storeTokens(token_pair.access_token, token_pair.refresh_token);
+  storeTokens(tokenPair.access_token, tokenPair.refresh_token);
 
   return true;
 };
 
-export const RefreshTokens = async <T>() => {
+export const refreshTokens = async () => {
   const [response, err] = await doRequest({
     url: `/api/auth/tokens`,
-    method: "POST",
+    method: 'POST',
     data: {
-      refreshToken: localStorage.getItem("refresh_token"),
+      refreshToken: localStorage.getItem('refresh_token'),
     },
   });
   if (err !== null) {
@@ -40,9 +40,9 @@ export const RefreshTokens = async <T>() => {
     return NoData;
   }
 
-  const token_pair = response.data as TokenResponse;
+  const tokenPair = response.data as TokenResponse;
 
-  storeTokens(token_pair.access_token, token_pair.refresh_token);
+  storeTokens(tokenPair.access_token, tokenPair.refresh_token);
 
   return true;
 };

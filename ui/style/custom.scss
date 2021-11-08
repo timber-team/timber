@@ -13,22 +13,13 @@ $theme-colors: (
 $font-family-sans-serif: "Rubik";
 $font-family-monospace: "Playfair Display";
 
-.Card-Buttons {
-    background-color: #C7493A; /* Green */
-    border: none;
-    color: white;
-    padding: 24px 20px;
-    margin-top: 256px;
-    border-radius: 50%;
-    text-align: center;
-    text-decoration: none;
-    display: flex;
-    font-size: 16px;
-    text-orientation: upright;
-    writing-mode: vertical-rl;
-    position: fixed;
-
+:root {
+  font-family: "Playfair Display", serif, "Rubik", sans-serif;
+  --primary-color: #c74b4b;
+  --secondary-color: #689775;
 }
 
-// Keep this on the bottom
-@import "~bootstrap/scss/bootstrap.scss";
+$primary: #c74b4b;
+$secondary: #689775;
+
+@import "~bootstrap/scss/bootstrap";

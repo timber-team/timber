@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from "react";
-import { Redirect, Route } from "react-router-dom";
+import React, {useEffect, useState} from 'react';
+import {Route} from 'react-router-dom';
 
-import { useAuth } from "../store/auth";
-import ModalLogin from "./ModalLogin";
+import {useAuth} from '../store/auth';
+import {LoginModal} from './LoginModal';
 
-const ProtectedRoute = ({ children }: { children: any }) => {
+const ProtectedRoute = ({children}: { children: any }) => {
   const getUser = useAuth((state) => state.getUser);
   const [beginUserLoad, setBeginUserLoad] = useState(false);
   const isLoading = useAuth((state) => state.isLoading);
@@ -17,13 +17,13 @@ const ProtectedRoute = ({ children }: { children: any }) => {
 
   return (
     <Route
-      render={({ location }) =>
+      render={({location}) =>
         isLoading || !beginUserLoad ? (
           <div>Loading...</div>
         ) : currentUser ? (
           children
         ) : (
-          <ModalLogin />
+          <LoginModal />
         )
       }
     />
