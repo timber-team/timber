@@ -6,7 +6,7 @@ import ProjectCard from './Card';
 
 const CardStack = () => {
   const {projects, getAllProjects, loading, error} = useProjects();
-
+  
   const [index, setIndex] = React.useState(0);
 
   const disableNext = projects.length === 0 || projects.length === index + 1;
