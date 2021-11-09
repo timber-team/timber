@@ -8,6 +8,7 @@ import ProtectedRoute from './components/ProtectedRoute';
 import Applications from './pages/Applications';
 import Browse from './pages/Browse';
 import LandingPage from './pages/LandingPage';
+import Trending from './pages/Trending';
 import OAuthCallback from './src/OAuthCallback';
 
 Axios.defaults.baseURL = process.env.BASE_URL;
@@ -38,6 +39,8 @@ const App: React.FC = () => {
               <Route exact path="/browse" component={Browse} />
               {/* Applications page */}
               <Route exact path="/applications" component={Applications} />
+              {/* Trending page */}
+              <Route exact path="/trending" component={Trending} />
             </ProtectedRoute>
           </Switch>
         </div>
