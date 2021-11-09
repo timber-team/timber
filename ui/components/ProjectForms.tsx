@@ -28,7 +28,9 @@ export const CreateProjectForm = ({
 
   // getAllTags is called when the component mounts, and is used to populate the select options.
   React.useEffect(() => {
-    getAllTags();
+    if (currentUser) {
+      getAllTags();
+    }
   }, [show === true]);
 
   return (

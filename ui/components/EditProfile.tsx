@@ -1,13 +1,15 @@
-import React, { useEffect } from "react";
-import { Field, Form, Formik, FormikHelpers, FormikProps } from "formik";
-import CustomSelect from "./CustomSelect";
-import FormText from "./FormText";
-import { Button } from "react-bootstrap";
-import { useTags } from "../api/tag";
-import { useUser } from "../api/user";
-import { Tag } from "api/types";
-import { useAuth } from "../store/auth";
+/* eslint-disable max-len */
+import {Tag} from 'api/types';
+import {Field, Form, Formik, FormikHelpers, FormikProps} from 'formik';
+import React, {useEffect} from 'react';
+import {Button} from 'react-bootstrap';
 import * as Yup from 'yup';
+
+import {useTags} from '../api/tag';
+import {useUser} from '../api/user';
+import {useAuth} from '../store/auth';
+import CustomSelect from './CustomSelect';
+import FormText from './FormText';
 
 export interface FormValues {
   avatarURL: string;
@@ -20,16 +22,16 @@ interface customProps {
 }
 
 const defaultValues: FormValues = {
-  avatarURL: "",
-  username: "",
-  tags: []
+  avatarURL: '',
+  username: '',
+  tags: [],
 };
 
 const stylesButton = {
   display: 'flex',
   justifyContent: 'space-around',
-  marginTop: 12
-}
+  marginTop: 12,
+};
 
 const EditProfile = (props: customProps) => {
   const currentUser = useAuth((state) => state.currentUser);
@@ -37,29 +39,36 @@ const EditProfile = (props: customProps) => {
   const {patchUser} = useUser();
 
   useEffect(() => {
-    getAllTags();
-  }, []);
+    if (currentUser) {
+      getAllTags();
+    }
+  }, [currentUser]);
 
-  const selectable = tags.map((e) => {return({label: e.name, value: e.id})})
+  const selectable = tags.map((e) => {
+    return {label: e.name, value: e.id};
+  });
 
-  console.log(useTags())
+  console.log(useTags());
 
-  const onSubmit = async (values: FormValues, actions: FormikHelpers<FormValues>) => {
-    const u = currentUser!.username ? currentUser!.username : values.username
+  const onSubmit = async (
+      values: FormValues,
+      actions: FormikHelpers<FormValues>,
+  ) => {
+    const u = currentUser!.username ? currentUser!.username : values.username;
     await patchUser({
       username: u,
       avatar_url: values.avatarURL,
-      tags: values.tags
-    })
+      tags: values.tags,
+    });
     actions.setSubmitting(false);
   };
 
-  if (error) {
-    return <div>Error!</div>;
-  }
-
   if (loading) {
     return <div>Loading...</div>;
+  }
+
+  if (error) {
+    return <div>Error!</div>;
   }
 
   const renderForm = (formikBag: FormikProps<FormValues>) => (
@@ -103,7 +112,9 @@ const EditProfile = (props: customProps) => {
         >
           Reset
         </Button>
-        <Button variant="primary" type="submit">Submit</Button>
+        <Button variant="primary" type="submit">
+          Submit
+        </Button>
       </div>
     </Form>
   );
@@ -120,8 +131,7 @@ const EditProfile = (props: customProps) => {
         username: Yup.string()
             .max(15, 'Must be 15 characters or less')
             .defined(currentUser?.username ? '' : 'Required'),
-        tags: Yup.array()
-            .defined('Required'),
+        tags: Yup.array().defined('Required'),
       })}
       render={renderForm}
       onSubmit={onSubmit}
@@ -129,4 +139,4 @@ const EditProfile = (props: customProps) => {
   );
 };
 
-export default EditProfile
+export default EditProfile;

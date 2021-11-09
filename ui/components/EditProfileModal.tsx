@@ -1,15 +1,15 @@
-import React from "react"
-import { Modal } from "react-bootstrap"
-import EditProfile from "./EditProfile"
+import React from 'react';
+import {Modal} from 'react-bootstrap';
+import EditProfile from './EditProfile';
 
-const  EditProfileModal = () => {
+const EditProfileModal = () => {
   return (
-    <Modal>
+    <Modal show={true}>
       <Modal.Body>
         <EditProfile />
       </Modal.Body>
     </Modal>
-  )
-}
+  );
+};
 
-export default EditProfileModal
+export default EditProfileModal;

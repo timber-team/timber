@@ -20,17 +20,15 @@ const ProtectedRoute = ({children}: { children: any }) => {
     <Route
       render={({location}) => {
         if (isLoading || !beginUserLoad) {
-          return <div> Loading ... </div>
-        } else if (currentUser) {
-          if (currentUser.username) {
-            return children
-          } else {
-            return children
-            // return <EditProfileModal /> //unsure why this won't use the authorization header
-          }
-        } else {
-          return <LoginModal />
+          return <div>Loading...</div>;
         }
+        if (!currentUser) {
+          return <LoginModal />;
+        }
+        if (currentUser.username.length < 1) {
+          return <EditProfileModal />;
+        }
+        return children;
       }}
     />
   );
