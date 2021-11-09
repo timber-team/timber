@@ -2,6 +2,7 @@ import React, {useEffect, useState} from 'react';
 import {Route} from 'react-router-dom';
 
 import {useAuth} from '../store/auth';
+import EditProfileModal from './EditProfileModal';
 import {LoginModal} from './LoginModal';
 
 const ProtectedRoute = ({children}: { children: any }) => {
@@ -17,15 +18,20 @@ const ProtectedRoute = ({children}: { children: any }) => {
 
   return (
     <Route
-      render={({location}) =>
-        isLoading || !beginUserLoad ? (
-          <div>Loading...</div>
-        ) : currentUser ? (
-          children
-        ) : (
-          <LoginModal />
-        )
-      }
+      render={({location}) => {
+        if (isLoading || !beginUserLoad) {
+          return <div> Loading ... </div>
+        } else if (currentUser) {
+          if (currentUser.username) {
+            return children
+          } else {
+            return children
+            // return <EditProfileModal /> //unsure why this won't use the authorization header
+          }
+        } else {
+          return <LoginModal />
+        }
+      }}
     />
   );
 };

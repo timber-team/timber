@@ -1,15 +1,18 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { Field, Form, Formik, FormikHelpers, FormikProps } from "formik";
 import CustomSelect from "./CustomSelect";
 import FormText from "./FormText";
 import { Button } from "react-bootstrap";
 import { useTags } from "../api/tag";
+import { useUser } from "../api/user";
+import { Tag } from "api/types";
+import { useAuth } from "../store/auth";
+import * as Yup from 'yup';
 
 export interface FormValues {
   avatarURL: string;
-  name: string;
   username: string;
-  technologies: string[];
+  tags: Tag[];
 }
 
 interface customProps {
@@ -18,9 +21,8 @@ interface customProps {
 
 const defaultValues: FormValues = {
   avatarURL: "",
-  name: "",
   username: "",
-  technologies: []
+  tags: []
 };
 
 const stylesButton = {
@@ -30,7 +32,9 @@ const stylesButton = {
 }
 
 const EditProfile = (props: customProps) => {
+  const currentUser = useAuth((state) => state.currentUser);
   const {tags, loading, error, getAllTags} = useTags();
+  const {patchUser} = useUser();
 
   useEffect(() => {
     getAllTags();
@@ -40,8 +44,13 @@ const EditProfile = (props: customProps) => {
 
   console.log(useTags())
 
-  const onSubmit = (values: FormValues, actions: FormikHelpers<FormValues>) => {
-    alert(JSON.stringify(values, null, 2));
+  const onSubmit = async (values: FormValues, actions: FormikHelpers<FormValues>) => {
+    const u = currentUser!.username ? currentUser!.username : values.username
+    await patchUser({
+      username: u,
+      avatar_url: values.avatarURL,
+      tags: values.tags
+    })
     actions.setSubmitting(false);
   };
 
@@ -65,16 +74,6 @@ const EditProfile = (props: customProps) => {
         muted={true}
       />
       <Field
-        name="name"
-        component={FormText}
-        label="Name"
-        type="text"
-        placeholder="First and Second Name"
-        description="Enter your name"
-        muted={true}
-        disabled={props.disabled}
-      />
-      <Field
         name="username"
         component={FormText}
         label="Username"
@@ -86,12 +85,12 @@ const EditProfile = (props: customProps) => {
       />
       <Field
         className=""
-        name="technologies"
+        name="tags"
         options={selectable}
         component={CustomSelect}
         label="Select Technologies"
-        placeholder="Select from multiple technologies"
-        description="Please select technologies that you prefer to work with"
+        placeholder="Select from multiple tags"
+        description="Please select tags that you prefer to work with"
         isMulti={true}
       />
       <div style={stylesButton}>
@@ -112,6 +111,18 @@ const EditProfile = (props: customProps) => {
   return (
     <Formik
       initialValues={defaultValues}
+      validationSchema={Yup.object({
+        avatarURL: Yup.string()
+            .max(50, 'Must be 50 characters or less')
+            .notRequired()
+            .nullable()
+            .url('Must be a valid URL'),
+        username: Yup.string()
+            .max(15, 'Must be 15 characters or less')
+            .defined(currentUser?.username ? '' : 'Required'),
+        tags: Yup.array()
+            .defined('Required'),
+      })}
       render={renderForm}
       onSubmit={onSubmit}
     />
