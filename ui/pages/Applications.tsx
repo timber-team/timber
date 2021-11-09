@@ -1,142 +1,101 @@
-import React, { useEffect } from 'react';
-import { useAuth } from '../store/auth';
-import { Application } from '../api/types';
-import { Col, Row } from 'react-bootstrap';
-import { useApplications } from '../api/application';
+import React, { useEffect, useState } from 'react';
+import { useProjects } from '../api/project';
 
-/* // useApplications custom hook
-export const useApplications = () => {
-  const accessToken = useAuth((state) => state.accessToken);
-  const [applications, setApplications] = useState<Application[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-
-  const getAllApplicationsByUserId = async (userId: number) => {
-    setLoading(true);
-    setError(null);
-    try {
-      const response = await doRequest({
-        url: `/api/users/${userId}/applications`,
-        method: 'GET',
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-      });
-      if (response[0] === null) {
-        setError(response[1]!.message);
-      } else {
-        setApplications(response[0]!.data);
-      }
-    } catch (error) {
-      setError(error.message);
-    }
-    setLoading(false);
-  };
-
-  const getApplicationById = async (id: number) => {
-    setLoading(true);
-    setError(null);
-    try {
-      const response = await doRequest({
-        url: `/api/applications/${id}`,
-        method: 'GET',
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-      });
-      if (response[0] === null) {
-        setError(response[1]!.message);
-      } else {
-        setApplications(response[0]!.data);
-      }
-    } catch (error) {
-      setError(error.message);
-    }
-    setLoading(false);
-  };
-
-  // get application by project id
-  const getAllApplicationsByProjectId = async (projectId: number) => {
-    setLoading(true);
-    setError(null);
-    try {
-      const response = await doRequest({
-        url: `/api/projects/${projectId}/applications`,
-        method: 'GET',
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-      });
-      if (response[0] === null) {
-        setError(response[1]!.message);
-      } else {
-        setApplications(response[0]!.data);
-      }
-    } catch (error) {
-      setError(error.message);
-    }
-    setLoading(false);
-  };
-
-  return {
-    applications,
-    loading,
-    error,
-    getAllApplicationsByUserId,
-    getApplicationById,
-    getAllApplicationsByProjectId,
-  };
-}; */
-
+import { Badge, Card } from 'react-bootstrap';
 
 // Applications functional component
 const Applications: React.FC = () => {
-  // display a list of applications for a user using the custom hook
-  const { applications, loading, error, getAllApplications, getAllApplicationsByProjectId } = useApplications();
+  const { projects, loading, error, getAllProjects } = useProjects()
 
-
-  //get all applications
   useEffect(() => {
-    getAllApplicationsByProjectId(13);
+    console.log("Rerender")
+    getAllProjects();
   }, []);
+
+  if (error) {
+    return <div>Error!</div>;
+  }
 
   if (loading) {
     return <div>Loading...</div>;
   }
 
-  if (error) {
-    return <div>Error: {error}</div>;
-  }
-
-  if (!applications?.length) {
-    return <div>No applications found</div>;
+  if (!projects.length) {
+    return <div>No projects found</div>;
   }
 
   return (
-    // display a list of applications and their contents, with labels for a user
-    <div>
-      <Row>
-        <Col>
-          <h1>Applications</h1>
-        </Col>
-      </Row>
-      <Row>
-        <Col>
-          <ul>
-            {applications.map((application) => (
-              <li key={application.id}>
-                <p>Application: {application.id}</p>
-                <p>Created at: {new Date(application.created_at).toLocaleString()}</p>
-                <p>Modified at: {new Date(application.modified_at).toLocaleString()}</p>
-                <p>User id: {application.user_id}</p>
-                <p>Project id: {application.project_id}</p>
-              </li>
-            ))}
-          </ul>
-        </Col>
-      </Row>
+    <div
+      style={{
+        padding: '2rem',
+      }}
+    >
+      <h2>Applications</h2>
+      <ul>
+        {projects.map(project => (
+          <li key={project.id}
+            style={{
+              listStyleType: 'none',
+            }}
+          >
+            <Card>
+              <Card.Body>
+                <div
+                  style={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                  }}
+                >
+                  <div>
+                    <Card.Title>{project.name}</Card.Title>
+                    <Card.Text>{project.description}</Card.Text>
+
+                    <div
+                      style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                      }}
+                    >
+                      
+
+                      {project.required_skills?.map((skill) => (
+                        <Badge
+                          style={{
+                            marginRight: '0.4rem',
+                          }}
+                        bg="info" key={skill.id}>{skill.name}</Badge>
+                      ))}
+                    </div>
+                    {/* <div
+                      style={{
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        alignItems: 'center',
+                      }}
+                    >
+                      {project.preferred_skills.map((skill) => (
+                        <Badge bg="warning" key={skill.id}>{skill.name}</Badge>
+                      ))}
+                    </div> */}
+
+                  </div>
+
+                  <Card.Img
+                    style={{
+                      maxWidth: '40%'
+                    }}
+                    src={project.image_url} height="300px" width="auto"
+                  />
+                </div>
+              </Card.Body>
+            </Card>
+          </li>
+        ))}
+      </ul>
     </div>
   );
-};
+}
+
 
 export default Applications;

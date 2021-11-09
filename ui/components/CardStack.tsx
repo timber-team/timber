@@ -1,23 +1,27 @@
-import React, {useEffect} from 'react';
-import {Button, Stack} from 'react-bootstrap';
+import React, { useEffect } from 'react';
+import { Button, Stack } from 'react-bootstrap';
 
-import {useProjects} from '../api/project';
+import { useProjects } from '../api/project';
+import { useApplications } from '../api/application';
 import ProjectCard from './Card';
 
 const CardStack = () => {
-  const {projects, getAllProjects, loading, error} = useProjects();
-  
+  const { projects, getAllProjects, loading, error } = useProjects();
+  const { applications, createApplication } = useApplications();
+
   const [index, setIndex] = React.useState(0);
 
   const disableNext = projects.length === 0 || projects.length === index + 1;
   const disablePrev = index === 0;
 
   useEffect(() => {
+    console.log("Rerender")
     getAllProjects();
   }, []);
 
   const handleNext = () => {
     if (index < projects.length - 1) {
+      createApplication(projects[index].id);
       setIndex(index + 1);
     }
   };
@@ -49,19 +53,19 @@ const CardStack = () => {
       <Button
         className="card-stack-button"
         variant="primary"
-        disabled={disablePrev}
+        // disabled={disablePrev}
         onClick={handlePrevious}
       >
-        Previous
+        Dismiss
       </Button>
       <ProjectCard project={projects[index]} />
       <Button
         className="card-stack-button"
-        variant="primary"
+        variant="secondary"
         disabled={disableNext}
         onClick={handleNext}
       >
-        Next
+        Apply
       </Button>
     </Stack>
   );
