@@ -79,17 +79,31 @@ const Applications: React.FC = () => {
                       }}
                     >
                       {project.name}
-                      {currentUser &&
-                      project.collaborators?.includes(currentUser) ? (
+                      {project.applications.filter((application) => application.user_id === currentUser.id).accepted ? (
                         <Badge
                           style={{margin: '1em', fontSize: '0.6em'}}
                           bg="success"
                         >
                           Accepted
                         </Badge>
-                      ) : (
-                        <> </>
-                      )}
+                        ) : 
+                        project.applications.filter((application) => application.user_id === currentUser.id).accepted ? (
+                          <Badge
+                          style={{margin: '1em', fontSize: '0.6em'}}
+                          bg="danger"
+                            >
+                          Rejected
+                          </Badge>
+                        ) :(
+                          <Badge
+                          style={{margin: '1em', fontSize: '0.6em'}}
+                          bg="warning"
+                            >
+                              In Progress
+                          </Badge>
+                        )
+
+                      }
                     </Card.Title>
                     <Card.Text>{project.description}</Card.Text>
 

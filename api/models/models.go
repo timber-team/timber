@@ -42,6 +42,8 @@ type Application struct {
 	UpdatedAt int64 `gorm:"autoUpdateTime;<-:create" json:"modified_at"`
 	UserID    int   `json:"user_id"`
 	ProjectID int   `json:"project_id"`
+	Accepted  bool 	`json:"accepted"`
+	Denied	  bool `json:"denied"`
 }
 
 type Tag struct {

@@ -11,6 +11,8 @@ export const useProjects = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  const [browseable, setBrowseable] = useState<Project[]>([]);
+
   const getAllProjects = async () => {
     setLoading(true);
     setError(null);
