@@ -4,24 +4,6 @@ import {doRequest} from '.';
 import {useAuth} from '../store/auth';
 import {Project} from './types';
 
-// Example of the doRequest function
-/*
-export const doRequest = async (
-    config: AxiosRequestConfig,
-): Promise<[GenericResponse | null, Error | null]> => {
-  try {
-    const response = await axios(config);
-    return [response.data, null];
-  } catch (error) {
-    return [null, error];
-  }
-}
-*/
-
-// useProjects custom hook, it uses doRequest with AxiosRequestConfig to make any requests
-// it returns an array with the projects, an error state and a loading state
-// It has multiple functions, one to get all projects, one to get all projects by user id, one to get a project by id, one to get a project by name, one to create a project, one to update a project, one to delete a project
-// any requests made with this hook will be authenticated with the accessToken in the useAuth hook
 export const useProjects = () => {
   const [projects, setProjects] = useState<Project[]>([]);
   const [error, setError] = useState<Error | null>(null);
