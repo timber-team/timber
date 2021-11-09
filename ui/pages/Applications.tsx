@@ -91,22 +91,12 @@ const Applications: React.FC = () => {
                     </div> */}
 
                   </div>
-
-                  {/* <div
-                    style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      flexDirection: 'column',
-                    }}
-                  > */}
                     <Card.Img
                       style={{
                         maxWidth: '40%'
                       }}
                       src={project.image_url} height="300px" width="100%"
                     />
-                    {/* {(project.collaborators?.includes(currentUser?.id)) ? <Card.Text>Accepted</Card.Text>: <> </>}
-                  </div> */}
                  </div>
               </Card.Body>
             </Card>

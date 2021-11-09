@@ -35,7 +35,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({project}) => {
           {project.required_skills.map((skill: Tag) => (
             <Badge
               key={skill.id}
-              bg="secondary"
+              bg="info"
               style={{marginRight: '5px', fontSize: '0.8rem'}}
             >
               {skill.name}
@@ -47,7 +47,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({project}) => {
           {project.preferred_skills.map((skill: Tag) => (
             <Badge
               key={skill.id}
-              bg="secondary"
+              bg="warning"
               style={{marginRight: '5px', fontSize: '0.8rem'}}
             >
               {skill.name}
