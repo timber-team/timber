@@ -1,4 +1,6 @@
 /* eslint-disable camelcase */
+
+
 export interface User {
   id: number;
   created_at: number;

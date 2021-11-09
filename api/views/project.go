@@ -12,7 +12,11 @@ import (
 )
 
 type projectRequest struct {
-	Name string `json:"name" binding:"required,gte=4,lte=30"`
+	Name            string `json:"name" binding:"required,gte=4,lte=15"`
+	Description     string `json:"description" binding:"required,gte=4,lte=85"`
+	ImageURL        string `json:"image_url" binding:"omitempty,url,lte=50"`
+	RequiredSkills  []int  `json:"required_skills" binding:"omitempty"`
+	PreferredSkills []int  `json:"preferred_skills" binding:"omitempty"`
 }
 
 func (h *Handler) NewProject(c *gin.Context) {
@@ -43,10 +47,30 @@ func (h *Handler) NewProject(c *gin.Context) {
 		return
 	}
 
+	// map req.RequiredSkills tag id's to []models.Tag
+	requiredSkills := make([]*models.Tag, len(req.RequiredSkills))
+	for i, tagID := range req.RequiredSkills {
+		requiredSkills[i] = &models.Tag{
+			ID: tagID,
+		}
+	}
+
+	// map req.PreferredSkills tag id's to []models.Tag
+	preferredSkills := make([]*models.Tag, len(req.PreferredSkills))
+	for i, tagID := range req.PreferredSkills {
+		preferredSkills[i] = &models.Tag{
+			ID: tagID,
+		}
+	}
+
 	p := &models.Project{
-		Name:          req.Name,
-		OwnerID:       uid,
-		Collaborators: []*models.User{u},
+		Name:            req.Name,
+		OwnerID:         uid,
+		Collaborators:   []*models.User{u},
+		Description:     req.Description,
+		ImageURL:        req.ImageURL,
+		RequiredSkills:  requiredSkills,
+		PreferredSkills: preferredSkills,
 	}
 
 	err = h.ProjectController.Projects.Create(ctx, p)
@@ -56,7 +80,7 @@ func (h *Handler) NewProject(c *gin.Context) {
 		return
 	}
 
-	err = h.ProjectController.Projects.Patch(ctx, p)
+	err = h.ProjectController.Projects.Update(ctx, p)
 
 	if err != nil {
 		utils.Respond(c, customresponse.NewInternal(), nil)

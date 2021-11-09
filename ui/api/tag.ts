@@ -4,7 +4,7 @@ import {useAuth} from '../store/auth';
 import {Tag} from './types';
 
 export const useTags = () => {
-  const accessToken = useAuth((state) => state.accessToken);
+  const {accessToken} = useAuth();
   const [tags, setTags] = useState<Tag[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
