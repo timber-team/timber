@@ -79,7 +79,6 @@ const Applications: React.FC = () => {
                       }}
                     >
                       {project.name}
-                      {/* {console.log(`hi this should be true ${project.applications?.filter((application) => application.user_id === currentUser?.id)[0].accepted)}} */}
                       {project.applications?.filter((application) => application.user_id === currentUser?.id)[0].accepted ? (
                         <Badge
                           style={{margin: '1em', fontSize: '0.6em'}}
