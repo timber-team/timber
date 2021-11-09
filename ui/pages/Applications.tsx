@@ -1,18 +1,33 @@
-import React, { useEffect, useState } from 'react';
-import { useProjects } from '../api/project';
-import { useAuth } from '../store/auth';
+/* eslint-disable max-len */
+import React, {useEffect, useState} from 'react';
+import {useProjects} from '../api/project';
 
-import { Badge, Card } from 'react-bootstrap';
+import {Badge, Card} from 'react-bootstrap';
+import {Application} from '../api/types';
+import {useAuth} from '../store/auth';
 
-// Applications functional component
 const Applications: React.FC = () => {
-  const { projects, loading, error, getAllProjects } = useProjects()
-  const { currentUser } = useAuth();
+  const {projects, loading, error, getProjectById} = useProjects();
+  const {currentUser} = useAuth();
+  const [applications, setApplications] = useState<Application[]>([]);
+  const [userProjects, setUserProjects] = useState<Project[]>([]);
+  const [loadingProjects, setLoadingProjects] = useState(false);
 
   useEffect(() => {
-    console.log("Rerender")
-    getAllProjects();
-  }, []);
+    if (currentUser) {
+      setApplications(currentUser.applications);
+    }
+  }, [currentUser]);
+
+  useEffect(() => {
+    if (currentUser && applications) {
+      applications.forEach((application) => {
+        getProjectById(application.project_id).then((project) => {
+          setUserProjects((prevState) => [...prevState, project]);
+        });
+      });
+    }
+  }, [applications]);
 
   if (error) {
     return <div>Error!</div>;
@@ -22,7 +37,7 @@ const Applications: React.FC = () => {
     return <div>Loading...</div>;
   }
 
-  if (!projects.length) {
+  if (userProjects && userProjects.length == 0) {
     return <div>No projects found</div>;
   }
 
@@ -30,19 +45,22 @@ const Applications: React.FC = () => {
     <div>
       <h2 style={{textAlign: 'center', marginBottom: '2em'}}>Applications</h2>
       <ul>
-        {projects.map(project => (
-          <li key={project.id}
+        {projects.map((project) => (
+          <li
+            key={project.id}
             style={
-              (window.innerWidth > 900) ?
-              {
-              maxWidth: '80%',
-              margin: 'auto',
-              listStyleType: 'none',
-              }: {
-                maxWidth: '100%',
-                margin: 'auto',
-                listStyleType: 'none',
-              }}
+              window.innerWidth > 900 ?
+                {
+                  maxWidth: '80%',
+                  margin: 'auto',
+                  listStyleType: 'none',
+                } :
+                {
+                  maxWidth: '100%',
+                  margin: 'auto',
+                  listStyleType: 'none',
+                }
+            }
           >
             <Card>
               <Card.Body>
@@ -54,12 +72,24 @@ const Applications: React.FC = () => {
                   }}
                 >
                   <div>
-                    <Card.Title style={{
-                      fontSize: '1.5rem',
-                      fontWeight: 'bold',
-                    }}>
+                    <Card.Title
+                      style={{
+                        fontSize: '1.5rem',
+                        fontWeight: 'bold',
+                      }}
+                    >
                       {project.name}
-                      {((currentUser) && project.collaborators?.includes(currentUser)) ? <Badge style={{margin: '1em', fontSize: '0.6em'}} bg="success">Accepted</Badge>: <> </>}
+                      {currentUser &&
+                      project.collaborators?.includes(currentUser) ? (
+                        <Badge
+                          style={{margin: '1em', fontSize: '0.6em'}}
+                          bg="success"
+                        >
+                          Accepted
+                        </Badge>
+                      ) : (
+                        <> </>
+                      )}
                     </Card.Title>
                     <Card.Text>{project.description}</Card.Text>
 
@@ -68,36 +98,45 @@ const Applications: React.FC = () => {
                         display: 'flex',
                         alignItems: 'center',
                       }}
-                    > 
-
+                    >
                       {project.required_skills?.map((skill) => (
                         <Badge
                           style={{
                             marginRight: '0.4rem',
                           }}
-                        bg="info" key={skill.id}>{skill.name}</Badge>
+                          bg="info"
+                          key={skill.id}
+                        >
+                          {skill.name}
+                        </Badge>
                       ))}
                     </div>
-                    {/* <div
+                    <div
                       style={{
                         display: 'flex',
-                        justifyContent: 'space-between',
                         alignItems: 'center',
                       }}
                     >
                       {project.preferred_skills.map((skill) => (
-                        <Badge bg="warning" key={skill.id}>{skill.name}</Badge>
+                        <Badge
+                          bg="warning"
+                          key={skill.id}
+                          style={{marginRight: '0.4rem', marginTop: '0.4rem'}}
+                        >
+                          {skill.name}
+                        </Badge>
                       ))}
-                    </div> */}
-
+                    </div>
                   </div>
-                    <Card.Img
-                      style={{
-                        maxWidth: '40%'
-                      }}
-                      src={project.image_url} height="300px" width="100%"
-                    />
-                 </div>
+                  <Card.Img
+                    style={{
+                      maxWidth: '40%',
+                    }}
+                    src={project.image_url}
+                    height="300px"
+                    width="100%"
+                  />
+                </div>
               </Card.Body>
             </Card>
           </li>
@@ -105,7 +144,6 @@ const Applications: React.FC = () => {
       </ul>
     </div>
   );
-}
-
+};
 
 export default Applications;

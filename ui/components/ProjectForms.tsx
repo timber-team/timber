@@ -19,7 +19,7 @@ export const CreateProjectForm = ({
 }) => {
   const {projects, createProject} = useProjects();
   const {tags, getAllTags} = useTags();
-  const currentUser = useAuth((state) => state.currentUser);
+  const {currentUser} = useAuth();
 
   // setShow is passed in from the parent component, and is used to hide the form.
   const handleClose = () => {
@@ -28,7 +28,9 @@ export const CreateProjectForm = ({
 
   // getAllTags is called when the component mounts, and is used to populate the select options.
   React.useEffect(() => {
-    getAllTags();
+    if (currentUser) {
+      getAllTags();
+    }
   }, [show === true]);
 
   return (
