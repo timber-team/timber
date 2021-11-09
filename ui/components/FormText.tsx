@@ -9,13 +9,14 @@ interface CustomSelectProps {
   name: string;
   muted?: boolean;
   className?: string;
+  disabled?: boolean;
 }
 
 const FormText = (props: CustomSelectProps) => {
   return (
     <Form.Group className={props.className} controlId={props.name}>
       <Form.Label>{props.label}</Form.Label>
-      <Form.Control type={props.type} placeholder={props.placeholder} />
+      <Form.Control type={props.type} placeholder={props.placeholder} disabled={props.disabled}/>
       <Form.Text className={props.muted ? "text-muted" : ""}>
         {props.description}
       </Form.Text>

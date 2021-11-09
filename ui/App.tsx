@@ -1,5 +1,4 @@
 import Axios from 'axios';
-import UserSettings from 'pages/UserSettings';
 import React from 'react';
 import {BrowserRouter as Router, Route, Switch} from 'react-router-dom';
 
@@ -10,6 +9,7 @@ import Applications from './pages/Applications';
 import Browse from './pages/Browse';
 import LandingPage from './pages/LandingPage';
 import OAuthCallback from './src/OAuthCallback';
+import UserSettings from './pages/UserSettings';
 
 Axios.defaults.baseURL = process.env.BASE_URL;
 Axios.defaults.withCredentials = true;
@@ -31,7 +31,7 @@ const App: React.FC = () => {
             {/* Applications page */}
             <Route exact path="/applications" component={Applications} />
             {/* User Settings Page */}
-            <Route exact path="/user/settings" component={UserSettings}/>
+            <Route exact path="/profile" component={UserSettings}/>
           </ProtectedRoute>
         </Switch>
         <Legal />

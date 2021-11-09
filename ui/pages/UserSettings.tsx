@@ -3,7 +3,7 @@ import React from "react"
 import { Container } from "react-bootstrap"
 
 const styles = {
-  minHeight: '75vh',
+  minHeight: '80vh',
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center'
@@ -13,7 +13,7 @@ const UserSettings = () => {
   return (
     <>
       <Container style={styles}>
-        <EditProfile />
+        <EditProfile disabled={true}/>
       </Container>
     </>
   )
