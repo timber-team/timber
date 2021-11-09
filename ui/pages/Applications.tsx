@@ -3,7 +3,7 @@ import React, {useEffect, useState} from 'react';
 import {useProjects} from '../api/project';
 
 import {Badge, Card} from 'react-bootstrap';
-import {Application} from '../api/types';
+import {Application, Project} from '../api/types';
 import {useAuth} from '../store/auth';
 
 const Applications: React.FC = () => {
@@ -14,7 +14,7 @@ const Applications: React.FC = () => {
   const [loadingProjects, setLoadingProjects] = useState(false);
 
   useEffect(() => {
-    if (currentUser) {
+    if (currentUser && currentUser.applications !== undefined) {
       setApplications(currentUser.applications);
     }
   }, [currentUser]);
@@ -23,7 +23,7 @@ const Applications: React.FC = () => {
     if (currentUser && applications) {
       applications.forEach((application) => {
         getProjectById(application.project_id).then((project) => {
-          setUserProjects((prevState) => [...prevState, project]);
+          setUserProjects((prevState) => [...prevState, project!]);
         });
       });
     }
@@ -45,7 +45,7 @@ const Applications: React.FC = () => {
     <div>
       <h2 style={{textAlign: 'center', marginBottom: '2em'}}>Applications</h2>
       <ul>
-        {projects.map((project) => (
+        {userProjects.map((project) => (
           <li
             key={project.id}
             style={
