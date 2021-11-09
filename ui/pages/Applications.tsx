@@ -129,12 +129,11 @@ const Applications: React.FC = () => {
                     </div>
                   </div>
                   <Card.Img
-                    style={{
-                      maxWidth: '40%',
-                    }}
                     src={project.image_url}
-                    height="300px"
-                    width="100%"
+                    style={{
+                        maxWidth: '40%',
+                        height: 'auto',
+                    }}
                   />
                 </div>
               </Card.Body>
