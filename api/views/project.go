@@ -175,7 +175,7 @@ func (h *Handler) GetProjects(c *gin.Context) {
 	utils.Respond(c, customresponse.NewOK(), projects)
 }
 
-// get projects by ownerID handler
+// get all projects by ownerID handler
 func (h *Handler) GetProjectsByOwnerID(c *gin.Context) {
 	user, exists := c.Get("user")
 
@@ -196,22 +196,18 @@ func (h *Handler) GetProjectsByOwnerID(c *gin.Context) {
 	}
 
 	ownerID := c.Param("ownerID")
-	pid, err := strconv.Atoi(ownerID)
+	oid, err := strconv.Atoi(ownerID)
 	if err != nil {
 		utils.Respond(c, customresponse.NewInternal(), nil)
 		return
 	}
 
-	p := &models.Project{
-		OwnerID: pid,
-	}
-
-	err = h.ProjectController.Projects.Get(ctx, p)
+	projects, err := h.ProjectController.Projects.GetByOwnerID(ctx, oid)
 
 	if err != nil {
-		utils.Respond(c, customresponse.NewNotFound("user", fmt.Sprintf("%d", u.ID)), nil)
+		utils.Respond(c, customresponse.NewInternal(), nil)
 		return
 	}
 
-	utils.Respond(c, customresponse.NewOK(), p)
+	utils.Respond(c, customresponse.NewOK(), projects)
 }

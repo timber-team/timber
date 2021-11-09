@@ -146,3 +146,40 @@ func (h *Handler) GetApplicationByID(c *gin.Context) {
 
 	utils.Respond(c, customresponse.NewOK(), a)
 }
+
+// get applications by user id
+func (h *Handler) GetApplicationsByUserID(c *gin.Context) {
+	urlUID := c.Param("userID")
+	uid, err := strconv.Atoi(urlUID)
+	ctx := c.Request.Context()
+	if err != nil {
+		utils.Respond(c, customresponse.NewInternal(), nil)
+		return
+	}
+
+	user, exists := c.Get("user")
+
+	if !exists {
+		log.WithContext(c).Error("Unable to extract user from the request context")
+		return
+	}
+
+	u := user.(*models.User)
+
+	err = h.UserController.Get(ctx, u)
+
+	if err != nil {
+		log.WithContext(ctx).WithError(err).Error(fmt.Sprintf("Unable to find user: %v", u.ID))
+		utils.Respond(c, customresponse.NewNotFound("user", fmt.Sprintf("%d", u.ID)), nil)
+		return
+	}
+
+	apps, err := h.ApplicationController.Applications.GetByUserID(ctx, uid)
+
+	if err != nil {
+		utils.Respond(c, customresponse.NewInternal(), nil)
+		return
+	}
+
+	utils.Respond(c, customresponse.NewOK(), apps)
+}

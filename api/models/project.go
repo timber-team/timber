@@ -29,8 +29,10 @@ func (projectStore *ProjectStore) GetAll(ctx context.Context) ([]*Project, error
 	return projects, err
 }
 
-func (projectStore *ProjectStore) GetByOwnerID(ctx context.Context, project *Project) error {
-	return projectStore.db.WithContext(ctx).Preload("Collaborators").Preload("Applications").Preload("PreferredSkills").Preload("RequiredSkills").Preload("Owner").Preload("Collaborators.Projects").Preload("Collaborators.Tags").Preload("Owner.Projects").Preload("Owner.Tags").Where("owner_id = ?", project.OwnerID).First(&project).Error
+func (projectStore *ProjectStore) GetByOwnerID(ctx context.Context, ownerID int) ([]*Project, error) {
+	var projects []*Project
+	err := projectStore.db.WithContext(ctx).Preload("Collaborators").Preload("Applications").Preload("PreferredSkills").Preload("RequiredSkills").Preload("Owner").Preload("Collaborators.Projects").Preload("Collaborators.Tags").Preload("Owner.Projects").Preload("Owner.Tags").Where("owner_id = ?", ownerID).Find(&projects).Error
+	return projects, err
 }
 
 func (projectStore *ProjectStore) GetByPopularity(ctx context.Context) ([]*Project, error) {
