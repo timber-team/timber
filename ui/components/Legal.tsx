@@ -6,11 +6,10 @@ const Legal = () => {
     <Navbar
       bg="primary"
       variant="dark"
-      fixed="bottom"
       className="footer"
       expand="lg"
       style={{
-        position: 'sticky',
+        position: 'relative',
         bottom: 0,
         height: 'var(--bs-footer-height)',
       }}

@@ -215,3 +215,30 @@ func (h *Handler) GetProjectsByOwnerID(c *gin.Context) {
 
 	utils.Respond(c, customresponse.NewOK(), p)
 }
+
+func (h *Handler) GetProjectsByPopularity(c *gin.Context) {
+	user, exists := c.Get("user")
+
+	if !exists {
+		utils.Respond(c, customresponse.NewInternal(), nil)
+		return
+	}
+
+	ctx := c.Request.Context()
+
+	u := user.(*models.User)
+
+	err := h.UserController.Get(ctx, u)
+	if err != nil {
+		utils.Respond(c, customresponse.NewNotFound("user", fmt.Sprintf("%d", u.ID)), nil)
+		return
+	}
+
+	popular, err := h.ProjectController.GetByPopularity(ctx)
+	if err != nil {
+		utils.Respond(c, customresponse.NewInternal(), nil)
+		return
+	}
+
+	utils.Respond(c, customresponse.NewOK(), popular)
+}
