@@ -33,8 +33,6 @@ const Applications: React.FC = () => {
         {projects.map(project => (
           <li key={project.id}
             style={
-              
-              // if screenwidth > 600px
               (window.innerWidth > 900) ?
               {
               maxWidth: '80%',

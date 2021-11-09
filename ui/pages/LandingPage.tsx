@@ -33,10 +33,8 @@ const LandingPage = () => {
       >
         Timber is a social networking platform which aims to connect students
         and professionals with each other. Users on the platform can then see
-        active projects that others are doing and join in. They can also see
+        active projects that others are doing and join in. Others can see
         your portfolio and see your skills and projects that you’ve worked on.
-        Users can also leave feedback and comments on the projects that they’re
-        working on; giving valuable knowledge to other users.
       </p>
       <h2 className="text-center" style={{fontSize: '1.7em'}}>
         Why use <span style={{color: 'var(--primary-color)'}}>Timber</span>
@@ -52,9 +50,9 @@ const LandingPage = () => {
       >
         This is a massively growing market, with many competitors in this space
         already. This market is also threatened by the increasing use of
-        freelancing sites. These sites offer similar services to timber but lack
-        the social aspect that timber will have. Freelancing sites are also
-        aimed at professionals, so timber is able to provide a niche service.
+        freelancing sites. These sites offer similar services to Timber but lack
+        the social aspect that Timber will have. Freelancing sites are also
+        aimed at professionals, so Timber is able to provide a niche service.
         This also means that the target audience is not as large, but that it is
         easier to service (they are more readily available). We will be able to
         create a much easier and more social platform for these professionals
@@ -73,21 +71,21 @@ const LandingPage = () => {
           marginTop: '1em',
         }}
       >
-        Timber is a very different platform to other freelancing sites. It’s
+        Timber is a very different platform to other freelancing sites. Its
         main difference is the social part of it. Unlike other freelancing
-        sites, timber is a platform that connects students and professionals
+        sites, Timber is a platform that connects students and professionals
         together to collaborate on projects. This makes it a much easier process
         for both parties; students can reach out to professionals and vice
-        versa. There are many other freelancing sites but they are aimed at
-        professionals only; making it hard for professionals to find students
+        versa. There are many other freelancing sites but they are often aimed
+        at professionals only; making it hard for professionals to find students
         with the knowledge they need (and vice versa). Another difference
-        between timber is the ease of access. Timber removes the barrier of CVs,
+        between Timber is the ease of access. Timber removes the barrier of CVs,
         cover letters, application forms etc. We aim to make this platform very
         easy for anyone to jump into; allowing you to filter projects based on
-        your own criteria (like your skill set or your team). As mentioned
-        above, there are many competitors in this space but almost none like
-        timber; making us able to provide a unique service that others cannot
-        offer.
+        your own criteria (like your preferred skill set or your team). As
+        mentioned above, there are many competitors in this space but almost
+        none like Timber; making us able to provide a unique service that others
+        cannot offer.
       </p>
     </Container>
   );
