@@ -14,18 +14,12 @@ import FormText from './FormText';
 export interface FormValues {
   avatarURL: string;
   username: string;
-  tags: Tag[];
+  tags: string[];
 }
 
 interface customProps {
   disabled?: boolean;
 }
-
-const defaultValues: FormValues = {
-  avatarURL: '',
-  username: '',
-  tags: [],
-};
 
 const stylesButton = {
   display: 'flex',
@@ -44,21 +38,25 @@ const EditProfile = (props: customProps) => {
     }
   }, [currentUser]);
 
+  const defaultValues: FormValues = {
+    avatarURL: '',
+    username: currentUser!.username ? currentUser!.username : '',
+    tags: [],
+  };
+
   const selectable = tags.map((e) => {
-    return {label: e.name, value: e.id};
+    return {label: e.name, value: `{"id": ${e.id}, "name": "${e.name}"}`};
   });
 
   console.log(useTags());
 
-  const onSubmit = async (
-      values: FormValues,
-      actions: FormikHelpers<FormValues>,
-  ) => {
-    const u = currentUser!.username ? currentUser!.username : values.username;
+  const onSubmit = async (values: FormValues, actions: FormikHelpers<FormValues>) => {
+    console.log(values.tags)
+    const t: Tag[] = values.tags.map(e => JSON.parse(e))
     await patchUser({
-      username: u,
+      username: values.username,
       avatar_url: values.avatarURL,
-      tags: values.tags,
+      tags: t,
     });
     actions.setSubmitting(false);
   };
@@ -87,10 +85,10 @@ const EditProfile = (props: customProps) => {
         component={FormText}
         label="Username"
         type="text"
-        placeholder="Please choose an alias"
+        placeholder={currentUser!.username ? currentUser!.username : "Please enter an alias"}
         description="Enter your username"
         muted={true}
-        disabled={props.disabled}
+        disabledForm={props.disabled}
       />
       <Field
         className=""
@@ -130,7 +128,7 @@ const EditProfile = (props: customProps) => {
             .url('Must be a valid URL'),
         username: Yup.string()
             .max(15, 'Must be 15 characters or less')
-            .defined(currentUser?.username ? '' : 'Required'),
+            .defined('Required'),
         tags: Yup.array().defined('Required'),
       })}
       render={renderForm}

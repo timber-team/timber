@@ -1,4 +1,4 @@
-import { FieldProps } from "formik";
+import { ErrorMessage, FieldProps } from "formik";
 import React from "react";
 import { Form } from "react-bootstrap";
 import Select from "react-select";
@@ -60,6 +60,7 @@ export const CustomSelect = ({
         options={options}
         isMulti={isMulti}
       />
+      <ErrorMessage name={field.name} component="div" />
       <Form.Text className={muted ? "text-muted" : ""}>
         {description}
       </Form.Text>
