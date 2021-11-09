@@ -77,6 +77,28 @@ export const useApplications = () => {
     setLoading(false);
   };
 
+  const createApplication = async (projectId: number) => {
+    setLoading(true);
+    setError(null);
+    try {
+      const response = await doRequest({
+        url: `/api/projects/${projectId}`,
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+      if (response[0] === null) {
+        setError(response[1]!.message);
+      } else {
+        setApplications(response[0]!.data);
+      }
+    } catch (error) {
+      setError(error.message);
+    }
+    setLoading(false);
+  };
+
   return {
     applications,
     loading,
@@ -84,5 +106,6 @@ export const useApplications = () => {
     getAllApplicationsByUserId,
     getApplicationById,
     getAllApplicationsByProjectId,
+    createApplication,
   };
 };

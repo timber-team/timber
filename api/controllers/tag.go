@@ -23,5 +23,5 @@ func (tagControl *TagController) Create(ctx context.Context, tag *models.Tag) er
 }
 
 func (tagControl *TagController) Update(ctx context.Context, tag *models.Tag) error {
-	return tagControl.Tags.Patch(ctx, tag)
+	return tagControl.Tags.Update(ctx, tag)
 }
