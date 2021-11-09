@@ -29,7 +29,7 @@ const App: React.FC = () => {
         >
           <Switch>
             {/* Oauth callback */}
-            <Route path="/oauth/callback/google" component={OAuthCallback} />
+            <Route path="/oauth/callback/*" component={OAuthCallback} />
             {/* Protected routes */}
             <ProtectedRoute>
               {/* Landing page */}
