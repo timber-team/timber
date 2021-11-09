@@ -27,7 +27,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({project}) => {
         <Card.Title>
           <a href={`/projects/${project.id}`}>{project.name}</a>
         </Card.Title>
-        <Card.Text>
+        <Card.Text as="div">
           <ReactMarkdown>{project.description}</ReactMarkdown>
         </Card.Text>
         <Card.Text>
@@ -35,7 +35,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({project}) => {
           {project.required_skills.map((skill: Tag) => (
             <Badge
               key={skill.id}
-              bg="secondary"
+              bg="info"
               style={{marginRight: '5px', fontSize: '0.8rem'}}
             >
               {skill.name}
@@ -47,7 +47,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({project}) => {
           {project.preferred_skills.map((skill: Tag) => (
             <Badge
               key={skill.id}
-              bg="secondary"
+              bg="warning"
               style={{marginRight: '5px', fontSize: '0.8rem'}}
             >
               {skill.name}
@@ -79,7 +79,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({project}) => {
                   />
                   <h3>{project.owner.username}</h3>
                 </Popover.Header>
-                <Popover.Body>
+                <Popover.Body as="div">
                   <Popover.Header as="h5">
                     <ReactMarkdown>{project.owner.description}</ReactMarkdown>
                   </Popover.Header>
@@ -143,7 +143,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({project}) => {
                       />
                       <h3>{collaborator.username}</h3>
                     </Popover.Header>
-                    <Popover.Body>
+                    <Popover.Body as="div" className="">
                       <Popover.Header as="h5">
                         <ReactMarkdown>
                           {collaborator.description}

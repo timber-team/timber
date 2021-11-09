@@ -70,6 +70,8 @@ export const useProjects = () => {
         setError(response[1]!.message);
       } else {
         setProjects(response[0]!.data);
+        setLoading(false);
+        return response[0]!.data as Project;
       }
     } catch (error) {
       setError(error.message);

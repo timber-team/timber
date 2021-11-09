@@ -44,22 +44,11 @@ func AuthUser(tokenControl controllers.TokenController) gin.HandlerFunc {
 					})
 				}
 
-				// err := customresponse.NewBadRequest("Invalid request parameters. See invalidArgs")
-
-				// c.JSON(err.Status(), gin.H{
-				// 	"error":       err,
-				// 	"invalidArgs": invalidArgs,
-				// })
 				utils.Respond(c, customresponse.NewBadRequest("Invalid request parameters. See invalidArgs"), invalidArgs)
 				c.Abort()
 				return
 			}
 
-			// Error type is unknown
-			// err := customresponse.NewInternal()
-			// c.JSON(err.Status(), gin.H{
-			// 	"error": err,
-			// })
 			utils.Respond(c, customresponse.NewInternal(), nil)
 			c.Abort()
 			return
@@ -68,11 +57,6 @@ func AuthUser(tokenControl controllers.TokenController) gin.HandlerFunc {
 		accessTokenHeader := strings.Split(h.AccessToken, "Bearer ")
 
 		if len(accessTokenHeader) < 2 {
-			// err := customresponse.NewAuthorization("Must provide Authorization header")
-
-			// c.JSON(err.Status(), gin.H{
-			// 	"error": err,
-			// })
 			utils.Respond(c, customresponse.NewAuthorization("Must provide Authorization header"), nil)
 			c.Abort()
 			return
@@ -82,10 +66,6 @@ func AuthUser(tokenControl controllers.TokenController) gin.HandlerFunc {
 		user, err := tokenControl.ValidateAccessToken(accessTokenHeader[1])
 
 		if err != nil {
-			// err := customresponse.NewAuthorization("Provided token is invalid")
-			// c.JSON(err.Status(), gin.H{
-			// 	"error": err,
-			// })
 			utils.Respond(c, customresponse.NewAuthorization("Provided token is invalid"), nil)
 			c.Abort()
 			return
