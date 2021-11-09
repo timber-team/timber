@@ -44,14 +44,15 @@ func NewHandler(c *Config) {
 	g.GET("/projects", h.GetProjects)
 	g.GET("/projects/:projectID", h.GetProject)
 	g.GET("/users/:ownerID/projects", h.GetProjectsByOwnerID)
+	g.GET("/projects/popular", h.GetProjectsByPopularity)
 	g.POST("/projects", h.NewProject)
 	g.POST("/projects/:projectID/apply", h.NewApplication)
+	g.GET("/projects/:projectID/applications", h.GetApplicationsByProjectID)
 
 	g.GET("/applications", h.GetOwnApplications)
 	g.GET("/applications/:appID", h.GetApplicationByID)
 	g.POST("/applications/:projectID", h.NewApplication)
 
-	g.GET("/projects/:projectID/applications", h.GetApplicationsByProjectID)
 	g.GET("/tags", h.GetTags)
 	g.GET("/tags/:tagID", h.GetTag)
 	g.POST("/tags", h.NewTag)
