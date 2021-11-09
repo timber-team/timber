@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { useProjects } from '../api/project';
+import { useAuth } from '../store/auth';
 
 import { Badge, Card } from 'react-bootstrap';
 
 // Applications functional component
 const Applications: React.FC = () => {
   const { projects, loading, error, getAllProjects } = useProjects()
+  const { currentUser } = useAuth();
 
   useEffect(() => {
     console.log("Rerender")
@@ -25,18 +27,24 @@ const Applications: React.FC = () => {
   }
 
   return (
-    <div
-      style={{
-        padding: '2rem',
-      }}
-    >
-      <h2>Applications</h2>
+    <div>
+      <h2 style={{textAlign: 'center', marginBottom: '2em'}}>Applications</h2>
       <ul>
         {projects.map(project => (
           <li key={project.id}
-            style={{
+            style={
+              
+              // if screenwidth > 600px
+              (window.innerWidth > 900) ?
+              {
+              maxWidth: '80%',
+              margin: 'auto',
               listStyleType: 'none',
-            }}
+              }: {
+                maxWidth: '100%',
+                margin: 'auto',
+                listStyleType: 'none',
+              }}
           >
             <Card>
               <Card.Body>
@@ -48,7 +56,13 @@ const Applications: React.FC = () => {
                   }}
                 >
                   <div>
-                    <Card.Title>{project.name}</Card.Title>
+                    <Card.Title style={{
+                      fontSize: '1.5rem',
+                      fontWeight: 'bold',
+                    }}>
+                      {project.name}
+                      {((currentUser) && project.collaborators?.includes(currentUser)) ? <Badge style={{margin: '1em', fontSize: '0.6em'}} bg="success">Accepted</Badge>: <> </>}
+                    </Card.Title>
                     <Card.Text>{project.description}</Card.Text>
 
                     <div
@@ -56,8 +70,7 @@ const Applications: React.FC = () => {
                         display: 'flex',
                         alignItems: 'center',
                       }}
-                    >
-                      
+                    > 
 
                       {project.required_skills?.map((skill) => (
                         <Badge
@@ -81,13 +94,22 @@ const Applications: React.FC = () => {
 
                   </div>
 
-                  <Card.Img
+                  {/* <div
                     style={{
-                      maxWidth: '40%'
+                      display: 'flex',
+                      alignItems: 'center',
+                      flexDirection: 'column',
                     }}
-                    src={project.image_url} height="300px" width="auto"
-                  />
-                </div>
+                  > */}
+                    <Card.Img
+                      style={{
+                        maxWidth: '40%'
+                      }}
+                      src={project.image_url} height="300px" width="100%"
+                    />
+                    {/* {(project.collaborators?.includes(currentUser?.id)) ? <Card.Text>Accepted</Card.Text>: <> </>}
+                  </div> */}
+                 </div>
               </Card.Body>
             </Card>
           </li>
