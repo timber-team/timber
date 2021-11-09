@@ -1,17 +1,16 @@
+/* eslint-disable max-len */
 import React, {useEffect, useState} from 'react';
-import {Route} from 'react-router-dom';
+import {Redirect, Route} from 'react-router-dom';
 
 import {useAuth} from '../store/auth';
 import {LoginModal} from './LoginModal';
 
 const ProtectedRoute = ({children}: { children: any }) => {
-  const getUser = useAuth((state) => state.getUser);
+  const {currentUser, getUser, isLoading, error} = useAuth();
   const [beginUserLoad, setBeginUserLoad] = useState(false);
-  const isLoading = useAuth((state) => state.isLoading);
-  const currentUser = useAuth((state) => state.currentUser);
 
   useEffect(() => {
-    getUser(true);
+    getUser(false);
     setBeginUserLoad(true);
   }, [getUser]);
 
