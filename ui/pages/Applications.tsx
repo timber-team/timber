@@ -79,7 +79,8 @@ const Applications: React.FC = () => {
                       }}
                     >
                       {project.name}
-                      {project.applications.filter((application) => application.user_id === currentUser.id).accepted ? (
+                      {/* {console.log(`hi this should be true ${project.applications?.filter((application) => application.user_id === currentUser?.id)[0].accepted)}} */}
+                      {project.applications?.filter((application) => application.user_id === currentUser?.id)[0].accepted ? (
                         <Badge
                           style={{margin: '1em', fontSize: '0.6em'}}
                           bg="success"
@@ -87,7 +88,7 @@ const Applications: React.FC = () => {
                           Accepted
                         </Badge>
                         ) : 
-                        project.applications.filter((application) => application.user_id === currentUser.id).accepted ? (
+                        project.applications?.filter((application) => application.user_id === currentUser?.id)[0].denied ? (
                           <Badge
                           style={{margin: '1em', fontSize: '0.6em'}}
                           bg="danger"
