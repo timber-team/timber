@@ -1,20 +1,38 @@
+/* eslint-disable max-len */
 import React, {useEffect} from 'react';
 import {Button, Stack} from 'react-bootstrap';
 
 import {useProjects} from '../api/project';
 import ProjectCard from './Card';
+import {Project} from '../api/types';
 
 const CardStack = () => {
   const {projects, getAllProjects, loading, error} = useProjects();
-  
-  const [index, setIndex] = React.useState(0);
 
-  const disableNext = projects.length === 0 || projects.length === index + 1;
-  const disablePrev = index === 0;
+  const [index, setIndex] = React.useState(0);
 
   useEffect(() => {
     getAllProjects();
   }, []);
+
+  if (error) {
+    return <div>Error!</div>;
+  }
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  if (projects && !projects.length) {
+    return <div>No projects found</div>;
+  }
+
+  if (!projects) {
+    return null;
+  }
+
+  const disableNext = projects.length === 0 || projects.length === index + 1;
+  const disablePrev = index === 0;
 
   const handleNext = () => {
     if (index < projects.length - 1) {
@@ -27,18 +45,6 @@ const CardStack = () => {
       setIndex(index - 1);
     }
   };
-
-  if (error) {
-    return <div>Error!</div>;
-  }
-
-  if (loading) {
-    return <div>Loading...</div>;
-  }
-
-  if (!projects.length) {
-    return <div>No projects found</div>;
-  }
 
   return (
     <Stack
