@@ -10,6 +10,7 @@ import Browse from './pages/Browse';
 import LandingPage from './pages/LandingPage';
 import Trending from './pages/Trending';
 import OAuthCallback from './src/OAuthCallback';
+import UserSettings from './pages/UserSettings';
 
 Axios.defaults.baseURL = process.env.BASE_URL;
 Axios.defaults.withCredentials = true;
