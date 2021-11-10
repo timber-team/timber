@@ -59,6 +59,7 @@ const EditProfile = (props: customProps) => {
       tags: t,
     });
     actions.setSubmitting(false);
+    window.location.reload();
   };
 
   if (loading) {
