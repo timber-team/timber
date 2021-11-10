@@ -57,6 +57,7 @@ func NewHandler(c *Config) {
 	g.GET("/tags/:tagID", h.GetTag)
 	g.POST("/tags", h.NewTag)
 	g.GET("/projects/:projectID/tags", h.GetTagsByProjectID)
+	g.PATCH("/users", h.UpdateUser)
 
 	c.R.NoRoute(func(c *gin.Context) {
 		utils.Respond(c, customresponse.NewInternal(), nil)
