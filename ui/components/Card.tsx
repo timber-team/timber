@@ -32,7 +32,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({project}) => {
         </Card.Text>
         <Card.Text>
           <span style={{fontWeight: 'bold'}}>Required Skills:</span>{' '}
-          {project.required_skills.map((skill: Tag) => (
+          {project.required_skills? project.required_skills.map((skill: Tag) => (
             <Badge
               key={skill.id}
               bg="info"
@@ -40,11 +40,11 @@ const ProjectCard: React.FC<ProjectCardProps> = ({project}) => {
             >
               {skill.name}
             </Badge>
-          ))}
+          )): <> </>}
         </Card.Text>
         <Card.Text>
           <span style={{fontWeight: 'bold'}}>Preferred Skills:</span>{' '}
-          {project.preferred_skills.map((skill: Tag) => (
+          {project.preferred_skills? project.preferred_skills.map((skill: Tag) => (
             <Badge
               key={skill.id}
               bg="warning"
@@ -52,7 +52,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({project}) => {
             >
               {skill.name}
             </Badge>
-          ))}
+          )): <></>}
         </Card.Text>
       </Card.Body>
       <Card.Footer>

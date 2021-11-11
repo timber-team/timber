@@ -46,7 +46,7 @@ const EditProfile = (props: customProps) => {
   };
 
   const selectable = tags.map((e) => {
-    return {label: e.name, value: `{"id": ${e.id}, "name": "${e.name}"}`};
+    return {label: e.name, value: e.id};
   });
 
   console.log(useTags());
