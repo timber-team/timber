@@ -9,48 +9,6 @@ import (
 	"gorm.io/gorm"
 )
 
-/*
-type User struct {
-	ID           int           `gorm:"primaryKey;autoIncrement;" json:"id"`
-	CreatedAt    int64         `gorm:"autoCreateTime;<-:create" json:"created_at"`
-	UpdatedAt    int64         `gorm:"autoUpdateTime;<-:create" json:"modified_at"`
-	Username     string        `json:"username"`
-	Email        string        `gorm:"unique" json:"email"`
-	Description  string        `json:"description"`
-	AvatarURL    string        `json:"avatar_url"`
-	Tags         []Tag         `gorm:"many2many:user_tags" json:"tags"`
-	Projects     []*Project    `gorm:"many2many:user_project;" json:"projects,omitempty"`
-	Applications []Application `json:"applications,omitempty"`
-}
-
-type Project struct {
-	ID              int           `gorm:"primaryKey;autoIncrement;" json:"id"`
-	CreatedAt       int64         `gorm:"autoCreateTime;<-:create" json:"created_at"`
-	UpdatedAt       int64         `gorm:"autoUpdateTime;<-:create" json:"modified_at"`
-	Name            string        `gorm:"unique" json:"name"`
-	Description     string        `json:"description"`
-	ImageURL        string        `json:"image_url,omitempty"`
-	OwnerID         int           `gorm:"not null;<-:create" json:"owner_id"`
-	Owner           User          `gorm:"foreignkey:OwnerID;association_foreignkey:ID" json:"owner,omitempty"`
-	Collaborators   []*User       `gorm:"many2many:user_project;" json:"collaborators,omitempty"`
-	PreferredSkills []Tag         `gorm:"many2many:project_preferred" json:"preferred_skills,omitempty"`
-	RequiredSkills  []Tag         `gorm:"many2many:project_required" json:"required_skills,omitempty"`
-	Applications    []Application `json:"applications,omitempty"`
-}
-
-type Application struct {
-	ID        int   `gorm:"primaryKey;autoIncrement;" json:"id"`
-	CreatedAt int64 `gorm:"autoCreateTime;<-:create" json:"created_at"`
-	UpdatedAt int64 `gorm:"autoUpdateTime;<-:create" json:"modified_at"`
-	UserID    int   `json:"user_id"`
-	ProjectID int   `json:"project_id"`
-}
-
-type Tag struct {
-	ID   int    `gorm:"primaryKey;autoIncrement;" json:"id,omitempty"`
-	Name string `gorm:"uniqueIndex" json:"name,omitempty"`
-} */
-
 type SeedStore struct {
 	db *gorm.DB
 }
@@ -66,7 +24,7 @@ func (ss *SeedStore) Seed() error {
 	ss.db.Set("gorm:save_associations", true)
 
 	// string slice of software developer skills
-	tagNames := []string{"Adaptability", "Communication", "Collaboration", "Creativity", "Decision Making", "Dependability", "Initiative", "Learning", "Organization", "Problem Solving", "Quality", "Teamwork", "Time Management", "C", "C++", "Java", "JavaScript", "Python", "SQL", "HTML", "CSS", "Go", "PHP", "Ruby", "Swift"}
+	tagNames := []string{"C", "C++", "Java", "JavaScript", "Python", "SQL", "HTML", "CSS", "Go", "PHP", "Ruby", "Swift"}
 
 	// Generate 50 random Tags and store them in a slice
 	var generatedTags []*Tag

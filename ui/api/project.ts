@@ -10,7 +10,22 @@ export const useProjects = () => {
   const [loading, setLoading] = useState(false);
   const {accessToken} = useAuth();
 
-  const [browseable, setBrowseable] = useState<Project[]>([]);
+  const getRecommendedProjects = async () => {
+    setLoading(true);
+    const [response, error] = await doRequest({
+      url: '/projects/recommended',
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
+    if (error) {
+      setError(error);
+    } else if (response) {
+      setProjects(response.data);
+    }
+    setLoading(false);
+  };
 
   const getAllProjects = async () => {
     setLoading(true);
@@ -210,5 +225,6 @@ export const useProjects = () => {
     deleteProject,
     getApplications,
     getProjectsByPopularity,
+    getRecommendedProjects,
   };
 };

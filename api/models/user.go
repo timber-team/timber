@@ -51,8 +51,8 @@ func (userStore *UserStore) Create(ctx context.Context, user *User) error {
 
 //update user with new data
 func (userStore *UserStore) Update(ctx context.Context, user *User, newUser *User) error {
-	userStore.Get(ctx, user)
-	return userStore.db.WithContext(ctx).Model(&user).Updates(newUser).Error
+	// userStore.Get(ctx, user)
+	return userStore.db.WithContext(ctx).Model(&user).Save(newUser).Error
 }
 
 func (userStore *UserStore) Delete(ctx context.Context, user *User) error {

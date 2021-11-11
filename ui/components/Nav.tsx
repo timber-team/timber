@@ -36,6 +36,11 @@ const NavBar = () => {
                   align={'end'}
                   title={
                     <img
+                      style={{
+                        maxWidth: '2.5rem',
+                        maxHeight: '2.5rem'
+                      }}
+
                       src={currentUser?.avatar_url}
                       alt="avatar"
                       className="avatar-img"
