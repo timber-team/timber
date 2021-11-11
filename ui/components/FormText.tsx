@@ -1,23 +1,42 @@
+import { ErrorMessage, FieldProps } from "formik"
 import React from "react"
 import Form from "react-bootstrap/esm/Form"
 
-interface CustomSelectProps {
+interface CustomSelectProps extends FieldProps {
   label: string;
-  type: string;
+  formType: string;
   placeholder: string;
   description?: string;
-  name: string;
   muted?: boolean;
   className?: string;
+  disabledForm?: boolean;
 }
 
-const FormText = (props: CustomSelectProps) => {
+const FormText = ({
+  className,
+  placeholder,
+  field,
+  formType,
+  form,
+  label,
+  muted,
+  description,
+  disabledForm
+}: CustomSelectProps) => {
+  const onChange = (e: any) => {
+    form.setFieldValue(
+      field.name, 
+        e.target.value
+      )
+  };
+
   return (
-    <Form.Group className={props.className} controlId={props.name}>
-      <Form.Label>{props.label}</Form.Label>
-      <Form.Control type={props.type} placeholder={props.placeholder} />
-      <Form.Text className={props.muted ? "text-muted" : ""}>
-        {props.description}
+    <Form.Group className={className}>
+      <Form.Label>{label}</Form.Label>
+      <Form.Control type={formType} placeholder={placeholder} onChange={onChange} disabled={disabledForm}/>
+      <ErrorMessage name={field.name} component="div" />
+      <Form.Text className={muted ? "text-muted" : ""}>
+        {description}
       </Form.Text>
     </Form.Group>
   )

@@ -150,7 +150,6 @@ func (h *Handler) GetApplicationByID(c *gin.Context) {
 
 func (h *Handler) GetOwnApplications(c *gin.Context) {
 	user, exists := c.Get("user")
-
 	if !exists {
 		log.WithContext(c).Error("Unable to extract user from the request context")
 		return

@@ -16,7 +16,7 @@ export const useUser = () => {
     setError(null);
     try {
       const response = await doRequest({
-        url: `/api/users/${id}`,
+        url: `/users/${id}`,
         method: 'GET',
         headers: {
           Authorization: `Bearer ${accessToken}`,
@@ -33,10 +33,35 @@ export const useUser = () => {
     setLoading(false);
   };
 
+  const patchUser = async (user: Partial<User>) => {
+    setLoading(true);
+    setError(null);
+    try {
+      const response = await doRequest({
+        url: '/users',
+        method: 'PATCH',
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+        data: user,
+      });
+      if (response[0] === null) {
+        setError(response[1]!.message);
+      } else {
+        setUser(response[0]!.data);
+      }
+    } catch (error) {
+      setError(error.message);
+    }
+    setLoading(false);
+  };
+
+
   return {
     user,
     loading,
     error,
     getUserById,
+    patchUser
   };
 };

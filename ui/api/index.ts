@@ -22,7 +22,7 @@ export const doRequest = async (
     config: AxiosRequestConfig,
 ): Promise<[GenericResponse | null, Error | null]> => {
   try {
-    const response = await axios(config);
+    const response = await axios(`/api${config.url}`, config);
     return [response.data, null];
   } catch (error) {
     return [null, error];
