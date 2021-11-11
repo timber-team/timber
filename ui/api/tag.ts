@@ -14,7 +14,7 @@ export const useTags = () => {
     setError(null);
     try {
       const response = await doRequest({
-        url: '/api/tags',
+        url: '/tags',
         method: 'GET',
         headers: {
           Authorization: `Bearer ${accessToken}`,
@@ -37,7 +37,7 @@ export const useTags = () => {
     setError(null);
     try {
       const response = await doRequest({
-        url: `/api/tags/${id}`,
+        url: `/tags/${id}`,
         method: 'GET',
         headers: {
           Authorization: `Bearer ${accessToken}`,
@@ -59,7 +59,7 @@ export const useTags = () => {
     setError(null);
     try {
       const response = await doRequest({
-        url: `/api/projects/${projectId}/tags`,
+        url: `/projects/${projectId}/tags`,
         method: 'GET',
         headers: {
           Authorization: `Bearer ${accessToken}`,

@@ -40,9 +40,11 @@ func NewHandler(c *Config) {
 	// if gin.Mode() != gin.TestMode {
 	g.GET("/profile", h.Profile)
 	g.GET("/profile/:userID", h.ProfileByID)
+  g.PATCH("/users", h.UpdateUser)
 
 	g.GET("/projects", h.GetProjects)
 	g.GET("/projects/:projectID", h.GetProject)
+  g.PUT("/projects/:projectID", h.UpdateProject)
 	g.GET("/users/:ownerID/projects", h.GetProjectsByOwnerID)
 	g.GET("/projects/popular", h.GetProjectsByPopularity)
 	g.POST("/projects", h.NewProject)
@@ -57,7 +59,6 @@ func NewHandler(c *Config) {
 	g.GET("/tags/:tagID", h.GetTag)
 	g.POST("/tags", h.NewTag)
 	g.GET("/projects/:projectID/tags", h.GetTagsByProjectID)
-	g.PATCH("/users", h.UpdateUser)
 
 	c.R.NoRoute(func(c *gin.Context) {
 		utils.Respond(c, customresponse.NewInternal(), nil)

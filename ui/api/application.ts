@@ -37,7 +37,7 @@ export const useApplications = () => {
     setError(null);
     try {
       const response = await doRequest({
-        url: `/api/users/${userId}/applications`,
+        url: `/users/${userId}/applications`,
         method: 'GET',
         headers: {
           Authorization: `Bearer ${accessToken}`,
@@ -59,7 +59,7 @@ export const useApplications = () => {
     setError(null);
     try {
       const response = await doRequest({
-        url: `/api/applications/${id}`,
+        url: `/applications/${id}`,
         method: 'GET',
         headers: {
           Authorization: `Bearer ${accessToken}`,
@@ -82,7 +82,7 @@ export const useApplications = () => {
     setError(null);
     try {
       const response = await doRequest({
-        url: `/api/projects/${projectId}/applications`,
+        url: `/projects/${projectId}/applications`,
         method: 'GET',
         headers: {
           Authorization: `Bearer ${accessToken}`,
@@ -104,7 +104,7 @@ export const useApplications = () => {
     setError(null);
     try {
       const response = await doRequest({
-        url: `/api/applications/${projectId}`,
+        url: `/applications/${projectId}`,
         method: 'POST',
         headers: {
           Authorization: `Bearer ${accessToken}`,

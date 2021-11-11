@@ -1,13 +1,14 @@
+/* eslint-disable max-len */
 import React from 'react';
 import {Container, Nav, Navbar, NavDropdown, Button} from 'react-bootstrap';
 
 import {useAuth} from '../store/auth';
 import {deleteTokens} from '../utils';
 
-import {CreateProjectForm} from './ProjectForms';
+import ProjectForm from './ProjectForms';
 
 const NavBar = () => {
-  const currentUser = useAuth((state) => state.currentUser);
+  const {currentUser} = useAuth();
   const [showForm, setShowForm] = React.useState(false);
 
   return (
@@ -27,42 +28,42 @@ const NavBar = () => {
             <Nav.Link href="/trending">Trending</Nav.Link>
             <Nav.Link href="/applications">Applications</Nav.Link>
           </Nav>
-          <Nav>
-            <CreateProjectForm show={showForm} setShow={setShowForm} />
-            <Button
-              variant="outline-light"
-              onClick={() => setShowForm(!showForm)}
-            >
-              Create Project
-            </Button>
-            <NavDropdown
-              align={'end'}
-              title={
-                <img
-                  src={
-                    currentUser?.avatar_url ||
-                    'https://www.gravatar.com/avatar/' +
-                      Math.floor(Math.random() * 100000) +
-                      '?d=identicon&s=50'
+          {currentUser ? (
+            <>
+              <Nav>
+                <ProjectForm />
+                <NavDropdown
+                  align={'end'}
+                  title={
+                    <img
+                      src={currentUser?.avatar_url}
+                      alt="avatar"
+                      className="avatar-img"
+                    />
                   }
-                  alt="avatar"
-                  className="rounded-circle"
-                />
-              }
-              id="responsive-nav-dropdown"
-            >
-              <NavDropdown.Item href="/profile">Profile</NavDropdown.Item>
-              <NavDropdown.Item href="/settings">Settings</NavDropdown.Item>
-              <NavDropdown.Item
-                href="/auth/logout"
-                onClick={() => {
-                  deleteTokens();
-                }}
-              >
-                Logout
-              </NavDropdown.Item>
-            </NavDropdown>
-          </Nav>
+                  id="responsive-nav-dropdown"
+                >
+                  <NavDropdown.Item href="/profile">
+                    Your profile
+                  </NavDropdown.Item>
+                  <NavDropdown.Item href="/projects">
+                    Your projects
+                  </NavDropdown.Item>
+                  <NavDropdown.Item href="/settings">Settings</NavDropdown.Item>
+                  <NavDropdown.Item
+                    href="/"
+                    onClick={() => {
+                      deleteTokens();
+                    }}
+                  >
+                    Logout
+                  </NavDropdown.Item>
+                </NavDropdown>
+              </Nav>
+            </>
+          ) : (
+            <></>
+          )}
         </Navbar.Collapse>
       </Container>
     </Navbar>
@@ -70,3 +71,4 @@ const NavBar = () => {
 };
 
 export default NavBar;
+

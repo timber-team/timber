@@ -1,4 +1,5 @@
 import Axios from 'axios';
+import ProjectsPage from './pages/ProjectsPage';
 import React from 'react';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 
@@ -12,7 +13,7 @@ import Trending from './pages/Trending';
 import OAuthCallback from './src/OAuthCallback';
 import UserSettings from './pages/UserSettings';
 
-Axios.defaults.baseURL = process.env.BASE_URL;
+Axios.defaults.baseURL = process.env.API_URL;
 Axios.defaults.withCredentials = true;
 
 const App: React.FC = () => {
@@ -38,6 +39,8 @@ const App: React.FC = () => {
               <Route exact path="/" component={LandingPage} />
               {/* Browse page */}
               <Route exact path="/browse" component={Browse} />
+              {/* Projects page */}
+              <Route exact path="/projects" component={ProjectsPage} />
               {/* Applications page */}
               <Route exact path="/applications" component={Applications} />
               {/* Trending page */}

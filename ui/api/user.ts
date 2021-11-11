@@ -16,7 +16,7 @@ export const useUser = () => {
     setError(null);
     try {
       const response = await doRequest({
-        url: `/api/users/${id}`,
+        url: `/users/${id}`,
         method: 'GET',
         headers: {
           Authorization: `Bearer ${accessToken}`,
