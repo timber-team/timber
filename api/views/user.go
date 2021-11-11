@@ -7,8 +7,6 @@ import (
 
 	"github.com/Strum355/log"
 
-	"github.com/Strum355/log"
-
 	"github.com/gal/timber/models"
 	"github.com/gal/timber/utils"
 	"github.com/gal/timber/utils/customresponse"
