@@ -1,8 +1,8 @@
 /* eslint-disable max-len */
-import { useState } from 'react';
-import { doRequest } from '.';
-import { useAuth } from '../store/auth';
-import { Project } from './types';
+import {useState} from 'react';
+import {doRequest} from '.';
+import {useAuth} from '../store/auth';
+import {Project} from './types';
 
 export const useProjects = () => {
   const [projects, setProjects] = useState<Project[]>([]);
@@ -185,7 +185,7 @@ export const useProjects = () => {
         },
       });
       if (response[0] === null) {
-        setError(response[1]!.message);
+        setError(response[1]);
       } else {
         setProjects(response[0]!.data);
       }

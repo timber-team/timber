@@ -38,7 +38,7 @@ export const useUser = () => {
     setError(null);
     try {
       const response = await doRequest({
-        url: '/api/users',
+        url: '/users',
         method: 'PATCH',
         headers: {
           Authorization: `Bearer ${accessToken}`,
