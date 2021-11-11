@@ -5,10 +5,10 @@ import {Container, Nav, Navbar, NavDropdown, Button} from 'react-bootstrap';
 import {useAuth} from '../store/auth';
 import {deleteTokens} from '../utils';
 
-import {CreateProjectForm} from './ProjectForms';
+import ProjectForm from './ProjectForms';
 
 const NavBar = () => {
-  const currentUser = useAuth((state) => state.currentUser);
+  const {currentUser} = useAuth();
   const [showForm, setShowForm] = React.useState(false);
 
   return (
@@ -31,14 +31,7 @@ const NavBar = () => {
           {currentUser ? (
             <>
               <Nav>
-                <CreateProjectForm show={showForm} setShow={setShowForm} />
-                <Button
-                  variant="outline-light"
-                  onClick={() => setShowForm(!showForm)}
-                >
-                  Create Project
-                </Button>
-
+                <ProjectForm />
                 <NavDropdown
                   align={'end'}
                   title={
@@ -78,3 +71,4 @@ const NavBar = () => {
 };
 
 export default NavBar;
+
