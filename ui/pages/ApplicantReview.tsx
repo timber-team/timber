@@ -3,73 +3,64 @@ import { Button, Stack } from 'react-bootstrap';
 
 import { useProjects } from '../api/project';
 import { useUser} from '../api/user';
-import { useApplications } from '../api/application';
 import UserCard from '../components/UserCard';
-import { useParams } from 'react-router';
 import {Application, Project} from '../api/types';
 
-const ApplicantReview = () => {
-//   const {id} = useParams();
+const ApplicantReview = (props) => {
+
+
+  // id is the id of the project, this needs to be hooked up better
   const id = 1;
   const {getProjectById} = useProjects();
+
   const [applications, setApplications] = useState<Application[]>();
   const [project, setProject] = useState<Project>();
 
   const {user, getUserById, loading, error} = useUser();
 
-  const [index, setIndex] = React.useState(0);
-
-//   const disableNext = projects.length === 0 || projects.length === index + 1;
-//   const disablePrev = index === 0;
 
   useEffect(() => {
-    // console.log("Rerender")
     getProjectById(id).then((p) => {setProject(p);
-        // p?.applications?.map(()=> {
-
-        // })
+      setApplications(p?.applications?.filter( (application)=> !application.accepted && !application.denied));
     });
   }, []);
-
-  useEffect(() => {
-    setApplications(project?.applications);
-  }, [project])
 
   useEffect(()=> {
     if (applications){
       console.log(applications)
-        getUserById(applications[index].user_id)
+        getUserById(applications[0].user_id)
     }
     
-  }, [index, applications])
+  }, [applications])
 
-  const handleNext = () => {
-    if (applications && index < applications.length - 1) {
-      setIndex(index + 1);
-    }else{
-        setIndex(0);
-    }
-  };
 
   const handleRejection = () => {
-    console.log("yes")
+    if (applications){
+      applications[0].denied = true
+      //TODO: hooke up to backend to write that into db
+      setApplications(project?.applications?.filter( (application)=> !application.accepted && !application.denied))
+    }
   };
 
   const handleAccept = () => {
-    console.log("no")
+    if (applications) {
+      applications[0].accepted = true
+      //TODO: hooke up to backend to write that into db
+      setApplications(project?.applications?.filter( (application)=> !application.accepted && !application.denied))
+      }
   }
 
-  if (!error) {
+  if (error) {
     console.log(error)
     return <div>Error!</div>;
   }
 
-  if (loading) {
+  if (loading || user === undefined) {
     return <div>Loading...</div>;
   }
 
-  if (!applications?.length) {
-    return <div>Project not found</div>;
+  if (applications?.length) {
+    return <div>No Applicants Waiting</div>;
   }
 
   return (
@@ -87,21 +78,10 @@ const ApplicantReview = () => {
              Reject
       </Button>
     
-     <UserCard user={user || {id: 1,
-                      created_at: 10,
-                      modified_at: 10,
-                      username: "epic",
-                      email: "email@email.com",
-                      verified: false,
-                      description: `yo this is really long just make it long its cool that way idk wth im meant to do except dummy long data
-                      yo this is really long just make it long its cool that way idk wth im meant to do except dummy long data
-                      yo this is really long just make it long its cool that way idk wth im meant to do except dummy long data`,
-                      avatar_url: "yo",
-                            }} />
+     <UserCard user={user } />
     <Button
         className="card-stack-button"
         variant="secondary"
-        // disabled={disableNext}
         onClick={handleAccept}
       >
         Accept
@@ -111,3 +91,17 @@ const ApplicantReview = () => {
 }
 
 export default ApplicantReview;
+
+//dummy the data if you want it
+
+// || {id: 1,
+//   created_at: 10,
+//   modified_at: 10,
+//   username: "epic",
+//   email: "email@email.com",
+//   verified: false,
+//   description: `yo this is really long just make it long its cool that way idk wth im meant to do except dummy long data
+//   yo this is really long just make it long its cool that way idk wth im meant to do except dummy long data
+//   yo this is really long just make it long its cool that way idk wth im meant to do except dummy long data`,
+//   avatar_url: "yo",
+//         }

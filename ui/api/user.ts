@@ -26,6 +26,7 @@ export const useUser = () => {
         setError(response[1]!.message);
       } else {
         setUser(response[0]!.data);
+        console.log(response[0]!.data)
       }
     } catch (error) {
       setError(error.message);
