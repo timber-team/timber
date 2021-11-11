@@ -162,14 +162,21 @@ func (h *Handler) GetRecommendedProjects(c *gin.Context) {
 		return
 	}
 
+	log.WithContext(c).Info(fmt.Sprintf("Recommended projects: %v", queryProjects))
+
 	// check if user has applied to any projects
-	recommendations := make([]*models.Project, len(queryProjects))
+	recommendations := []*models.Project{}
 
 	for _, proj := range queryProjects {
-		for _, applied := range u.Applications {
-			if applied.ProjectID != proj.ID {
-				recommendations = append(recommendations, proj)
+		flag := false
+		for _, app := range u.Applications {
+			if app.ProjectID == proj.ID {
+				flag = true
+				break
 			}
+		}
+		if !flag {
+			recommendations = append(recommendations, proj)
 		}
 	}
 

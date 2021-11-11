@@ -43,7 +43,7 @@ func NewHandler(c *Config) {
 	g.PATCH("/users", h.UpdateUser)
 
 	g.GET("/projects", h.GetProjects)
-	g.GET("/projects/recommended")
+	g.GET("/projects/recommended", h.GetRecommendedProjects)
 	g.GET("/projects/:projectID", h.GetProject)
 	g.PUT("/projects/:projectID", h.UpdateProject)
 	g.GET("/users/:ownerID/projects", h.GetProjectsByOwnerID)

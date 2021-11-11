@@ -51,6 +51,7 @@ func (projectStore *ProjectStore) GetRecommended(ctx context.Context, user *User
 	if err = projectStore.db.WithContext(ctx).Preload("Collaborators").Preload("Applications").Preload("PreferredSkills").Preload("RequiredSkills").Preload("Owner").Omit("Collaborators.Projects").Omit("Owner.Projects").Find(&projects).Error; err != nil {
 		return nil, err
 	}
+
 	var recommendedProjects []*Project
 	for _, project := range projects {
 		for _, tag := range user.Tags {
