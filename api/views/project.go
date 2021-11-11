@@ -289,3 +289,85 @@ func (h *Handler) GetProjectsByPopularity(c *gin.Context) {
 
 	utils.Respond(c, customresponse.NewOK(), popular)
 }
+
+// update project handler
+func (h *Handler) UpdateProject(c *gin.Context) {
+	urlPID := c.Param("projectID")
+	pid, err := strconv.Atoi(urlPID)
+	if err != nil {
+		utils.Respond(c, customresponse.NewInternal(), nil)
+		return
+	}
+
+	user, exists := c.Get("user")
+
+	if !exists {
+		utils.Respond(c, customresponse.NewInternal(), nil)
+		return
+	}
+
+	ctx := c.Request.Context()
+
+	u := user.(*models.User)
+
+	err = h.UserController.Get(ctx, u)
+
+	if err != nil {
+		utils.Respond(c, customresponse.NewNotFound("user", fmt.Sprintf("%d", u.ID)), nil)
+		return
+	}
+
+	p := &models.Project{
+		ID: pid,
+	}
+
+	err = h.ProjectController.Projects.Get(ctx, p)
+
+	if err != nil {
+		utils.Respond(c, customresponse.NewNotFound("project", fmt.Sprintf("%d", p.ID)), nil)
+		return
+	}
+
+	if p.OwnerID != u.ID {
+		utils.Respond(c, customresponse.NewAuthorization(fmt.Sprintf("user: %d", u.ID)), nil)
+		return
+	}
+
+	req := &projectRequest{}
+	err = c.BindJSON(req)
+	if err != nil {
+		utils.Respond(c, customresponse.NewBadRequest(err.Error()), nil)
+		return
+	}
+
+	// map req.RequiredSkills tag id's to []models.Tag
+	requiredSkills := make([]*models.Tag, len(req.RequiredSkills))
+	for i, tagID := range req.RequiredSkills {
+		requiredSkills[i] = &models.Tag{
+			ID: tagID,
+		}
+	}
+
+	preferredSkills := make([]*models.Tag, len(req.PreferredSkills))
+	for i, tagID := range req.PreferredSkills {
+		preferredSkills[i] = &models.Tag{
+			ID: tagID,
+		}
+	}
+
+	p.Name = req.Name
+	p.Description = req.Description
+	p.RequiredSkills = requiredSkills
+	p.PreferredSkills = preferredSkills
+
+	log.WithContext(ctx).Info(fmt.Sprintf("%+v", p))
+
+	err = h.ProjectController.Projects.Update(ctx, p)
+
+	if err != nil {
+		utils.Respond(c, customresponse.NewInternal(), nil)
+		return
+	}
+
+	utils.Respond(c, customresponse.NewOK(), p)
+}
