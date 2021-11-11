@@ -4,7 +4,7 @@ import {TokenResponse} from './types';
 
 export const getAccessToken = async (query: string, provider: string) => {
   const [response, err] = await doRequest({
-    url: `/api/auth/callback/${provider}${query}`,
+    url: `/auth/callback/${provider}${query}`,
     method: 'GET',
   });
   if (err !== null) {
@@ -25,7 +25,7 @@ export const getAccessToken = async (query: string, provider: string) => {
 
 export const refreshTokens = async () => {
   const [response, err] = await doRequest({
-    url: `/api/auth/tokens`,
+    url: `/auth/tokens`,
     method: 'POST',
     data: {
       refreshToken: localStorage.getItem('refresh_token'),

@@ -18,7 +18,7 @@ func (userControl *UserController) Get(ctx context.Context, u *models.User) erro
 	return userControl.Users.Get(ctx, u)
 }
 
-func (userControl *UserController) GetMany(ctx context.Context, userIds []int) (*[]models.User, error) {
+func (userControl *UserController) GetMany(ctx context.Context, userIds []int) ([]*models.User, error) {
 	return userControl.Users.GetMany(ctx, userIds)
 }
 

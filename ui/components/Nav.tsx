@@ -1,13 +1,14 @@
+/* eslint-disable max-len */
 import React from 'react';
 import {Container, Nav, Navbar, NavDropdown, Button} from 'react-bootstrap';
 
 import {useAuth} from '../store/auth';
 import {deleteTokens} from '../utils';
 
-import {CreateProjectForm} from './ProjectForms';
+import ProjectForm from './ProjectForms';
 
 const NavBar = () => {
-  const currentUser = useAuth((state) => state.currentUser);
+  const {currentUser} = useAuth();
   const [showForm, setShowForm] = React.useState(false);
 
   return (
@@ -35,22 +36,27 @@ const NavBar = () => {
                   align={'end'}
                   title={
                     <img
-                      style={{
-                        maxWidth: '2.5rem',
-                        maxHeight: '2.5rem',
-                      }}
-
-                      src={currentUser?.avatar_url}
+                      src={
+                        currentUser?.avatar_url ||
+                        'https://i.pravatar.cc/600?img=' +
+                          (currentUser?.id % 50)
+                      }
                       alt="avatar"
-                      className="avatar-img"
+                      className="avatar-img rounded-circle"
+                      style={{width: '50px', height: '50px'}}
                     />
                   }
-                  id="collasible-nav-dropdown"
+                  id="responsive-nav-dropdown"
                 >
-                  <NavDropdown.Item href="/profile">Profile</NavDropdown.Item>
+                  <NavDropdown.Item href="/profile">
+                    Your profile
+                  </NavDropdown.Item>
+                  <NavDropdown.Item href="/projects">
+                    Your projects
+                  </NavDropdown.Item>
                   <NavDropdown.Item href="/settings">Settings</NavDropdown.Item>
                   <NavDropdown.Item
-                    href="/auth/logout"
+                    href="/"
                     onClick={() => {
                       deleteTokens();
                     }}

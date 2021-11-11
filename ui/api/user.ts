@@ -6,7 +6,7 @@ import {User} from './types';
 // useUser custom hook
 export const useUser = () => {
   const accessToken = useAuth((state) => state.accessToken);
-  const [user, setUser] = useState<User | User[]>();
+  const [user, setUser] = useState<User[]>();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -16,7 +16,7 @@ export const useUser = () => {
     setError(null);
     try {
       const response = await doRequest({
-        url: `/api/users/${id}`,
+        url: `/users/${id}`,
         method: 'GET',
         headers: {
           Authorization: `Bearer ${accessToken}`,
@@ -25,8 +25,10 @@ export const useUser = () => {
       if (response[0] === null) {
         setError(response[1]!.message);
       } else {
-        setUser(response[0]!.data);
-        console.log(response[0]!.data)
+        setUser([response[0]!.data]);
+
+        console.log(response[0]!.data);
+        return response[0]!.data as User;
       }
     } catch (error) {
       setError(error.message);
@@ -38,7 +40,10 @@ export const useUser = () => {
     setError(null);
     try {
       const response = await doRequest({
-        url: `/api/user?q=${userIds.join(',')}`,
+        url: `/users`,
+        params: {
+          q: userIds.join(','),
+        },
         method: 'GET',
         headers: {
           Authorization: `Bearer ${accessToken}`,
@@ -48,7 +53,31 @@ export const useUser = () => {
         setError(response[1]!.message);
       } else {
         setUser(response[0]!.data);
-        console.log(response[0]!.data)
+        console.log(response[0]!.data);
+        return response[0]!.data as User[];
+      }
+    } catch (error) {
+      setError(error.message);
+    }
+    setLoading(false);
+  };
+
+  const patchUser = async (user: Partial<User>) => {
+    setLoading(true);
+    setError(null);
+    try {
+      const response = await doRequest({
+        url: '/users',
+        method: 'PATCH',
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+        data: user,
+      });
+      if (response[0] === null) {
+        setError(response[1]!.message);
+      } else {
+        setUser([response[0]!.data]);
       }
     } catch (error) {
       setError(error.message);
@@ -61,6 +90,7 @@ export const useUser = () => {
     loading,
     error,
     getUserById,
-    getUsersByIds
+    getUsersByIds,
+    patchUser,
   };
 };

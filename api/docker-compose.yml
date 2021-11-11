@@ -1,7 +1,7 @@
 version: "3.8"
 services:
   postgres-timber:
-    container_name: pgres
+    container_name: pgres_timber
     image: "postgres"
     ports:
       - "5432:5432"

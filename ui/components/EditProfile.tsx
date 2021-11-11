@@ -1,27 +1,37 @@
-import React from "react";
-import { Field, Form, Formik, FormikHelpers, FormikProps } from "formik";
-import CustomSelect from "./CustomSelect";
-import FormText from "./FormText";
-import { Button } from "react-bootstrap";
+/* eslint-disable max-len */
+import {Tag} from 'api/types';
+import {Field, Form, Formik, FormikHelpers, FormikProps} from 'formik';
+import React, {useEffect} from 'react';
+import {Button} from 'react-bootstrap';
+import * as Yup from 'yup';
+
+import {useTags} from '../api/tag';
+import {useUser} from '../api/user';
+import {useAuth} from '../store/auth';
+import CustomSelect from './CustomSelect';
+import FormText from './FormText';
 
 export interface FormValues {
   avatarURL: string;
-  name: string;
   username: string;
-  technologies: string[];
+  tags: string[];
 }
 
-const defaultValues: FormValues = {
-  avatarURL: "",
-  name: "",
-  username: "",
-  technologies: []
+interface customProps {
+  disabled?: boolean;
+}
+
+const stylesButton = {
+  display: 'flex',
+  justifyContent: 'space-around',
+  marginTop: 12,
 };
 
 const EditProfile = (props: customProps) => {
   const currentUser = useAuth((state) => state.currentUser);
-  const { tags, loading, error, getAllTags } = useTags();
-  const { patchUser } = useUser();
+  const getUser = useAuth((state) => state.getUser);
+  const {tags, loading, error, getAllTags} = useTags();
+  const {patchUser} = useUser();
 
   useEffect(() => {
     if (currentUser) {
@@ -36,54 +46,72 @@ const EditProfile = (props: customProps) => {
   };
 
   const selectable = tags.map((e) => {
-    return {label: e.name, value: e.id};
+    return {label: e.name, value: `{"id": ${e.id}, "name": "${e.name}"}`};
   });
 
   console.log(useTags());
 
-  const EditProfile = () => {
-    const onSubmit = (values: FormValues, actions: FormikHelpers<FormValues>) => {
-      alert(JSON.stringify(values, null, 2));
-      actions.setSubmitting(false);
-    };
+  const onSubmit = async (
+      values: FormValues,
+      actions: FormikHelpers<FormValues>,
+  ) => {
+    console.log(values.tags);
+    getUser(true);
 
-    const renderForm = (formikBag: FormikProps<FormValues>) => (
-      <Form>
-        <Field
-          name="avatarURL"
-          component={FormText}
-          label="Avatar URL"
-          type="text"
-          placeholder="Avatar URL"
-          description="Please enter your avatar URL, you can use a website like imgur to host it"
-          muted={true}
-        />
-        <Field
-          name="name"
-          component={FormText}
-          label="Avatar name"
-          type="text"
-          placeholder="First and Second Name"
-          description="Enter your name"
-          muted={true}
-        />
-        <Field
-          name="username"
-          component={FormText}
-          label="Username"
-          type="text"
-          placeholder="Please choose an alias"
-          description="Enter your username"
-          muted={true}
-        />
-        <Field
-          className="form-select"
-          name="technologies"
-          options={technologyOptions}
-          component={CustomSelect}
-          placeholder="Select from multiple technologies"
-          isMulti={true}
-        />
+    const t: Tag[] = values.tags.map((e) => JSON.parse(e));
+    await patchUser({
+      username: values.username,
+      avatar_url: values.avatarURL,
+      tags: t,
+    });
+    actions.setSubmitting(false);
+    window.location.reload();
+  };
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  if (error) {
+    return <div>Error!</div>;
+  }
+
+  const renderForm = (formikBag: FormikProps<FormValues>) => (
+    <Form>
+      <Field
+        name="avatarURL"
+        component={FormText}
+        label="Avatar URL"
+        type="text"
+        placeholder="Avatar URL"
+        description="Please enter your avatar URL, you can use a website like imgur to host it"
+        muted={true}
+      />
+      <Field
+        name="username"
+        component={FormText}
+        label="Username"
+        type="text"
+        placeholder={
+          currentUser!.username ?
+            currentUser!.username :
+            'Please enter an alias'
+        }
+        description="Enter your username"
+        muted={true}
+        disabledForm={props.disabled}
+      />
+      <Field
+        className=""
+        name="tags"
+        options={selectable}
+        component={CustomSelect}
+        label="Select Technologies"
+        placeholder="Select from multiple tags"
+        description="Please select tags that you prefer to work with"
+        isMulti={true}
+      />
+      <div style={stylesButton}>
         <Button
           variant="primary"
           type="button"
@@ -93,27 +121,31 @@ const EditProfile = (props: customProps) => {
         >
           Reset
         </Button>
-        <Button variant="primary" type="submit">Submit</Button>
-      </Form>
-    );
+        <Button variant="primary" type="submit">
+          Submit
+        </Button>
+      </div>
+    </Form>
+  );
 
   return (
     <Formik
       initialValues={defaultValues}
       validationSchema={Yup.object({
         avatarURL: Yup.string()
+            .max(50, 'Must be 50 characters or less')
             .notRequired()
             .nullable()
             .url('Must be a valid URL'),
-          username: Yup.string()
+        username: Yup.string()
             .max(15, 'Must be 15 characters or less')
             .defined('Required'),
-          tags: Yup.array().defined('Required'),
-        })}
-        render={renderForm}
-        onSubmit={onSubmit}
-      />
-    );
-  };
+        tags: Yup.array().defined('Required'),
+      })}
+      render={renderForm}
+      onSubmit={onSubmit}
+    />
+  );
+};
 
-  export default EditProfile
+export default EditProfile;

@@ -1,6 +1,5 @@
 /* eslint-disable camelcase */
 
-
 export interface User {
   id: number;
   created_at: number;
@@ -38,7 +37,7 @@ export interface Application {
   modified_at: number;
   user_id: number;
   project_id: number;
-  accepted: boolean;l
+  accepted: boolean;
   denied: boolean;
 }
 
