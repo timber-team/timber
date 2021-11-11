@@ -18,7 +18,19 @@ const CardStack = () => {
   }, []);
 
   useEffect(() => {
-    setProjQueue(projects);
+    let existingIds :Project[] = []; 
+    console.log(projects);
+    setProjQueue(projects.filter((proj) => {
+      for (let elem of existingIds) {
+        if (proj.id === elem.id) {
+          return false;
+        }
+      }
+      existingIds.push(proj);
+      return true;
+    }));
+
+    console.log(projQueue)
   }, [projects]);
 
   if (error) {
@@ -48,6 +60,8 @@ const CardStack = () => {
     setProjQueue(projQueue.slice(1));
 
   };
+
+  console.log("projQ", projQueue)
 
   return (
     <Stack
