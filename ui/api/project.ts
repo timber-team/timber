@@ -79,6 +79,29 @@ export const useProjects = () => {
     }
   };
 
+  const returnProjectById = async (id: number) => {
+    setLoading(true);
+    setError(null);
+    try{
+      const [response, error] = await doRequest({
+        url: `/projects/${id}`,
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+      if (response.code != 200) {
+        setError(response.message);
+      } else {
+        setLoading(false);
+        return response.data as Project;
+      }
+    } catch (error) {
+      setError(error.message);
+    }
+    setLoading(false);
+  };
+
   const getProjectByName = async (name: string) => {
     setLoading(true);
     const [response, error] = await doRequest({
@@ -226,5 +249,6 @@ export const useProjects = () => {
     getApplications,
     getProjectsByPopularity,
     getRecommendedProjects,
+    returnProjectById,
   };
 };

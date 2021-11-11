@@ -4,50 +4,51 @@ import {useProjects} from '../api/project';
 
 import {Badge, Card} from 'react-bootstrap';
 import {Application, Project} from '../api/types';
-import {useAuth} from '../store/auth';
+import { useApplications } from '../api/application';
 
 const Applications: React.FC = () => {
-  const {projects, loading, error, getProjectById} = useProjects();
-  const {currentUser} = useAuth();
-  const [applications, setApplications] = useState<Application[]>([]);
-  const [userProjects, setUserProjects] = useState<Project[]>([]);
-  const [loadingProjects, setLoadingProjects] = useState(false);
+  const {loading: projLoading, error: projError, returnProjectById} = useProjects();
+  const {error: appError, applications, getOwnApplications} = useApplications(); 
+
+  const [zippedList, setZippedList] = useState<ZippedElem[]>([]);
+
+  interface ZippedElem{
+    application: Application,
+    project: Project,
+  }
 
   useEffect(() => {
-    if (currentUser && currentUser.applications !== undefined) {
-      setApplications(currentUser.applications);
-    }
-  }, [currentUser]);
+    getOwnApplications();
+  }, []);
 
   useEffect(() => {
-    if (currentUser && applications) {
-      applications.forEach((application) => {
-        getProjectById(application.project_id).then((project) => {
-          setUserProjects((prevState) => [...prevState, project!]);
-        });
+    applications.forEach( (application) => {
+      returnProjectById(application.project_id).then((proj) => {
+        if (proj) {
+          setZippedList((prevState) => prevState.concat({application: application, project: proj}));
+        }
       });
-    }
+    });
   }, [applications]);
 
-  if (error) {
+  if (projError || appError) {
     return <div>Error!</div>;
   }
 
-  if (loading) {
+  if (projLoading) {
     return <div>Loading...</div>;
   }
 
-  if (userProjects && userProjects.length == 0) {
-    return <div>No projects found</div>;
+  if (zippedList === undefined || zippedList.length === 0) {
+    return <div>No Applications found</div>;
   }
-
   return (
     <div>
       <h2 style={{textAlign: 'center', marginBottom: '2em'}}>Applications</h2>
       <ul>
-        {userProjects.map((project) => (
+        {zippedList.map((pair) => (
           <li
-            key={project.id}
+            key={pair.application.id}
             style={
               window.innerWidth > 900 ?
                 {
@@ -78,8 +79,8 @@ const Applications: React.FC = () => {
                         fontWeight: 'bold',
                       }}
                     >
-                      {project.name}
-                      {project.applications?.filter((application) => application.user_id === currentUser?.id)[0].accepted ? (
+                      {pair.project.name}
+                      {pair.application.accepted? (
                         <Badge
                           style={{margin: '1em', fontSize: '0.6em'}}
                           bg="success"
@@ -87,25 +88,25 @@ const Applications: React.FC = () => {
                           Accepted
                         </Badge>
                         ) : 
-                        project.applications?.filter((application) => application.user_id === currentUser?.id)[0].denied ? (
+                        pair.application.denied? (
                           <Badge
-                          style={{margin: '1em', fontSize: '0.6em'}}
-                          bg="danger"
-                            >
+                            style={{margin: '1em', fontSize: '0.6em'}}
+                            bg="danger"
+                          >
                           Rejected
                           </Badge>
                         ) :(
                           <Badge
-                          style={{margin: '1em', fontSize: '0.6em'}}
-                          bg="warning"
-                            >
+                            style={{margin: '1em', fontSize: '0.6em'}}
+                            bg="warning"
+                          >
                               In Progress
                           </Badge>
                         )
 
                       }
                     </Card.Title>
-                    <Card.Text>{project.description}</Card.Text>
+                    <Card.Text>{pair.project.description}</Card.Text>
 
                     <div
                       style={{
@@ -113,7 +114,7 @@ const Applications: React.FC = () => {
                         alignItems: 'center',
                       }}
                     >
-                      {project.required_skills?.map((skill) => (
+                      {pair.project.required_skills?.map((skill) => (
                         <Badge
                           style={{
                             marginRight: '0.4rem',
@@ -131,7 +132,7 @@ const Applications: React.FC = () => {
                         alignItems: 'center',
                       }}
                     >
-                      {project.preferred_skills.map((skill) => (
+                      {pair.project.preferred_skills.map((skill) => (
                         <Badge
                           bg="warning"
                           key={skill.id}
@@ -143,10 +144,10 @@ const Applications: React.FC = () => {
                     </div>
                   </div>
                   <Card.Img
-                    src={project.image_url}
+                    src={pair.project.image_url}
                     style={{
-                        maxWidth: '40%',
-                        height: 'auto',
+                      maxWidth: '40%',
+                      height: 'auto',
                     }}
                   />
                 </div>
