@@ -66,7 +66,7 @@ func (ss *SeedStore) Seed() error {
 	ss.db.Set("gorm:save_associations", true)
 
 	// string slice of software developer skills
-	tagNames := []string{"Adaptability", "Communication", "Collaboration", "Creativity", "Decision Making", "Dependability", "Initiative", "Learning", "Organization", "Problem Solving", "Quality", "Teamwork", "Time Management", "C", "C++", "Java", "JavaScript", "Python", "SQL", "HTML", "CSS", "Go", "PHP", "Ruby", "Swift"}
+	tagNames := []string{"C", "C++", "Java", "JavaScript", "Python", "SQL", "HTML", "CSS", "Go", "PHP", "Ruby", "Swift"}
 
 	// Generate 50 random Tags and store them in a slice
 	var generatedTags []*Tag
