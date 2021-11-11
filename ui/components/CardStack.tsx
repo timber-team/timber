@@ -66,7 +66,7 @@ const CardStack = () => {
       <Button
         className="card-stack-button"
         variant="primary"
-        disabled={disablePrev}
+        // disabled={disablePrev}
         onClick={handlePrevious}
       >
         Dismiss
