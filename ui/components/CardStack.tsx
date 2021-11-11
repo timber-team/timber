@@ -8,14 +8,18 @@ import ProjectCard from './Card';
 import {Project} from '../api/types';
 
 const CardStack = () => {
-  const {projects, getAllProjects, loading, error} = useProjects();
+  const {projects, getRecommendedProjects, loading, error} = useProjects();
   const {applications, createApplication} = useApplications();
 
-  const [index, setIndex] = React.useState(0);
+  const [projQueue, setProjQueue] = React.useState<Project[]>([]);
 
   useEffect(() => {
-    getAllProjects();
+    getRecommendedProjects();
   }, []);
+
+  useEffect(() => {
+    setProjQueue(projects);
+  }, [projects]);
 
   if (error) {
     return <div>Error!</div>;
@@ -25,28 +29,24 @@ const CardStack = () => {
     return <div>Loading...</div>;
   }
 
-  if (projects && !projects.length) {
-    return <div>No projects found</div>;
+  if (projects && !projQueue.length) {
+    return <div>No more projects found</div>;
   }
 
   if (!projects) {
     return null;
   }
 
-  const disableNext = projects.length === 0 || projects.length === index + 1;
-  const disablePrev = index === 0;
-
   const handleNext = () => {
-    if (index < projects.length - 1) {
-      createApplication(projects[index].id);
-      setIndex(index + 1);
-    }
+    console.log(projQueue)
+    createApplication(projQueue[0].id);
+    setProjQueue(projQueue.slice(1));
   };
 
   const handlePrevious = () => {
-    if (index > 0) {
-      setIndex(index - 1);
-    }
+    console.log(projQueue)
+    setProjQueue(projQueue.slice(1));
+
   };
 
   return (
@@ -58,16 +58,14 @@ const CardStack = () => {
       <Button
         className="card-stack-button"
         variant="primary"
-        disabled={disablePrev}
         onClick={handlePrevious}
       >
         Dismiss
       </Button>
-      <ProjectCard project={projects[index]} />
+      <ProjectCard project={projQueue[0]} />
       <Button
         className="card-stack-button"
         variant="secondary"
-        disabled={disableNext}
         onClick={handleNext}
       >
         Apply
