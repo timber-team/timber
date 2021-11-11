@@ -1,8 +1,8 @@
 /* eslint-disable max-len */
-import {useState} from 'react';
-import {doRequest} from '.';
-import {useAuth} from '../store/auth';
-import {Project} from './types';
+import { useState } from 'react';
+import { doRequest } from '.';
+import { useAuth } from '../store/auth';
+import { Project } from './types';
 
 export const useProjects = () => {
   const [projects, setProjects] = useState<Project[]>([]);
@@ -172,6 +172,29 @@ export const useProjects = () => {
     }
   };
 
+  const getProjectsByPopularity = async () => {
+    setLoading(true)
+    setError(null)
+
+    try {
+      const response = await doRequest({
+        url: `/projects/popular`,
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+      if (response[0] === null) {
+        setError(response[1]!.message);
+      } else {
+        setProjects(response[0]!.data);
+      }
+    } catch (error) {
+      setError(error.message)
+    }
+    setLoading(false)
+  }
+
   return {
     projects,
     error,
@@ -184,5 +207,6 @@ export const useProjects = () => {
     updateProject,
     deleteProject,
     getApplications,
+    getProjectsByPopularity,
   };
 };

@@ -37,7 +37,9 @@ func (projectStore *ProjectStore) GetByOwnerID(ctx context.Context, ownerID int)
 
 func (projectStore *ProjectStore) GetByPopularity(ctx context.Context) ([]*Project, error) {
 	var projects []*Project
-	if err := projectStore.db.WithContext(ctx).Preload("Collaborators").Preload("Applications").Preload("PreferredSkills").Preload("RequiredSkills").Preload("Owner").Preload("Collaborators.Projects").Preload("Collaborators.Tags").Preload("Owner.Projects").Preload("Owner.Tags").Order("(SELECT count(*) FROM applications WHERE applications.project_id = projects.id) DESC").Find(&projects).Error; err != nil {
+	if err := projectStore.db.WithContext(ctx).Preload("Collaborators").Preload("Applications").
+		Preload("PreferredSkills").Preload("RequiredSkills").Preload("Owner").Preload("Collaborators.Projects").Preload("Collaborators.Tags").Preload("Owner.Projects").
+		Preload("Owner.Tags").Order("(SELECT count(*) FROM applications WHERE applications.project_id = projects.id) DESC").Limit(10).Find(&projects).Error; err != nil {
 		return nil, err
 	}
 	return projects, nil
