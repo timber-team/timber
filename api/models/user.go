@@ -20,6 +20,12 @@ func (userStore *UserStore) Get(ctx context.Context, user *User) error {
 	return userStore.db.WithContext(ctx).Preload("Projects").Preload("Applications").Preload("Tags").Omit("Projects.Collaborators").Omit("Projects.Owner").First(&user).Error
 }
 
+func (userStore *UserStore) GetMany(ctx context.Context, ids []int) (*[]User, error) {
+	var users *[]User
+	err := userStore.db.WithContext(ctx).Preload("Projects").Preload("Applications").Preload("Tags").Omit("Projects.Collaborators").Omit("Projects.Owner").Find(&users, "id IN (?)", ids).Error
+	return users, err
+}
+
 func (userStore *UserStore) GetByEmail(ctx context.Context, email string) (*User, error) {
 	var user *User
 	err := userStore.db.WithContext(ctx).Preload("Projects").Preload("Applications").Preload("Tags").Omit("Projects.Collaborators").Omit("Projects.Owner").First(&user, "email = ?", email).Error
