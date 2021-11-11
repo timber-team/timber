@@ -40,11 +40,12 @@ func NewHandler(c *Config) {
 	// if gin.Mode() != gin.TestMode {
 	g.GET("/profile", h.Profile)
 	g.GET("/profile/:userID", h.ProfileByID)
-  g.PATCH("/users", h.UpdateUser)
+	g.PATCH("/users", h.UpdateUser)
 
 	g.GET("/projects", h.GetProjects)
+	g.GET("/projects/recommended", h.GetRecommendedProjects)
 	g.GET("/projects/:projectID", h.GetProject)
-  g.PUT("/projects/:projectID", h.UpdateProject)
+	g.PUT("/projects/:projectID", h.UpdateProject)
 	g.GET("/users/:ownerID/projects", h.GetProjectsByOwnerID)
 	g.GET("/projects/popular", h.GetProjectsByPopularity)
 	g.POST("/projects", h.NewProject)

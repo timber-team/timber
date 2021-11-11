@@ -45,7 +45,7 @@ const EditProfile = (props: customProps) => {
   };
 
   const selectable = tags.map((e) => {
-    return {label: e.name, value: `{"id": ${e.id}, "name": "${e.name}"}`};
+    return {label: e.name, value: e.id};
   });
 
   console.log(useTags());
@@ -123,7 +123,6 @@ const EditProfile = (props: customProps) => {
       initialValues={defaultValues}
       validationSchema={Yup.object({
         avatarURL: Yup.string()
-            .max(50, 'Must be 50 characters or less')
             .notRequired()
             .nullable()
             .url('Must be a valid URL'),

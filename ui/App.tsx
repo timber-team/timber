@@ -45,6 +45,8 @@ const App: React.FC = () => {
               <Route exact path="/applications" component={Applications} />
               {/* Trending page */}
               <Route exact path="/trending" component={Trending} />
+              {/* User settings Modal */}
+              <Route exact path="/settings" component={UserSettings} />
             </ProtectedRoute>
           </Switch>
         </div>
