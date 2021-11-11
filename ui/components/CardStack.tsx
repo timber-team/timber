@@ -56,8 +56,6 @@ const CardStack = () => {
 
   };
 
-  console.log("projQ", projQueue)
-
   return (
     <Stack
       className="card-stack mx-auto justify-content-center w-100"
