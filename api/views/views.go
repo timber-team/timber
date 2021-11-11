@@ -43,9 +43,11 @@ func NewHandler(c *Config) {
 	g.GET("/users", h.Profiles)
 
 	g.GET("/projects", h.GetProjects)
+	g.GET("/projects/recommended", h.GetRecommendedProjects)
 	g.GET("/projects/:projectID", h.GetProject)
 	g.GET("/projects/users/:ownerID", h.GetProjectsByOwnerID)
 	g.GET("/projects/popular", h.GetProjectsByPopularity)
+	g.PUT("/projects/:projectID", h.UpdateProject)
 	g.POST("/projects", h.NewProject)
 	g.POST("/projects/:projectID/apply", h.NewApplication)
 	g.GET("/projects/:projectID/applications", h.GetApplicationsByProjectID)

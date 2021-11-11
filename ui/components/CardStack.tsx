@@ -1,35 +1,61 @@
-import React, { useEffect } from 'react';
-import { Button, Stack } from 'react-bootstrap';
+import React, {useEffect} from 'react';
+import {Button, Stack} from 'react-bootstrap';
 
-import { useProjects } from '../api/project';
-import { useApplications } from '../api/application';
+import {useProjects} from '../api/project';
+import {useApplications} from '../api/application';
 import ProjectCard from './Card';
 
 const CardStack = () => {
-  const { projects, getAllProjects, loading, error } = useProjects();
-  const { applications, createApplication } = useApplications();
+  const {projects, getRecommendedProjects, loading, error} = useProjects();
+  const {applications, createApplication} = useApplications();
 
-  const [index, setIndex] = React.useState(0);
+  const [projQueue, setProjQueue] = React.useState<Project[]>([]);
 
   const disableNext = projects.length === 0 || projects.length === index + 1;
   const disablePrev = index === 0;
 
   useEffect(() => {
-    console.log("Rerender")
-    getAllProjects();
+    getRecommendedProjects();
   }, []);
 
+  useEffect(() => {
+    const existingIds: Project[] = [];
+    setProjQueue(
+        projects.filter((proj) => {
+          for (const elem of existingIds) {
+            if (proj.id === elem.id) {
+              return false;
+            }
+          }
+          existingIds.push(proj);
+          return true;
+        }),
+    );
+  }, [projects]);
+
+  if (error) {
+    return <div>Error!</div>;
+  }
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  if (projects && !projQueue.length) {
+    return <div>No more projects found</div>;
+  }
+
+  if (!projects) {
+    return null;
+  }
+
   const handleNext = () => {
-    if (index < projects.length - 1) {
-      createApplication(projects[index].id);
-      setIndex(index + 1);
-    }
+    createApplication(projQueue[0].id);
+    setProjQueue(projQueue.slice(1));
   };
 
   const handlePrevious = () => {
-    if (index > 0) {
-      setIndex(index - 1);
-    }
+    setProjQueue(projQueue.slice(1));
   };
 
   if (error) {
@@ -58,11 +84,10 @@ const CardStack = () => {
       >
         Dismiss
       </Button>
-      <ProjectCard project={projects[index]} />
+      <ProjectCard project={projQueue[0]} />
       <Button
         className="card-stack-button"
         variant="secondary"
-        disabled={disableNext}
         onClick={handleNext}
       >
         Apply

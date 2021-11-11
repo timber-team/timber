@@ -136,6 +136,53 @@ func (h *Handler) GetProject(c *gin.Context) {
 	utils.Respond(c, customresponse.NewOK(), p)
 }
 
+func (h *Handler) GetRecommendedProjects(c *gin.Context) {
+	user, exists := c.Get("user")
+
+	if !exists {
+		utils.Respond(c, customresponse.NewInternal(), nil)
+		return
+	}
+
+	ctx := c.Request.Context()
+
+	u := user.(*models.User)
+
+	err := h.UserController.Get(ctx, u)
+
+	if err != nil {
+		utils.Respond(c, customresponse.NewNotFound("user", fmt.Sprintf("%d", u.ID)), nil)
+		return
+	}
+
+	// var projects []*models.Project
+	queryProjects, err := h.ProjectController.GetRecommended(ctx, u)
+	if err != nil {
+		utils.Respond(c, customresponse.NewInternal(), nil)
+		return
+	}
+
+	log.WithContext(c).Info(fmt.Sprintf("Recommended projects: %v", queryProjects))
+
+	// check if user has applied to any projects
+	recommendations := []*models.Project{}
+
+	for _, proj := range queryProjects {
+		flag := false
+		for _, app := range u.Applications {
+			if app.ProjectID == proj.ID {
+				flag = true
+				break
+			}
+		}
+		if !flag {
+			recommendations = append(recommendations, proj)
+		}
+	}
+
+	utils.Respond(c, customresponse.NewOK(), recommendations)
+}
+
 func (h *Handler) GetProjects(c *gin.Context) {
 	user, exists := c.Get("user")
 

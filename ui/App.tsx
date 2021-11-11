@@ -1,6 +1,6 @@
 import Axios from 'axios';
 import React from 'react';
-import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
+import {BrowserRouter as Router, Route, Switch} from 'react-router-dom';
 
 import Legal from './components/Legal';
 import NavBar from './components/Nav';
@@ -10,7 +10,8 @@ import Browse from './pages/Browse';
 import LandingPage from './pages/LandingPage';
 import Trending from './pages/Trending';
 import OAuthCallback from './src/OAuthCallback';
-import ApplicantReview from './pages/ApplicantReview'
+import ApplicantReview from './pages/ApplicantReview';
+import {EditProfile} from './components/EditProfile';
 
 Axios.defaults.baseURL = process.env.BASE_URL;
 Axios.defaults.withCredentials = true;
@@ -19,14 +20,14 @@ const App: React.FC = () => {
   return (
     <div
       style={{
-        minHeight: '100vh'
+        minHeight: '100vh',
       }}
     >
       <NavBar />
       <Router>
         <div
           style={{
-            minHeight: 'var(--bs-content-height)'
+            minHeight: 'var(--bs-content-height)',
           }}
         >
           <Switch>
@@ -42,9 +43,10 @@ const App: React.FC = () => {
               <Route exact path="/applications" component={Applications} />
               {/* Trending page */}
               <Route exact path="/trending" component={Trending} />
-              <Route exact path= "/review" component={ApplicantReview}>
-                {/* <Route exact path= ":id" component={Trending} /> */}
-              </Route>
+              <Route exact path="/review" component={ApplicantReview} />
+              {/* <Route exact path= ":id" component={Trending} /> */}
+              {/* settings */}
+              <Route exact path="/settings" component={EditProfile} />
             </ProtectedRoute>
           </Switch>
         </div>
