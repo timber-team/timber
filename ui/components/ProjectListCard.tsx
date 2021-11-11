@@ -1,14 +1,14 @@
 /* eslint-disable max-len */
 import React from 'react';
-import { Badge, Card, OverlayTrigger, Popover } from 'react-bootstrap';
+import {Badge, Button, Card, OverlayTrigger, Popover} from 'react-bootstrap';
 import ReactMarkdown from 'react-markdown';
-import { Link } from 'react-router-dom';
+import {Link} from 'react-router-dom';
 
-import { Project, Tag, User } from '../api/types';
+import {Project, Tag, User} from '../api/types';
 import ProjectForm from './ProjectForms';
 
 const ProjectListCard = (props: { project: Project }) => {
-  const { project } = props;
+  const {project} = props;
 
   if (!project) {
     return <div>Loading...</div>;
@@ -18,9 +18,24 @@ const ProjectListCard = (props: { project: Project }) => {
       <Card.Header>
         <div className="d-flex justify-content-between">
           <ProjectForm initialItem={project} />
+          <Link to={`/review/${project.id}`}>
+            <Button
+              variant="outline-secondary"
+              size="sm"
+              style={{margin: 'auto', height: '100%'}}
+            >
+              {project.applications ? project.applications.length : 0}{' '}
+              {project.applications ?
+                project.applications.length === 1 ?
+                  'Application' :
+                  'Applications' :
+                'Applications'}
+            </Button>
+          </Link>
+
           <button
             className="btn btn-sm btn-outline-primary"
-          // onClick={handleDelete}
+            // onClick={handleDelete}
           >
             Delete
           </button>
@@ -32,28 +47,28 @@ const ProjectListCard = (props: { project: Project }) => {
           <Link to={`/projects/${project.id}`}>{project.name}</Link>
         </Card.Title>
         <Card.Text>
-          <span style={{ fontWeight: "bold" }}>Description:</span>{" "}
+          <span style={{fontWeight: 'bold'}}>Description:</span>{' '}
           <ReactMarkdown>{project.description}</ReactMarkdown>
         </Card.Text>
         <Card.Text>
-          <span style={{ fontWeight: "bold" }}>Required Skills:</span>{" "}
+          <span style={{fontWeight: 'bold'}}>Required Skills:</span>{' '}
           {project.required_skills?.map((skill: Tag) => (
             <Badge
               key={skill.id}
               bg="secondary"
-              style={{ marginRight: "5px", fontSize: "0.8rem" }}
+              style={{marginRight: '5px', fontSize: '0.8rem'}}
             >
               {skill.name}
             </Badge>
           ))}
         </Card.Text>
         <Card.Text>
-          <span style={{ fontWeight: "bold" }}>Preferred Skills:</span>{" "}
+          <span style={{fontWeight: 'bold'}}>Preferred Skills:</span>{' '}
           {project.preferred_skills?.map((skill: Tag) => (
             <Badge
               key={skill.id}
               bg="secondary"
-              style={{ marginRight: "5px", fontSize: "0.8rem" }}
+              style={{marginRight: '5px', fontSize: '0.8rem'}}
             >
               {skill.name}
             </Badge>
@@ -63,7 +78,7 @@ const ProjectListCard = (props: { project: Project }) => {
       <Card.Footer>
         <div className="d-flex justify-content-between">
           <OverlayTrigger
-            trigger={["hover", "focus"]}
+            trigger={['hover', 'focus']}
             key={project.owner.id}
             placement="top"
             overlay={
@@ -75,7 +90,7 @@ const ProjectListCard = (props: { project: Project }) => {
                   <img
                     src={
                       project.owner.avatar_url ||
-                      "https://i.pravatar.cc/600?id=" + project.owner.id
+                      'https://i.pravatar.cc/600?id=' + (project.owner.id % 50)
                     }
                     alt={project.owner.username}
                     width="80"
@@ -93,7 +108,7 @@ const ProjectListCard = (props: { project: Project }) => {
                       <Badge
                         key={tag.id}
                         bg="secondary"
-                        style={{ margin: "5px", fontSize: "0.8rem" }}
+                        style={{margin: '5px', fontSize: '0.8rem'}}
                       >
                         {tag.name}
                       </Badge>
@@ -104,7 +119,7 @@ const ProjectListCard = (props: { project: Project }) => {
                       <Badge
                         key={project.id}
                         bg="info"
-                        style={{ margin: "5px", fontSize: "0.8rem" }}
+                        style={{margin: '5px', fontSize: '0.8rem'}}
                       >
                         {project.name}
                       </Badge>
@@ -118,15 +133,15 @@ const ProjectListCard = (props: { project: Project }) => {
               variant="top"
               src={
                 project.owner.avatar_url ||
-                "https://i.pravatar.cc/600?img=" + project.owner.id
+                'https://i.pravatar.cc/600?img=' + (project.owner.id % 50)
               }
               className="rounded-circle"
               style={{
-                marginRight: "10px",
-                height: "50%",
-                maxWidth: "50px",
-                maxHeight: "inherit",
-                margin: "auto 5",
+                marginRight: '10px',
+                height: '50%',
+                maxWidth: '50px',
+                maxHeight: 'inherit',
+                margin: 'auto 5',
               }}
             />
           </OverlayTrigger>
@@ -134,7 +149,7 @@ const ProjectListCard = (props: { project: Project }) => {
             if (collaborator.id !== project.owner.id) {
               return (
                 <OverlayTrigger
-                  trigger={["hover", "focus"]}
+                  trigger={['hover', 'focus']}
                   key={collaborator.id}
                   placement="top"
                   overlay={
@@ -163,7 +178,7 @@ const ProjectListCard = (props: { project: Project }) => {
                             <Badge
                               key={tag.id}
                               bg="secondary"
-                              style={{ margin: "5px", fontSize: "0.8rem" }}
+                              style={{margin: '5px', fontSize: '0.8rem'}}
                             >
                               {tag.name}
                             </Badge>
@@ -171,16 +186,16 @@ const ProjectListCard = (props: { project: Project }) => {
                         </Popover.Body>
                         <Popover.Body as="p" className="text-center">
                           {collaborator.projects
-                            ?.slice(0, 5)
-                            .map((project: Project) => (
-                              <Badge
-                                key={project.id}
-                                bg="info"
-                                style={{ margin: "5px", fontSize: "0.8rem" }}
-                              >
-                                {project.name}
-                              </Badge>
-                            ))}
+                              ?.slice(0, 5)
+                              .map((project: Project) => (
+                                <Badge
+                                  key={project.id}
+                                  bg="info"
+                                  style={{margin: '5px', fontSize: '0.8rem'}}
+                                >
+                                  {project.name}
+                                </Badge>
+                              ))}
                         </Popover.Body>
                       </Popover.Body>
                     </Popover>
@@ -188,14 +203,17 @@ const ProjectListCard = (props: { project: Project }) => {
                 >
                   <Card.Img
                     variant="top"
-                    src={collaborator.avatar_url}
+                    src={
+                      collaborator.avatar_url ||
+                      'https://i.pravatar.cc/600?id=' + (collaborator.id % 50)
+                    }
                     className="rounded-circle"
                     style={{
-                      marginRight: "10px",
-                      height: "50%",
-                      maxWidth: "50px",
-                      maxHeight: "inherit",
-                      margin: "auto 5",
+                      marginRight: '10px',
+                      height: '50%',
+                      maxWidth: '50px',
+                      maxHeight: 'inherit',
+                      margin: 'auto 5',
                     }}
                   />
                 </OverlayTrigger>

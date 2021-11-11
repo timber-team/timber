@@ -44,6 +44,7 @@ type Application struct {
 	ProjectID int   `json:"project_id"`
 	Accepted  bool 	`json:"accepted"`
 	Denied	  bool `json:"denied"`
+
 }
 
 type Tag struct {

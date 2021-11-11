@@ -1,7 +1,7 @@
-import { useState } from 'react';
-import { useAuth } from '../store/auth';
-import { doRequest } from '.';
-import { Application } from './types';
+import {useState} from 'react';
+import {useAuth} from '../store/auth';
+import {doRequest} from '.';
+import {Application} from './types';
 
 // useApplications custom hook
 export const useApplications = () => {
@@ -11,11 +11,11 @@ export const useApplications = () => {
   const [error, setError] = useState<string | null>(null);
 
   const getOwnApplications = async () => {
-    setLoading(true)
-    setError(null)
+    setLoading(true);
+    setError(null);
     try {
       const response = await doRequest({
-        url: `/api/applications`,
+        url: `/applications`,
         method: 'GET',
         headers: {
           Authorization: `Bearer ${accessToken}`,
@@ -30,7 +30,7 @@ export const useApplications = () => {
       setError(error.message);
     }
     setLoading(false);
-  }
+  };
 
   const getAllApplicationsByUserId = async (userId: number) => {
     setLoading(true);
@@ -121,6 +121,29 @@ export const useApplications = () => {
     setLoading(false);
   };
 
+  const updateApplication = async (application: Partial<Application>) => {
+    setLoading(true);
+    setError(null);
+    try {
+      const response = await doRequest({
+        url: `/applications/${application.id}`,
+        method: 'PUT',
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+        data: application,
+      });
+      if (response[0] === null) {
+        setError(response[1]!.message);
+      } else {
+        setApplications(response[0]!.data);
+      }
+    } catch (error) {
+      setError(error.message);
+    }
+    setLoading(false);
+  };
+
   return {
     applications,
     loading,
@@ -130,9 +153,6 @@ export const useApplications = () => {
     getApplicationById,
     getAllApplicationsByProjectId,
     createApplication,
+    updateApplication,
   };
 };
-
-export const getOwnApplications = async () => {
-  return useAuth((state) => state.currentUser?.applications);
-}

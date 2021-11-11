@@ -71,7 +71,7 @@ services:
       - "8080"
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.timber-api.rule=Host(`localhost`) && PathPrefix(`/api`)"
+      - "traefik.http.routers.timber-api.rule=Host(`${HOST}`) && PathPrefix(`/api`)"
     volumes:
       - ./api:/go/src/app
     depends_on:
@@ -98,7 +98,7 @@ services:
       - "1234:1234"
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.timber-client.rule=Host(`localhost`)"
+      - "traefik.http.routers.timber-client.rule=Host(`${HOST}`)"
     volumes:
       - ./ui:/app
       - /app/node_modules

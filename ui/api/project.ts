@@ -2,7 +2,7 @@
 import {useState} from 'react';
 import {doRequest} from '.';
 import {useAuth} from '../store/auth';
-import {Project} from './types';
+import {Application, Project} from './types';
 
 export const useProjects = () => {
   const [projects, setProjects] = useState<Project[]>([]);
@@ -39,15 +39,16 @@ export const useProjects = () => {
     if (error) {
       setError(error);
     } else if (response) {
-      setProjects(response.data);
+      setProjects(response.data as Project[]);
     }
     setLoading(false);
+    setError(error);
   };
 
   const getProjectsByUserId = async (userId: number) => {
     setLoading(true);
     const [response, error] = await doRequest({
-      url: `/users/${userId}/projects`,
+      url: `/projects/users/${userId}`,
       method: 'GET',
       headers: {
         Authorization: `Bearer ${accessToken}`,
@@ -56,7 +57,7 @@ export const useProjects = () => {
     if (error) {
       setError(error);
     } else if (response) {
-      setProjects(response.data);
+      setProjects(response.data as Project[]);
     }
     setLoading(false);
   };
@@ -70,13 +71,14 @@ export const useProjects = () => {
         Authorization: `Bearer ${accessToken}`,
       },
     });
-    setLoading(false);
-    if (response) {
-      setProjects([response.data]);
-    }
     if (error) {
       setError(error);
+    } else if (response) {
+      setProjects([response.data as Project]);
+      setLoading(false);
+      return response.data as Project;
     }
+    setLoading(false);
   };
 
   const returnProjectById = async (id: number) => {
@@ -113,7 +115,7 @@ export const useProjects = () => {
     });
     setLoading(false);
     if (response) {
-      setProjects([response.data]);
+      return response.data as Project;
     }
     if (error) {
       setError(error);
@@ -140,7 +142,8 @@ export const useProjects = () => {
     });
     setLoading(false);
     if (response) {
-      setProjects([response.data]);
+      setProjects([...projects, response.data]);
+      return response.data as Project;
     }
     if (error) {
       setError(error);
@@ -167,7 +170,10 @@ export const useProjects = () => {
     });
     setLoading(false);
     if (response) {
-      setProjects([response.data]);
+      setProjects(
+          projects.map((p) => (p.id === project.id ? response.data : p)),
+      );
+      return response.data as Project;
     }
     if (error) {
       setError(error);
@@ -205,7 +211,7 @@ export const useProjects = () => {
     });
     setLoading(false);
     if (response) {
-      setProjects([response.data]);
+      return response.data as Application[];
     }
     if (error) {
       setError(error);
@@ -213,8 +219,8 @@ export const useProjects = () => {
   };
 
   const getProjectsByPopularity = async () => {
-    setLoading(true)
-    setError(null)
+    setLoading(true);
+    setError(null);
 
     try {
       const response = await doRequest({
@@ -230,10 +236,10 @@ export const useProjects = () => {
         setProjects(response[0]!.data);
       }
     } catch (error) {
-      setError(error.message)
+      setError(error.message);
     }
-    setLoading(false)
-  }
+    setLoading(false);
+  };
 
   return {
     projects,

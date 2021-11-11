@@ -1,7 +1,7 @@
 import Axios from 'axios';
 import ProjectsPage from './pages/ProjectsPage';
 import React from 'react';
-import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
+import {BrowserRouter as Router, Route, Switch} from 'react-router-dom';
 
 import Legal from './components/Legal';
 import NavBar from './components/Nav';
@@ -11,6 +11,7 @@ import Browse from './pages/Browse';
 import LandingPage from './pages/LandingPage';
 import Trending from './pages/Trending';
 import OAuthCallback from './src/OAuthCallback';
+import ApplicantReview from './pages/ApplicantReview';
 import UserSettings from './pages/UserSettings';
 
 Axios.defaults.baseURL = process.env.API_URL;
@@ -20,14 +21,14 @@ const App: React.FC = () => {
   return (
     <div
       style={{
-        minHeight: '100vh'
+        minHeight: '100vh',
       }}
     >
       <NavBar />
       <Router>
         <div
           style={{
-            minHeight: 'var(--bs-content-height)'
+            minHeight: 'var(--bs-content-height)',
           }}
         >
           <Switch>
@@ -45,7 +46,9 @@ const App: React.FC = () => {
               <Route exact path="/applications" component={Applications} />
               {/* Trending page */}
               <Route exact path="/trending" component={Trending} />
-              {/* User settings Modal */}
+              {/* Review page */}
+              <Route exact path="/review/:id" component={ApplicantReview} />
+              {/* Settings page */}
               <Route exact path="/settings" component={UserSettings} />
             </ProtectedRoute>
           </Switch>

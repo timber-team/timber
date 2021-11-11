@@ -1,23 +1,23 @@
 /* eslint-disable camelcase */
 /* eslint-disable max-len */
-import { Field, Form, Formik } from "formik";
-import React from "react";
-import { Alert, Button, FormGroup, FormLabel, Modal } from "react-bootstrap";
-import * as Yup from "yup";
+import {Field, Form, Formik} from 'formik';
+import React from 'react';
+import {Alert, Button, FormGroup, FormLabel, Modal} from 'react-bootstrap';
+import * as Yup from 'yup';
 
-import { useProjects } from "../api/project";
-import { useTags } from "../api/tag";
-import { Project, Tag } from "../api/types";
-import { useAuth } from "../store/auth";
-import CustomSelect from "./CustomSelect";
+import {useProjects} from '../api/project';
+import {useTags} from '../api/tag';
+import {Project, Tag} from '../api/types';
+import {useAuth} from '../store/auth';
+import CustomSelect from './CustomSelect';
 
 type ProjectFormProps = {
   initialItem?: Project;
 };
 
-const ProjectForm: React.FC<ProjectFormProps> = ({ initialItem }) => {
+const ProjectForm: React.FC<ProjectFormProps> = ({initialItem}) => {
   const [showModal, setShowModal] = React.useState(false);
-  const { currentUser } = useAuth();
+  const {currentUser} = useAuth();
   const {
     projects,
     loading: projectLoading,
@@ -25,7 +25,7 @@ const ProjectForm: React.FC<ProjectFormProps> = ({ initialItem }) => {
     createProject,
     updateProject,
   } = useProjects();
-  const { tags, getAllTags } = useTags();
+  const {tags, getAllTags} = useTags();
   const [error, setError] = React.useState<string | null>(null);
   const [success, setSuccess] = React.useState<string | null>(null);
   const [isLoading, setIsLoading] = React.useState(false);
@@ -57,7 +57,7 @@ const ProjectForm: React.FC<ProjectFormProps> = ({ initialItem }) => {
           preferred_skills: values.preferred_skills,
           required_skills: values.required_skills,
         });
-        setSuccess("Project updated successfully");
+        setSuccess('Project updated successfully');
       } else {
         await createProject({
           name: values.name,
@@ -66,7 +66,7 @@ const ProjectForm: React.FC<ProjectFormProps> = ({ initialItem }) => {
           preferred_skills: values.preferred_skills,
           required_skills: values.required_skills,
         });
-        setSuccess("Project created successfully");
+        setSuccess('Project created successfully');
       }
     } catch (error) {
       setError(error);
@@ -78,37 +78,37 @@ const ProjectForm: React.FC<ProjectFormProps> = ({ initialItem }) => {
   return (
     <>
       <Button variant="primary" onClick={handleShow}>
-        {initialItem ? "Edit Project" : "Create Project"}
+        {initialItem ? 'Edit Project' : 'Create Project'}
       </Button>
       <Modal show={showModal} onHide={handleClose} centered>
         <Modal.Header closeButton>
           <Modal.Title>
-            {initialItem ? "Edit Project" : "Create Project"}
+            {initialItem ? 'Edit Project' : 'Create Project'}
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <Formik
             initialValues={{
-              name: initialItem?.name || "",
-              description: initialItem?.description || "",
-              image_url: initialItem?.image_url || "",
+              name: initialItem?.name || '',
+              description: initialItem?.description || '',
+              image_url: initialItem?.image_url || '',
               preferred_skills: initialItem?.preferred_skills || [],
               required_skills: initialItem?.required_skills || [],
             }}
             validationSchema={Yup.object({
               name: Yup.string()
-                .max(15, "Must be 15 characters or less")
-                .defined("Required"),
+                  .max(15, 'Must be 15 characters or less')
+                  .defined('Required'),
               description: Yup.string()
-                .max(85, "Must be 85 characters or less")
-                .defined("Required"),
+                  .max(85, 'Must be 85 characters or less')
+                  .defined('Required'),
               image_url: Yup.string()
-                .max(50, "Must be 50 characters or less")
-                .notRequired()
-                .nullable()
-                .url("Must be a valid URL"),
-              preferred_skills: Yup.array().required("Required"),
-              required_skills: Yup.array().required("Required"),
+                  .max(50, 'Must be 50 characters or less')
+                  .notRequired()
+                  .nullable()
+                  .url('Must be a valid URL'),
+              preferred_skills: Yup.array().required('Required'),
+              required_skills: Yup.array().required('Required'),
             })}
             onSubmit={handleSubmit}
           >
@@ -129,7 +129,7 @@ const ProjectForm: React.FC<ProjectFormProps> = ({ initialItem }) => {
                     name="name"
                     placeholder="Enter project name"
                     className={`form-control ${
-                      errors.name && touched.name && "is-invalid"
+                      errors.name && touched.name && 'is-invalid'
                     }`}
                     onChange={handleChange}
                     onBlur={handleBlur}
@@ -146,7 +146,7 @@ const ProjectForm: React.FC<ProjectFormProps> = ({ initialItem }) => {
                     name="description"
                     placeholder="Enter project description"
                     className={`form-control ${
-                      errors.description && touched.description && "is-invalid"
+                      errors.description && touched.description && 'is-invalid'
                     }`}
                     onChange={handleChange}
                     onBlur={handleBlur}
@@ -162,7 +162,7 @@ const ProjectForm: React.FC<ProjectFormProps> = ({ initialItem }) => {
                     name="image_url"
                     placeholder="Enter project image URL"
                     className={`form-control ${
-                      errors.image_url && touched.image_url && "is-invalid"
+                      errors.image_url && touched.image_url && 'is-invalid'
                     }`}
                     onChange={handleChange}
                     onBlur={handleBlur}
@@ -181,16 +181,16 @@ const ProjectForm: React.FC<ProjectFormProps> = ({ initialItem }) => {
                       label: tag.name,
                       value: tag.id,
                       selected: values.preferred_skills?.find(
-                        (skill: Tag) => skill?.id === tag.id
-                      )
-                        ? true
-                        : false,
+                          (skill: Tag) => skill?.id === tag.id,
+                      ) ?
+                        true :
+                        false,
                     }))}
                     isMulti={true}
                     className={`form-control ${
                       errors.preferred_skills &&
                       touched.preferred_skills &&
-                      "is-invalid"
+                      'is-invalid'
                     }`}
                     onChange={handleChange}
                     onBlur={handleBlur}
@@ -211,16 +211,16 @@ const ProjectForm: React.FC<ProjectFormProps> = ({ initialItem }) => {
                       label: tag.name,
                       value: tag.id,
                       selected: values.required_skills?.find(
-                        (skill: Tag) => skill?.id === tag.id
-                      )
-                        ? true
-                        : false,
+                          (skill: Tag) => skill?.id === tag.id,
+                      ) ?
+                        true :
+                        false,
                     }))}
                     isMulti={true}
                     className={`form-control ${
                       errors.required_skills &&
                       touched.required_skills &&
-                      "is-invalid"
+                      'is-invalid'
                     }`}
                     onChange={handleChange}
                     onBlur={handleBlur}
@@ -237,7 +237,7 @@ const ProjectForm: React.FC<ProjectFormProps> = ({ initialItem }) => {
                   disabled={isSubmitting}
                   className="mt-3"
                 >
-                  {isSubmitting ? "Loading..." : "Submit"}
+                  {isSubmitting ? 'Loading...' : 'Submit'}
                 </Button>
               </Form>
             )}
@@ -245,12 +245,12 @@ const ProjectForm: React.FC<ProjectFormProps> = ({ initialItem }) => {
         </Modal.Body>
       </Modal>
       {success && (
-        <Alert variant="success" onClose={() => setSuccess("")} dismissible>
+        <Alert variant="success" onClose={() => setSuccess('')} dismissible>
           {success}
         </Alert>
       )}
       {error && (
-        <Alert variant="danger" onClose={() => setError("")} dismissible>
+        <Alert variant="danger" onClose={() => setError('')} dismissible>
           {error}
         </Alert>
       )}

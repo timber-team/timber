@@ -13,10 +13,12 @@
       "name": "docs",
       "path": "./design_doc"
     }
-    // {
-    //   "name": "Timber",
-    //   "path": ".",
-    //   "ignore": ["**/*.code-workspace"]
+    //  {
+    // "name": "Timber",
+    // "path": ".",
+    // "ignore": [
+    //   "**/*.code-workspace"
+    // ]
     // }
   ],
   "settings": {
@@ -31,10 +33,10 @@
     "tsimporter.doubleQuotes": false,
     // "eslint.autoFixOnSave": true,
     "[typescriptreact]": {
-      "editor.defaultFormatter": "vscode.typescript-language-features"
+      "editor.defaultFormatter": "rvest.vs-code-prettier-eslint"
     },
     "[typescript]": {
-      "editor.defaultFormatter": "vscode.typescript-language-features"
+      "editor.defaultFormatter": "rvest.vs-code-prettier-eslint"
     },
     "[javascript]": {
       "editor.defaultFormatter": "rvest.vs-code-prettier-eslint"
