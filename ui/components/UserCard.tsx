@@ -1,15 +1,16 @@
 /* eslint-disable max-len */
 import React from 'react';
-import {Badge, Card, OverlayTrigger, Popover} from 'react-bootstrap';
+import {Badge, Card} from 'react-bootstrap';
 import ReactMarkdown from 'react-markdown';
 
-import {User, Tag} from '../api/types';
+import {User, Tag, Project} from '../api/types';
 
 interface UserCardProps {
   user: User;
+  project: Project;
 }
 
-const UserCard: React.FC<UserCardProps> = ({user}) => {
+const UserCard: React.FC<UserCardProps> = ({user, project}) => {
   return (
     <Card
       style={{
@@ -21,11 +22,12 @@ const UserCard: React.FC<UserCardProps> = ({user}) => {
     >
       <Card.Img
         variant="top"
-        src={user.avatar_url || 'https://via.placeholder.com/900x600'}
+        src={project.image_url|| 'https://via.placeholder.com/900x600'}
+        style={{height: "30vh"}}
       />
       <Card.Body>
         <Card.Title>
-          {user.username}
+          {user.username} is applying to {project.name}!
         </Card.Title>
         <Card.Text as="div">
           <ReactMarkdown>{user.description}</ReactMarkdown>
@@ -42,6 +44,18 @@ const UserCard: React.FC<UserCardProps> = ({user}) => {
           ))}
         </Card.Text>
       </Card.Body>
+      <Card.Footer>
+          <img
+                    src={
+                      user.avatar_url ||
+                      'https://i.pravatar.cc/600?id=' + user.id
+                    }
+                    alt={user.username}
+                    width="80"
+                    height="80"
+                    className="rounded-circle"
+                  />
+      </Card.Footer>
     </Card>
   );
 };
