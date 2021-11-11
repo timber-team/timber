@@ -132,7 +132,7 @@ const Applications: React.FC = () => {
                         alignItems: 'center',
                       }}
                     >
-                      {pair.project.preferred_skills.map((skill) => (
+                      {pair.project.preferred_skills?.map((skill) => (
                         <Badge
                           bg="warning"
                           key={skill.id}
