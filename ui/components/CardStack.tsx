@@ -18,16 +18,18 @@ const CardStack = () => {
   }, []);
 
   useEffect(() => {
-    let existingIds :Project[] = []; 
-    setProjQueue(projects.filter((proj) => {
-      for (let elem of existingIds) {
-        if (proj.id === elem.id) {
-          return false;
-        }
-      }
-      existingIds.push(proj);
-      return true;
-    }));
+    const existingIds: Project[] = [];
+    setProjQueue(
+        projects.filter((proj) => {
+          for (const elem of existingIds) {
+            if (proj.id === elem.id) {
+              return false;
+            }
+          }
+          existingIds.push(proj);
+          return true;
+        }),
+    );
   }, [projects]);
 
   if (error) {
@@ -53,7 +55,6 @@ const CardStack = () => {
 
   const handlePrevious = () => {
     setProjQueue(projQueue.slice(1));
-
   };
 
   return (
@@ -65,6 +66,7 @@ const CardStack = () => {
       <Button
         className="card-stack-button"
         variant="primary"
+        // disabled={disablePrev}
         onClick={handlePrevious}
       >
         Dismiss

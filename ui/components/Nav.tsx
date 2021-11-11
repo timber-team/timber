@@ -36,14 +36,14 @@ const NavBar = () => {
                   align={'end'}
                   title={
                     <img
-                      style={{
-                        maxWidth: '2.5rem',
-                        maxHeight: '2.5rem'
-                      }}
-
-                      src={currentUser?.avatar_url}
+                      src={
+                        currentUser?.avatar_url ||
+                        'https://i.pravatar.cc/600?img=' +
+                          (currentUser?.id % 50)
+                      }
                       alt="avatar"
-                      className="avatar-img"
+                      className="avatar-img rounded-circle"
+                      style={{width: '50px', height: '50px'}}
                     />
                   }
                   id="responsive-nav-dropdown"
@@ -76,4 +76,3 @@ const NavBar = () => {
 };
 
 export default NavBar;
-

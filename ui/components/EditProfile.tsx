@@ -29,6 +29,7 @@ const stylesButton = {
 
 const EditProfile = (props: customProps) => {
   const currentUser = useAuth((state) => state.currentUser);
+  const getUser = useAuth((state) => state.getUser);
   const {tags, loading, error, getAllTags} = useTags();
   const {patchUser} = useUser();
 
@@ -50,9 +51,14 @@ const EditProfile = (props: customProps) => {
 
   console.log(useTags());
 
-  const onSubmit = async (values: FormValues, actions: FormikHelpers<FormValues>) => {
-    console.log(values.tags)
-    const t: Tag[] = values.tags.map(e => JSON.parse(e))
+  const onSubmit = async (
+      values: FormValues,
+      actions: FormikHelpers<FormValues>,
+  ) => {
+    console.log(values.tags);
+    getUser(true);
+
+    const t: Tag[] = values.tags.map((e) => JSON.parse(e));
     await patchUser({
       username: values.username,
       avatar_url: values.avatarURL,
@@ -86,7 +92,11 @@ const EditProfile = (props: customProps) => {
         component={FormText}
         label="Username"
         type="text"
-        placeholder={currentUser!.username ? currentUser!.username : "Please enter an alias"}
+        placeholder={
+          currentUser!.username ?
+            currentUser!.username :
+            'Please enter an alias'
+        }
         description="Enter your username"
         muted={true}
         disabledForm={props.disabled}
@@ -123,6 +133,7 @@ const EditProfile = (props: customProps) => {
       initialValues={defaultValues}
       validationSchema={Yup.object({
         avatarURL: Yup.string()
+            .max(50, 'Must be 50 characters or less')
             .notRequired()
             .nullable()
             .url('Must be a valid URL'),

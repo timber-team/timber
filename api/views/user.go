@@ -3,6 +3,7 @@ package views
 import (
 	"fmt"
 	"strconv"
+	"strings"
 
 	"github.com/Strum355/log"
 
@@ -32,6 +33,33 @@ func (h *Handler) Profile(c *gin.Context) {
 	}
 
 	utils.Respond(c, customresponse.NewOK(), u)
+}
+
+func (h *Handler) Profiles(c *gin.Context) {
+	ctx := c.Request.Context()
+
+	// GET /users?q=1,2,3,4,5,6,7,8,9,10
+	query := c.Query("q")
+	// userStringIds := query.split(",")
+	userStringIds := strings.Split(query, ",")
+	userIds := []int{}
+
+	for _, user_id := range userStringIds {
+		userId, err := strconv.Atoi(user_id)
+		if err != nil {
+			utils.Respond(c, customresponse.NewBadRequest("userID must be an integer"), nil)
+			return
+		}
+		userIds = append(userIds, userId)
+	}
+
+	users, err := h.UserController.GetMany(ctx, userIds)
+	if err != nil {
+		utils.Respond(c, customresponse.NewInternal(), nil)
+		return
+	}
+
+	utils.Respond(c, customresponse.NewOK(), users)
 }
 
 func (h *Handler) ProfileByID(c *gin.Context) {

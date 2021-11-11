@@ -37,6 +37,8 @@ export interface Application {
   modified_at: number;
   user_id: number;
   project_id: number;
+  accepted: boolean;
+  denied: boolean;
 }
 
 export interface Tag {
