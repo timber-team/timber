@@ -7,7 +7,7 @@ import { Project } from './types';
 // useProjects custom hook
 export const useProjects = () => {
   const { accessToken } = useAuth();
-  const [projects, setProjects] = useState<Project[]>([]);
+  const [projects, setProjects] = useState<Project[] | Project>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
