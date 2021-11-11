@@ -43,10 +43,10 @@ const App: React.FC = () => {
               <Route exact path="/applications" component={Applications} />
               {/* Trending page */}
               <Route exact path="/trending" component={Trending} />
-              <Route exact path="/review" component={ApplicantReview} />
-              {/* <Route exact path= ":id" component={Trending} /> */}
-              {/* settings */}
-              <Route exact path="/settings" component={EditProfile} />
+              {/* Review page */}
+              <Route exact path="/review/:id" component={ApplicantReview} />
+              {/* Settings page */}
+              <Route exact path="/settings" component={UserSettings} />
             </ProtectedRoute>
           </Switch>
         </div>

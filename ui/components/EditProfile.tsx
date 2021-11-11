@@ -36,7 +36,7 @@ const EditProfile = (props: customProps) => {
   };
 
   const selectable = tags.map((e) => {
-    return { label: e.name, value: e.id };
+    return {label: e.name, value: e.id};
   });
 
   console.log(useTags());
@@ -97,11 +97,11 @@ const EditProfile = (props: customProps) => {
       </Form>
     );
 
-    return (
-      <Formik
-        initialValues={defaultValues}
-        validationSchema={Yup.object({
-          avatarURL: Yup.string()
+  return (
+    <Formik
+      initialValues={defaultValues}
+      validationSchema={Yup.object({
+        avatarURL: Yup.string()
             .notRequired()
             .nullable()
             .url('Must be a valid URL'),

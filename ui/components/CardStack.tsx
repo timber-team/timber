@@ -11,9 +11,6 @@ const CardStack = () => {
 
   const [projQueue, setProjQueue] = React.useState<Project[]>([]);
 
-  const disableNext = projects.length === 0 || projects.length === index + 1;
-  const disablePrev = index === 0;
-
   useEffect(() => {
     getRecommendedProjects();
   }, []);
