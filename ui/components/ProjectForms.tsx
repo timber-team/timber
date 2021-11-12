@@ -172,36 +172,6 @@ const ProjectForm: React.FC<ProjectFormProps> = ({initialItem, btnSize}) => {
                     <div className="invalid-feedback">{errors.image_url}</div>
                   )}
                 </FormGroup>
-                <FormGroup controlId="preferred_skills">
-                  <FormLabel>Preferred Skills</FormLabel>
-                  <Field
-                    name="preferred_skills"
-                    placeholder="Enter preferred skills"
-                    component={CustomSelect}
-                    options={tags.map((tag: Tag) => ({
-                      label: tag.name,
-                      value: tag.id,
-                      selected: values.preferred_skills?.find(
-                          (skill: Tag) => skill?.id === tag.id,
-                      ) ?
-                        true :
-                        false,
-                    }))}
-                    isMulti={true}
-                    className={`form-control ${
-                      errors.preferred_skills &&
-                      touched.preferred_skills &&
-                      'is-invalid'
-                    }`}
-                    onChange={handleChange}
-                    onBlur={handleBlur}
-                  />
-                  {errors.preferred_skills && touched.preferred_skills && (
-                    <div className="invalid-feedback">
-                      {errors.preferred_skills}
-                    </div>
-                  )}
-                </FormGroup>
                 <FormGroup controlId="required_skills">
                   <FormLabel>Required Skills</FormLabel>
                   <Field
@@ -229,6 +199,36 @@ const ProjectForm: React.FC<ProjectFormProps> = ({initialItem, btnSize}) => {
                   {errors.required_skills && touched.required_skills && (
                     <div className="invalid-feedback">
                       {errors.required_skills}
+                    </div>
+                  )}
+                </FormGroup>
+                <FormGroup controlId="preferred_skills">
+                  <FormLabel>Preferred Skills</FormLabel>
+                  <Field
+                    name="preferred_skills"
+                    placeholder="Enter preferred skills"
+                    component={CustomSelect}
+                    options={tags.map((tag: Tag) => ({
+                      label: tag.name,
+                      value: tag.id,
+                      selected: values.preferred_skills?.find(
+                          (skill: Tag) => skill?.id === tag.id,
+                      ) ?
+                        true :
+                        false,
+                    }))}
+                    isMulti={true}
+                    className={`form-control ${
+                      errors.preferred_skills &&
+                      touched.preferred_skills &&
+                      'is-invalid'
+                    }`}
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                  />
+                  {errors.preferred_skills && touched.preferred_skills && (
+                    <div className="invalid-feedback">
+                      {errors.preferred_skills}
                     </div>
                   )}
                 </FormGroup>
