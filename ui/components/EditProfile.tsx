@@ -78,7 +78,7 @@ const EditProfile = (props: customProps) => {
       }}
       validationSchema={Yup.object({
         avatar_url: Yup.string()
-            .max(90, 'Must be 90 characters or less')
+            .max(250, 'Must be 250 characters or less')
             .notRequired()
             .nullable()
             .url('Must be a valid URL'),

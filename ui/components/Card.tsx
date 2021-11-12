@@ -1,59 +1,82 @@
 /* eslint-disable max-len */
 import React from 'react';
-import {Badge, Card, OverlayTrigger, Popover} from 'react-bootstrap';
+import { Badge, Card, OverlayTrigger, Popover } from 'react-bootstrap';
 import ReactMarkdown from 'react-markdown';
 
-import {Project, Tag} from '../api/types';
+import { Project, Tag } from '../api/types';
 
 interface ProjectCardProps {
   project: Project;
 }
 
-const ProjectCard: React.FC<ProjectCardProps> = ({project}) => {
+const ProjectCard: React.FC<ProjectCardProps> = ({ project }) => {
   return (
     <Card
       style={{
         width: '65vh',
         boxShadow:
           '0 0px 0px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)',
-        height: '75vh',
+        minHeight: '75vh',
       }}
     >
       <Card.Img
+        style={{
+          // max height of 50vh while maintaining aspect ratio
+          height: '40vh',
+          objectFit: 'cover',
+          objectPosition: 'center',
+        }}
         variant="top"
         src={project.image_url || 'https://via.placeholder.com/900x600'}
       />
+
+      <Card.Text
+        style={{ margin: '5px 10px' }}
+      >
+        <span style={{ fontWeight: 'bold' }}>Required Skills:</span>{' '}
+        {project.required_skills ? project.required_skills.map((skill: Tag) => (
+          <Badge
+            key={skill.id}
+            bg="info"
+            style={{ marginRight: '5px', fontSize: '0.8rem' }}
+          >
+            {skill.name}
+          </Badge>
+        )) : <> </>}
+      </Card.Text>
+      <Card.Text
+        style={{ margin: '5px 10px' }}
+      >
+        <span style={{ fontWeight: 'bold' }}>Preferred Skills:</span>{' '}
+        {project.preferred_skills ? project.preferred_skills.map((skill: Tag) => (
+          <Badge
+            key={skill.id}
+            bg="warning"
+            style={{ marginRight: '5px', fontSize: '0.8rem' }}
+          >
+            {skill.name}
+          </Badge>
+        )) : <></>}
+      </Card.Text>
+
       <Card.Body>
         <Card.Title>
           <a href={`/projects/${project.id}`}>{project.name}</a>
         </Card.Title>
-        <Card.Text as="div">
-          <ReactMarkdown>{project.description}</ReactMarkdown>
+
+        <Card.Text
+          className="bruh"
+        // style={{
+        //   overflow: 'scroll',
+        // }}
+        >
+          <ReactMarkdown>
+            {project.description}
+          </ReactMarkdown>
         </Card.Text>
-        <Card.Text>
-          <span style={{fontWeight: 'bold'}}>Required Skills:</span>{' '}
-          {project.required_skills? project.required_skills.map((skill: Tag) => (
-            <Badge
-              key={skill.id}
-              bg="info"
-              style={{marginRight: '5px', fontSize: '0.8rem'}}
-            >
-              {skill.name}
-            </Badge>
-          )): <> </>}
-        </Card.Text>
-        <Card.Text>
-          <span style={{fontWeight: 'bold'}}>Preferred Skills:</span>{' '}
-          {project.preferred_skills? project.preferred_skills.map((skill: Tag) => (
-            <Badge
-              key={skill.id}
-              bg="warning"
-              style={{marginRight: '5px', fontSize: '0.8rem'}}
-            >
-              {skill.name}
-            </Badge>
-          )): <></>}
-        </Card.Text>
+
+
+
       </Card.Body>
       <Card.Footer>
         <div className="d-flex justify-content-between">
@@ -88,7 +111,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({project}) => {
                       <Badge
                         key={tag.id}
                         bg="secondary"
-                        style={{margin: '5px', fontSize: '0.8rem'}}
+                        style={{ margin: '5px', fontSize: '0.8rem' }}
                       >
                         {tag.name}
                       </Badge>
@@ -99,7 +122,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({project}) => {
                       <Badge
                         key={project.id}
                         bg="info"
-                        style={{margin: '5px', fontSize: '0.8rem'}}
+                        style={{ margin: '5px', fontSize: '0.8rem' }}
                       >
                         {project.name}
                       </Badge>
@@ -116,7 +139,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({project}) => {
                 'https://i.pravatar.cc/600?id=' + project.owner.id
               }
               className="rounded-circle me-auto"
-              style={{width: '50px', height: '50px', marginLeft: '10px'}}
+              style={{ width: '50px', height: '50px', marginLeft: '10px' }}
             />
           </OverlayTrigger>
           {project.collaborators &&
@@ -154,7 +177,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({project}) => {
                           <Badge
                             key={tag.id}
                             bg="secondary"
-                            style={{margin: '5px', fontSize: '0.8rem'}}
+                            style={{ margin: '5px', fontSize: '0.8rem' }}
                           >
                             {tag.name}
                           </Badge>
@@ -165,7 +188,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({project}) => {
                           <Badge
                             key={project.id}
                             bg="info"
-                            style={{margin: '5px', fontSize: '0.8rem'}}
+                            style={{ margin: '5px', fontSize: '0.8rem' }}
                           >
                             {project.name}
                           </Badge>
@@ -195,6 +218,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({project}) => {
         </div>
       </Card.Footer>
     </Card>
+
   );
 };
 

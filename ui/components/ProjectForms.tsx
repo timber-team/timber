@@ -103,7 +103,7 @@ const ProjectForm: React.FC<ProjectFormProps> = ({initialItem, btnSize}) => {
               description: Yup.string()
                   .defined('Required'),
               image_url: Yup.string()
-                  .max(100, 'Must be 100 characters or less')
+                  .max(250, 'Must be 250 characters or less')
                   .notRequired()
                   .nullable()
                   .url('Must be a valid URL'),
