@@ -98,13 +98,12 @@ const ProjectForm: React.FC<ProjectFormProps> = ({initialItem, btnSize}) => {
             }}
             validationSchema={Yup.object({
               name: Yup.string()
-                  .max(15, 'Must be 15 characters or less')
+                  .max(50, 'Must be 50 characters or less')
                   .defined('Required'),
               description: Yup.string()
-                  .max(85, 'Must be 85 characters or less')
                   .defined('Required'),
               image_url: Yup.string()
-                  .max(90, 'Must be 90 characters or less')
+                  .max(250, 'Must be 250 characters or less')
                   .notRequired()
                   .nullable()
                   .url('Must be a valid URL'),
@@ -143,6 +142,7 @@ const ProjectForm: React.FC<ProjectFormProps> = ({initialItem, btnSize}) => {
                   <FormLabel>Description</FormLabel>
                   <Field
                     type="textbox"
+                    as="textarea"
                     rows={3}
                     name="description"
                     placeholder="Enter project description"
@@ -172,36 +172,6 @@ const ProjectForm: React.FC<ProjectFormProps> = ({initialItem, btnSize}) => {
                     <div className="invalid-feedback">{errors.image_url}</div>
                   )}
                 </FormGroup>
-                <FormGroup controlId="preferred_skills">
-                  <FormLabel>Preferred Skills</FormLabel>
-                  <Field
-                    name="preferred_skills"
-                    placeholder="Enter preferred skills"
-                    component={CustomSelect}
-                    options={tags.map((tag: Tag) => ({
-                      label: tag.name,
-                      value: tag.id,
-                      selected: values.preferred_skills?.find(
-                          (skill: Tag) => skill?.id === tag.id,
-                      ) ?
-                        true :
-                        false,
-                    }))}
-                    isMulti={true}
-                    className={`form-control ${
-                      errors.preferred_skills &&
-                      touched.preferred_skills &&
-                      'is-invalid'
-                    }`}
-                    onChange={handleChange}
-                    onBlur={handleBlur}
-                  />
-                  {errors.preferred_skills && touched.preferred_skills && (
-                    <div className="invalid-feedback">
-                      {errors.preferred_skills}
-                    </div>
-                  )}
-                </FormGroup>
                 <FormGroup controlId="required_skills">
                   <FormLabel>Required Skills</FormLabel>
                   <Field
@@ -229,6 +199,36 @@ const ProjectForm: React.FC<ProjectFormProps> = ({initialItem, btnSize}) => {
                   {errors.required_skills && touched.required_skills && (
                     <div className="invalid-feedback">
                       {errors.required_skills}
+                    </div>
+                  )}
+                </FormGroup>
+                <FormGroup controlId="preferred_skills">
+                  <FormLabel>Preferred Skills</FormLabel>
+                  <Field
+                    name="preferred_skills"
+                    placeholder="Enter preferred skills"
+                    component={CustomSelect}
+                    options={tags.map((tag: Tag) => ({
+                      label: tag.name,
+                      value: tag.id,
+                      selected: values.preferred_skills?.find(
+                          (skill: Tag) => skill?.id === tag.id,
+                      ) ?
+                        true :
+                        false,
+                    }))}
+                    isMulti={true}
+                    className={`form-control ${
+                      errors.preferred_skills &&
+                      touched.preferred_skills &&
+                      'is-invalid'
+                    }`}
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                  />
+                  {errors.preferred_skills && touched.preferred_skills && (
+                    <div className="invalid-feedback">
+                      {errors.preferred_skills}
                     </div>
                   )}
                 </FormGroup>

@@ -17,4 +17,9 @@
   body {
     overflow-x: hidden;
   }
+
+  .desc {
+    max-height: 150px;
+    overflow-y: auto;
+  }
 }

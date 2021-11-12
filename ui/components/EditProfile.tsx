@@ -53,6 +53,7 @@ const EditProfile = (props: customProps) => {
       await patchUser({
         id: user?.id,
         username: values.username,
+        description: values.description,
         avatar_url: values.avatar_url,
         tags: values.tags,
       });
@@ -72,11 +73,12 @@ const EditProfile = (props: customProps) => {
       initialValues={{
         avatar_url: user?.avatar_url || '',
         username: user?.username || '',
+        description: user?.description || '',
         tags: user?.tags || [],
       }}
       validationSchema={Yup.object({
         avatar_url: Yup.string()
-            .max(90, 'Must be 90 characters or less')
+            .max(250, 'Must be 250 characters or less')
             .notRequired()
             .nullable()
             .url('Must be a valid URL'),
@@ -160,6 +162,37 @@ const EditProfile = (props: customProps) => {
             />
             {touched.username && errors.username && (
               <div className="input-feedback">{errors.username}</div>
+            )}
+          </FormGroup>
+          <br />
+          <FormGroup
+            controlId="description"
+            style={{display: 'flex', flexDirection: 'column'}}
+          >
+            <FormLabel>Description</FormLabel>
+            <Field
+              style={{
+                border: 'none',
+                borderBottom: '1px solid #ced4da',
+                padding: '0.375rem 0.75rem',
+                fontSize: '0.8rem',
+                lineHeight: '1.1',
+                color: '#495057',
+                backgroundColor: '#fff',
+                backgroundImage: 'none',
+                backgroundClip: 'padding-box',
+                borderRadius: '0',
+              }}
+              type="text"
+              as="textarea"
+              name="description"
+              placeholder="Description"
+              onChange={handleChange}
+              onBlur={handleBlur}
+              className={touched.description && errors.description ? 'error' : ''}
+            />
+            {touched.description && errors.description && (
+              <div className="input-feedback">{errors.description}</div>
             )}
           </FormGroup>
           <br />
