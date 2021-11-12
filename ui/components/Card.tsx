@@ -94,6 +94,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ project }) => {
           ) : (
             <></>
           )}
+        </ Card.Text>
         <Card.Text
           className="desc"
         >
