@@ -1,6 +1,7 @@
-import {useAuth} from '../store/auth';
-import {doRequest} from '.';
 import {useState} from 'react';
+
+import {doRequest} from '.';
+import {useAuth} from '../store/auth';
 import {User} from './types';
 
 // useUser custom hook
@@ -27,7 +28,6 @@ export const useUser = () => {
       } else {
         setUser([response[0]!.data]);
 
-        console.log(response[0]!.data);
         return response[0]!.data as User;
       }
     } catch (error) {
@@ -53,7 +53,6 @@ export const useUser = () => {
         setError(response[1]!.message);
       } else {
         setUser(response[0]!.data);
-        console.log(response[0]!.data);
         return response[0]!.data as User[];
       }
     } catch (error) {

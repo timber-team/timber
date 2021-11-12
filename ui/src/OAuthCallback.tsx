@@ -3,8 +3,6 @@ import {tokens} from '../api';
 
 const OAuthCallback = () => {
 
-  console.log('OAuthCallback');
-
   useEffect(() => {
     (async () => {;
       await tokens.getAccessToken(window.location.search, window.location.pathname.split("/")[window.location.pathname.split("/").length - 1])

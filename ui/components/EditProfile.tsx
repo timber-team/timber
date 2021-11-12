@@ -1,21 +1,14 @@
 /* eslint-disable max-len */
-import {Tag} from 'api/types';
-import {Field, Form, Formik, FormikHelpers, FormikProps} from 'formik';
+import {Field, Form, Formik} from 'formik';
 import React, {useEffect} from 'react';
-import {Button} from 'react-bootstrap';
+import {Button, FormGroup, FormLabel} from 'react-bootstrap';
 import * as Yup from 'yup';
 
 import {useTags} from '../api/tag';
+import {Tag, User} from '../api/types';
 import {useUser} from '../api/user';
 import {useAuth} from '../store/auth';
 import CustomSelect from './CustomSelect';
-import FormText from './FormText';
-
-export interface FormValues {
-  avatarURL: string;
-  username: string;
-  tags: string[];
-}
 
 interface customProps {
   disabled?: boolean;
@@ -23,128 +16,208 @@ interface customProps {
 
 const stylesButton = {
   display: 'flex',
-  justifyContent: 'space-around',
-  marginTop: 12,
+  justifyContent: 'space-between',
+  marginTop: '1rem',
 };
 
 const EditProfile = (props: customProps) => {
   const currentUser = useAuth((state) => state.currentUser);
   const getUser = useAuth((state) => state.getUser);
-  const {tags, loading, error, getAllTags} = useTags();
-  const {patchUser} = useUser();
+  const {tags, loading, error: tagError, getAllTags} = useTags();
+  const {patchUser, getUserById, error: userError} = useUser();
+  const [error, setError] = React.useState<string | null>(null);
+  const [success, setSuccess] = React.useState<string | null>(null);
+  const [isLoading, setIsLoading] = React.useState(false);
+  const [submitting, setSubmitting] = React.useState(false);
+  const [user, setUser] = React.useState<User | null>(null);
 
   useEffect(() => {
     if (currentUser) {
-      getAllTags();
+      getUserById(currentUser.id).then((user) => {
+        if (user) {
+          setUser(user);
+        }
+      });
     }
   }, [currentUser]);
 
-  const defaultValues: FormValues = {
-    avatarURL: '',
-    username: currentUser!.username ? currentUser!.username : '',
-    tags: [],
+  useEffect(() => {
+    if (user) {
+      getAllTags();
+    }
+  }, [user]);
+
+  const handleSubmit = async (values: Partial<User>) => {
+    setIsLoading(true);
+    try {
+      await patchUser({
+        id: user?.id,
+        username: values.username,
+        avatar_url: values.avatar_url,
+        tags: values.tags,
+      });
+      setSuccess('Profile updated successfully');
+    } catch (error) {
+      setError(error);
+    }
+    setIsLoading(false);
   };
 
-  const selectable = tags.map((e) => {
-    return {label: e.name, value: e.id};
-  });
-
-  console.log(useTags());
-
-  const onSubmit = async (
-      values: FormValues,
-      actions: FormikHelpers<FormValues>,
-  ) => {
-    console.log(values.tags);
-    getUser(true);
-
-    const t: Tag[] = values.tags.map((e) => JSON.parse(e));
-    await patchUser({
-      username: values.username,
-      avatar_url: values.avatarURL,
-      tags: t,
-    });
-    actions.setSubmitting(false);
-    window.location.reload();
-  };
-
-  if (loading) {
+  if (loading || !currentUser || isLoading || !user) {
     return <div>Loading...</div>;
   }
 
-  if (error) {
-    return <div>Error!</div>;
-  }
-
-  const renderForm = (formikBag: FormikProps<FormValues>) => (
-    <Form>
-      <Field
-        name="avatarURL"
-        component={FormText}
-        label="Avatar URL"
-        type="text"
-        placeholder="Avatar URL"
-        description="Please enter your avatar URL, you can use a website like imgur to host it"
-        muted={true}
-      />
-      <Field
-        name="username"
-        component={FormText}
-        label="Username"
-        type="text"
-        placeholder={
-          currentUser!.username ?
-            currentUser!.username :
-            'Please enter an alias'
-        }
-        description="Enter your username"
-        muted={true}
-        disabledForm={props.disabled}
-      />
-      <Field
-        className=""
-        name="tags"
-        options={selectable}
-        component={CustomSelect}
-        label="Select Technologies"
-        placeholder="Select from multiple tags"
-        description="Please select tags that you prefer to work with"
-        isMulti={true}
-      />
-      <div style={stylesButton}>
-        <Button
-          variant="primary"
-          type="button"
-          className="outline"
-          onClick={formikBag.handleReset}
-          disabled={!formikBag.dirty || formikBag.isSubmitting}
-        >
-          Reset
-        </Button>
-        <Button variant="primary" type="submit">
-          Submit
-        </Button>
-      </div>
-    </Form>
-  );
-
   return (
     <Formik
-      initialValues={defaultValues}
+      initialValues={{
+        avatar_url: user?.avatar_url || '',
+        username: user?.username || '',
+        tags: user?.tags || [],
+      }}
       validationSchema={Yup.object({
-        avatarURL: Yup.string()
-            .max(50, 'Must be 50 characters or less')
+        avatar_url: Yup.string()
+            .max(90, 'Must be 90 characters or less')
             .notRequired()
             .nullable()
             .url('Must be a valid URL'),
-        username: Yup.string()
-            .max(15, 'Must be 15 characters or less')
-            .defined('Required'),
-        tags: Yup.array().defined('Required'),
+        username: Yup.string().required('Username is required'),
+        tags: Yup.array().required('Tags are required'),
       })}
-      render={renderForm}
-      onSubmit={onSubmit}
-    />
+      onSubmit={(values, {setSubmitting}) => {
+        handleSubmit(values);
+        getUser(true);
+        setSubmitting(false);
+      }}
+    >
+      {({
+        values,
+        errors,
+        touched,
+        handleChange,
+        handleBlur,
+        handleSubmit,
+        isSubmitting,
+      }) => (
+        <Form
+          onSubmit={handleSubmit}
+          style={{minWidth: '400px', width: '50%', margin: 'auto'}}
+        >
+          <FormGroup
+            controlId="avatarURL"
+            style={{display: 'flex', flexDirection: 'column'}}
+          >
+            <FormLabel>Avatar URL</FormLabel>
+            <Field
+              // Style like FormText
+              style={{
+                border: 'none',
+                borderBottom: '1px solid #ced4da',
+                padding: '0.375rem 0.75rem',
+                fontSize: '1rem',
+                lineHeight: '1.5',
+                color: '#495057',
+                backgroundColor: '#fff',
+                backgroundImage: 'none',
+                backgroundClip: 'padding-box',
+                borderRadius: '0',
+              }}
+              type="text"
+              name="avatar_url"
+              placeholder="Avatar URL"
+              onChange={handleChange}
+              onBlur={handleBlur}
+              className={touched.avatar_url && errors.avatar_url ? 'error' : ''}
+            />
+            {touched.avatar_url && errors.avatar_url && (
+              <div className="input-feedback">{errors.avatar_url}</div>
+            )}
+          </FormGroup>
+          <br />
+          <FormGroup
+            controlId="username"
+            style={{display: 'flex', flexDirection: 'column'}}
+          >
+            <FormLabel>Username</FormLabel>
+            <Field
+              style={{
+                border: 'none',
+                borderBottom: '1px solid #ced4da',
+                padding: '0.375rem 0.75rem',
+                fontSize: '1rem',
+                lineHeight: '1.5',
+                color: '#495057',
+                backgroundColor: '#fff',
+                backgroundImage: 'none',
+                backgroundClip: 'padding-box',
+                borderRadius: '0',
+              }}
+              type="text"
+              name="username"
+              placeholder="Username"
+              onChange={handleChange}
+              onBlur={handleBlur}
+              className={touched.username && errors.username ? 'error' : ''}
+            />
+            {touched.username && errors.username && (
+              <div className="input-feedback">{errors.username}</div>
+            )}
+          </FormGroup>
+          <br />
+          <FormGroup
+            controlId="tags"
+            style={{display: 'flex', flexDirection: 'column'}}
+          >
+            <FormLabel>Tags</FormLabel>
+            <Field
+              name="tags"
+              placeholder="Tags"
+              component={CustomSelect}
+              options={tags.map((tag: Tag) => ({
+                label: tag.name,
+                value: tag.id,
+                selected: values.tags?.find(
+                    (skill: Tag) => skill?.id === tag.id,
+                ) ?
+                  true :
+                  false,
+              }))}
+              isMulti={true}
+              onChange={handleChange}
+              onBlur={handleBlur}
+              className={touched.tags && errors.tags ? 'error' : ''}
+            />
+            {touched.tags && errors.tags && (
+              <div className="input-feedback">{errors.tags}</div>
+            )}
+          </FormGroup>
+          <div style={stylesButton}>
+            <Button
+              type="button"
+              variant="primary"
+              onClick={() => {
+                setUser(null);
+                setSuccess(null);
+                setError(null);
+                window.location.reload();
+              }}
+              disabled={isSubmitting}
+            >
+              Cancel
+            </Button>
+            <Button
+              type="submit"
+              variant="secondary"
+              disabled={isSubmitting}
+              style={{marginRight: '10px'}}
+            >
+              Submit
+            </Button>
+          </div>
+          {error && <div>{error}</div>}
+          {success && <div>{success}</div>}
+        </Form>
+      )}
+    </Formik>
   );
 };
 

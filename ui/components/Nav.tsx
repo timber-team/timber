@@ -1,10 +1,9 @@
 /* eslint-disable max-len */
 import React from 'react';
-import {Container, Nav, Navbar, NavDropdown, Button} from 'react-bootstrap';
+import {Container, Nav, Navbar, NavDropdown} from 'react-bootstrap';
 
 import {useAuth} from '../store/auth';
 import {deleteTokens} from '../utils';
-
 import ProjectForm from './ProjectForms';
 
 const NavBar = () => {
@@ -38,8 +37,9 @@ const NavBar = () => {
                     <img
                       src={
                         currentUser?.avatar_url ||
-                        'https://i.pravatar.cc/600?img=' +
-                          (currentUser?.id % 50)
+                        'https://gravatar.com/avatar/' +
+                          currentUser?.id +
+                          '?d=identicon'
                       }
                       alt="avatar"
                       className="avatar-img rounded-circle"
@@ -48,13 +48,10 @@ const NavBar = () => {
                   }
                   id="responsive-nav-dropdown"
                 >
-                  <NavDropdown.Item href="/profile">
-                    Your profile
-                  </NavDropdown.Item>
+                  <NavDropdown.Item href="/settings">Settings</NavDropdown.Item>
                   <NavDropdown.Item href="/projects">
                     Your projects
                   </NavDropdown.Item>
-                  <NavDropdown.Item href="/settings">Settings</NavDropdown.Item>
                   <NavDropdown.Item
                     href="/"
                     onClick={() => {

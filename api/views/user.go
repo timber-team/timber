@@ -88,7 +88,7 @@ func (h *Handler) ProfileByID(c *gin.Context) {
 type userRequest struct {
 	Username    string `json:"username" binding:"omitempty"`
 	Description string `json:"description" binding:"omitempty"`
-	AvatarUrl   string `json:"avatar_url" binding:"omitempty,url"`
+	AvatarUrl   string `json:"avatar_url" binding:"omitempty,url,lte=90"`
 	Tags        []int  `json:"tags" binding:"omitempty"`
 }
 
@@ -140,7 +140,7 @@ func (h *Handler) UpdateUser(c *gin.Context) {
 	// }
 
 	// update the user
-	err = h.UserController.Update(ctx, u, u)
+	err = h.UserController.Update(ctx, u)
 	if err != nil {
 		utils.Respond(c, customresponse.NewInternal(), nil)
 		return

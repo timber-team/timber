@@ -40,11 +40,11 @@ const Applications: React.FC = () => {
   }
 
   if (zippedList === undefined || zippedList.length === 0) {
-    return <div>No Applications found</div>;
+    return <div><h2 style={{textAlign: 'center', marginBottom: '30px', marginTop: '30px'}}>You have no applications yet.</h2></div>;
   }
   return (
     <div>
-      <h2 style={{textAlign: 'center', marginBottom: '2em'}}>Applications</h2>
+      <h2 style={{textAlign: 'center', marginBottom: '30px', marginTop: '30px'}}>Applications</h2>
       <ul>
         {zippedList.map((pair) => (
           <li
@@ -146,8 +146,8 @@ const Applications: React.FC = () => {
                   <Card.Img
                     src={pair.project.image_url}
                     style={{
-                      maxWidth: '40%',
-                      height: 'auto',
+                      height: '300px',
+                      width: 'auto',
                     }}
                   />
                 </div>

@@ -61,8 +61,6 @@ const ApplicantReview: React.FC = () => {
       if (!user) {
         return null;
       }
-      console.log(application);
-      console.log(user);
       return (
         <Card key={application.id}>
           <Card.Body>
