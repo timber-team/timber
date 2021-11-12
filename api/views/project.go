@@ -12,9 +12,9 @@ import (
 )
 
 type projectRequest struct {
-	Name            string `json:"name" binding:"required,gte=4,lte=15"`
-	Description     string `json:"description" binding:"required,gte=4,lte=85"`
-	ImageURL        string `json:"image_url" binding:"omitempty,url,lte=90"`
+	Name            string `json:"name" binding:"required,gte=4,lte=50"`
+	Description     string `json:"description" binding:"required"`
+	ImageURL        string `json:"image_url" binding:"omitempty,url,lte=100"`
 	RequiredSkills  []int  `json:"required_skills" binding:"omitempty"`
 	PreferredSkills []int  `json:"preferred_skills" binding:"omitempty"`
 }
