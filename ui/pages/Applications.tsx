@@ -5,6 +5,7 @@ import {useProjects} from '../api/project';
 import {Badge, Card} from 'react-bootstrap';
 import {Application, Project} from '../api/types';
 import { useApplications } from '../api/application';
+import ReactMarkdown from 'react-markdown';
 
 const Applications: React.FC = () => {
   const {loading: projLoading, error: projError, returnProjectById} = useProjects();
@@ -54,6 +55,7 @@ const Applications: React.FC = () => {
                 {
                   maxWidth: '80%',
                   margin: 'auto',
+                  marginBottom: '1.4em',
                   listStyleType: 'none',
                 } :
                 {
@@ -106,7 +108,15 @@ const Applications: React.FC = () => {
 
                       }
                     </Card.Title>
-                    <Card.Text>{pair.project.description}</Card.Text>
+                    <Card.Text as="div" className="desc"
+                      style={{
+                        maxHeight: '30vh',
+                      }}
+                    >
+                      <ReactMarkdown>
+                        {pair.project.description}
+                      </ReactMarkdown>
+                    </Card.Text>
 
                     <div
                       style={{
