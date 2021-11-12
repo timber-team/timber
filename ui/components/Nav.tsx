@@ -48,13 +48,10 @@ const NavBar = () => {
                   }
                   id="responsive-nav-dropdown"
                 >
-                  <NavDropdown.Item href="/profile">
-                    Your profile
-                  </NavDropdown.Item>
+                  <NavDropdown.Item href="/settings">Settings</NavDropdown.Item>
                   <NavDropdown.Item href="/projects">
                     Your projects
                   </NavDropdown.Item>
-                  <NavDropdown.Item href="/settings">Settings</NavDropdown.Item>
                   <NavDropdown.Item
                     href="/"
                     onClick={() => {
