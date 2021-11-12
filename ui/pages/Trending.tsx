@@ -9,10 +9,6 @@ const Trending = () => {
     getProjectsByPopularity();
   }, []);
 
-  useEffect(() => {
-    console.log(projects);
-  }, [projects]);
-
   return (
     // react-bootstrap cards displaying each project
     <div>

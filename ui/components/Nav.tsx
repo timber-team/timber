@@ -38,8 +38,8 @@ const NavBar = () => {
                     <img
                       src={
                         currentUser?.avatar_url ||
-                        'https://i.pravatar.cc/600?img=' +
-                          (currentUser?.id % 50)
+                        'https://gravatar.com/avatar/' +
+                          (currentUser?.id) + '?d=identicon'
                       }
                       alt="avatar"
                       className="avatar-img rounded-circle"

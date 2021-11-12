@@ -27,7 +27,6 @@ export const useUser = () => {
       } else {
         setUser([response[0]!.data]);
 
-        console.log(response[0]!.data);
         return response[0]!.data as User;
       }
     } catch (error) {
@@ -53,7 +52,6 @@ export const useUser = () => {
         setError(response[1]!.message);
       } else {
         setUser(response[0]!.data);
-        console.log(response[0]!.data);
         return response[0]!.data as User[];
       }
     } catch (error) {

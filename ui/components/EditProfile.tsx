@@ -49,13 +49,10 @@ const EditProfile = (props: customProps) => {
     return {label: e.name, value: e.id};
   });
 
-  console.log(useTags());
-
   const onSubmit = async (
       values: FormValues,
       actions: FormikHelpers<FormValues>,
   ) => {
-    console.log(values.tags);
     getUser(true);
 
     const t: Tag[] = values.tags.map((e) => JSON.parse(e));
