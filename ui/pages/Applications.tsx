@@ -146,8 +146,8 @@ const Applications: React.FC = () => {
                   <Card.Img
                     src={pair.project.image_url}
                     style={{
-                      maxWidth: '40%',
-                      height: 'auto',
+                      height: '300px',
+                      width: 'auto',
                     }}
                   />
                 </div>

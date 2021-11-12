@@ -92,8 +92,8 @@ const Trending = () => {
                   </div>
                   <Card.Img
                     style={{
-                      maxWidth: '40%',
-                      height: 'auto',
+                      height: '300px',
+                      width: 'auto',
                     }}
                     src={project.image_url}
                     height="300px"

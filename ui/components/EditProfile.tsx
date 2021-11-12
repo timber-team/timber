@@ -73,7 +73,7 @@ const EditProfile = (props: customProps) => {
   }
 
   const renderForm = (formikBag: FormikProps<FormValues>) => (
-    <Form style={{width:'50%', margin: 'auto'}}>
+    <Form style={{minWidth: '400px', width:'50%', margin: 'auto'}}>
       <Field
         name="avatarURL"
         component={FormText}
