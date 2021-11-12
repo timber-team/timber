@@ -25,7 +25,7 @@ const ProjectsPage: React.FC = () => {
     return <div>Error! {error}</div>;
   }
 
-  if (projects.length== 0){
+  if (projects.length == 0){
     return <Container style={{textAlign: "center"}}><h2 style={{padding: "50px"}}>You haven't created any projects yet.</h2> 
     <ProjectForm btnSize="true"/></Container>;
 

@@ -44,7 +44,7 @@ const Applications: React.FC = () => {
   }
   return (
     <div>
-      <h2 style={{textAlign: 'center', marginBottom: '2em'}}>Applications</h2>
+      <h2 style={{textAlign: 'center', marginBottom: '30px', marginTop: '30px'}}>Applications</h2>
       <ul>
         {zippedList.map((pair) => (
           <li
