@@ -65,7 +65,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ project }) => {
         </Card.Title>
 
         <Card.Text
-          className="bruh"
+          className="desc"
         // style={{
         //   overflow: 'scroll',
         // }}
