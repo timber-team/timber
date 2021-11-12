@@ -102,6 +102,7 @@ const EditProfile = (props: customProps) => {
         name="tags"
         options={selectable}
         component={CustomSelect}
+        alreadySelectedOptions={currentUser.tags}
         label="Select Technologies"
         placeholder="Select from multiple tags"
         description="Please select tags that you prefer to work with"

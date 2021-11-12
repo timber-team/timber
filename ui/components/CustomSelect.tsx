@@ -1,8 +1,9 @@
 /* eslint-disable max-len */
-import { ErrorMessage, FieldProps } from "formik";
-import React from "react";
-import { Form } from "react-bootstrap";
-import Select from "react-select";
+import { Tag } from 'api/types';
+import {ErrorMessage, FieldProps} from 'formik';
+import React from 'react';
+import {Form} from 'react-bootstrap';
+import Select from 'react-select';
 
 
 interface Option {
@@ -14,6 +15,7 @@ interface Option {
 interface CustomSelectProps extends FieldProps {
   className?: string;
   options: Option[];
+  alreadySelectedOptions?: Tag[];
   isMulti?: boolean;
   placeholder?: string;
   label: string;
@@ -27,26 +29,35 @@ export const CustomSelect = ({
   field,
   form,
   options,
+  alreadySelectedOptions,
   label,
   muted,
   description,
-  isMulti = false
+  isMulti = false,
 }: CustomSelectProps) => {
+
   React.useEffect(() => {
-    const selectedOptions = options.filter(
-      (option) => option.selected === true,
-    );
+    let selectedOptions;
+    if (alreadySelectedOptions) {
+      const selectedOptions: Option[] = options.filter(
+          (option) => option.selected === true,
+      ).concat(alreadySelectedOptions.map((tag) => {return {label: tag.name, value: `{"id": ${tag.id}, "name": "${tag.name}"}`, boolean: true}}));
+    }else{
+      const selectedOptions: Option[] = options.filter(
+        (option) => option.selected === true,
+      );
+    }
     if (selectedOptions) {
       form.setFieldValue(
-        field.name,
-        selectedOptions?.map((option: Option) => option.value),
+          field.name,
+          selectedOptions?.map((option: Option) => option.value),
       );
     }
   }, []);
 
   const onChange = (option: Option | Option[]) => {
     form.setFieldValue(
-      field.name,
+        field.name,
       isMulti ?
         (option as Option[]).map((item: Option) => item.value) :
         (option as Option).value,
@@ -76,7 +87,7 @@ export const CustomSelect = ({
         isMulti={isMulti}
       />
       <ErrorMessage name={field.name} component="div" />
-      <Form.Text className={muted ? "text-muted" : ""}>
+      <Form.Text className={muted ? 'text-muted' : ''}>
         {description}
       </Form.Text>
     </Form.Group>
@@ -84,4 +95,3 @@ export const CustomSelect = ({
 };
 
 export default CustomSelect;
-
