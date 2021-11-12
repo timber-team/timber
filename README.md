@@ -19,7 +19,7 @@ experience on their professional portfolios.
 - [Node](https://nodejs.org)
 - a webserver like [Nginx](https://nginx.com)
 - [PostgreSQL](https://www.postgresql.org)
-- [Redis](https://redis.com/))
+- [Redis](https://redis.com/)
 
 ## Setup
 - Create an OAuth web application on [Google Cloud Platform](https://console.cloud.google.com), and get OAuth2 Client ID and Secret 
