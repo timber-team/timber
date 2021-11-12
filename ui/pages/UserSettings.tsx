@@ -2,17 +2,11 @@ import EditProfile from '../components/EditProfile';
 import React from 'react';
 import {Container} from 'react-bootstrap';
 
-const styles = {
-  minHeight: '80vh',
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-};
-
 const UserSettings = () => {
   return (
     <>
-      <Container style={styles}>
+      <Container>
+        <h2 style={{padding: '50px 50px 30px 50px', textAlign: 'center'}}>Settings</h2>
         <EditProfile disabled={true} />
       </Container>
     </>

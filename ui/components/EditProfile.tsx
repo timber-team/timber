@@ -23,8 +23,7 @@ interface customProps {
 
 const stylesButton = {
   display: 'flex',
-  justifyContent: 'space-around',
-  marginTop: 12,
+  justifyContent: 'space-between',
 };
 
 const EditProfile = (props: customProps) => {
@@ -74,7 +73,7 @@ const EditProfile = (props: customProps) => {
   }
 
   const renderForm = (formikBag: FormikProps<FormValues>) => (
-    <Form>
+    <Form style={{width:'50%', margin: 'auto'}}>
       <Field
         name="avatarURL"
         component={FormText}
@@ -83,7 +82,7 @@ const EditProfile = (props: customProps) => {
         placeholder="Avatar URL"
         description="Please enter your avatar URL, you can use a website like imgur to host it"
         muted={true}
-      />
+      /><br/>
       <Field
         name="username"
         component={FormText}
@@ -97,7 +96,7 @@ const EditProfile = (props: customProps) => {
         description="Enter your username"
         muted={true}
         disabledForm={props.disabled}
-      />
+      /><br/>
       <Field
         className=""
         name="tags"
@@ -107,18 +106,19 @@ const EditProfile = (props: customProps) => {
         placeholder="Select from multiple tags"
         description="Please select tags that you prefer to work with"
         isMulti={true}
-      />
+      /><br/>
       <div style={stylesButton}>
         <Button
           variant="primary"
           type="button"
           className="outline"
+          size="lg"
           onClick={formikBag.handleReset}
           disabled={!formikBag.dirty || formikBag.isSubmitting}
         >
           Reset
         </Button>
-        <Button variant="primary" type="submit">
+        <Button variant="primary" size="lg" type="submit">
           Submit
         </Button>
       </div>

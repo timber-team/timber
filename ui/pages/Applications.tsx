@@ -40,7 +40,7 @@ const Applications: React.FC = () => {
   }
 
   if (zippedList === undefined || zippedList.length === 0) {
-    return <div>No Applications found</div>;
+    return <div><h2 style={{textAlign: 'center', marginBottom: '30px', marginTop: '30px'}}>You have no applications yet.</h2></div>;
   }
   return (
     <div>
