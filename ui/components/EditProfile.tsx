@@ -195,10 +195,6 @@ const EditProfile = (props: customProps) => {
               <div className="input-feedback">{errors.description}</div>
             )}
           </FormGroup>
-
-
-
-            
           <br />
           <FormGroup
             controlId="tags"
