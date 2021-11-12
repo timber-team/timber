@@ -88,7 +88,7 @@ func (h *Handler) ProfileByID(c *gin.Context) {
 type userRequest struct {
 	Username    string `json:"username" binding:"omitempty"`
 	Description string `json:"description" binding:"omitempty"`
-	AvatarUrl   string `json:"avatar_url" binding:"omitempty,url,lte=100"`
+	AvatarUrl   string `json:"avatar_url" binding:"omitempty,url,lte=250"`
 	Tags        []int  `json:"tags" binding:"omitempty"`
 }
 
