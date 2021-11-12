@@ -8,9 +8,7 @@ const LandingPage = () => {
     <Container
       className="d-flex flex-column text-center"
       style={{
-        height: 'var(--bs-content-height)',
         minHeight: 'var(--bs-content-height)',
-        maxHeight: 'var(--bs-content-height)',
         padding: '50px',
         margin: '0 auto',
         overflow: 'hidden',
