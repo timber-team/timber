@@ -1,23 +1,25 @@
 /* eslint-disable max-len */
-import React, {useEffect} from 'react';
-import {useParams} from 'react-router-dom';
+import React, { useEffect } from 'react';
+import { useParams } from 'react-router-dom';
 
-import {Badge, Button, Card, Container} from 'react-bootstrap';
+import { Badge, Button, Card, Container } from 'react-bootstrap';
 
-import {useUser} from '../api/user';
-import {useProjects} from '../api/project';
-import {useApplications} from '../api/application';
-import {User, Project, Application, Tag} from '../api/types';
-import {useAuth} from '../store/auth';
+import { useUser } from '../api/user';
+import { useProjects } from '../api/project';
+import { useApplications } from '../api/application';
+import { User, Project, Application, Tag } from '../api/types';
+import { useAuth } from '../store/auth';
+
+import ReactMarkdown from 'react-markdown';
 
 const ApplicantReview: React.FC = () => {
-  const {id} = useParams<{ id: string }>();
+  const { id } = useParams<{ id: string }>();
   const projectId = parseInt(id);
-  const {currentUser} = useAuth();
+  const { currentUser } = useAuth();
 
-  const {updateApplication} = useApplications();
-  const {getProjectById, getApplications} = useProjects();
-  const {getUserById} = useUser();
+  const { updateApplication } = useApplications();
+  const { getProjectById, getApplications } = useProjects();
+  const { getUserById } = useUser();
 
   const [applications, setApplications] = React.useState<Application[]>([]);
   const [project, setProject] = React.useState<Project>();
@@ -65,14 +67,18 @@ const ApplicantReview: React.FC = () => {
         <Card key={application.id}>
           <Card.Body>
             <Card.Title>{user?.username}</Card.Title>
-            <Card.Text>{user?.description}</Card.Text>
+            <Card.Text className="desc">
+              <ReactMarkdown>
+                {user?.description}
+              </ReactMarkdown>
+            </Card.Text>
             <Card.Text>
-              <span style={{fontWeight: 'bold'}}>User Skills:</span>{' '}
+              <span style={{ fontWeight: 'bold' }}>User Skills:</span>{' '}
               {user?.tags?.map((skill: Tag) => (
                 <Badge
                   key={skill.id}
                   bg="warning"
-                  style={{marginRight: '5px', fontSize: '0.8rem'}}
+                  style={{ marginRight: '5px', fontSize: '0.8rem' }}
                 >
                   {skill.name}
                 </Badge>
@@ -109,12 +115,12 @@ const ApplicantReview: React.FC = () => {
             </Button>
             {application.accepted && (
               <p>
-                <span style={{fontWeight: 'bold'}}>Status:</span> Accepted
+                <span style={{ fontWeight: 'bold' }}>Status:</span> Accepted
               </p>
             )}
             {application.denied && (
               <p>
-                <span style={{fontWeight: 'bold'}}>Status:</span> Denied
+                <span style={{ fontWeight: 'bold' }}>Status:</span> Denied
               </p>
             )}
           </Card.Body>
@@ -137,7 +143,12 @@ const ApplicantReview: React.FC = () => {
             <Card.Header>Project</Card.Header>
             <Card.Body>
               <Card.Title>{project?.name}</Card.Title>
-              <Card.Text>{project?.description}</Card.Text>
+              <Card.Text as="div" className="desc" style={{ maxHeight: 'unset' }}>
+                <ReactMarkdown>
+                  {/* it just works */}
+                  {project?.description!}
+                </ReactMarkdown>
+              </Card.Text>
             </Card.Body>
           </Card>
         </div>
