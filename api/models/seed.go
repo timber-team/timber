@@ -46,7 +46,7 @@ func (ss *SeedStore) Seed() error {
 
 		user.Username = gofakeit.Username()
 		user.Email = gofakeit.Email()
-		user.Description = gofakeit.Sentence(10)
+		user.Description = gofakeit.Paragraph(1, 10, 150, ".")
 		user.AvatarURL = "https://i.pravatar.cc/600?img=" + strconv.Itoa(i)
 
 		// Set the users Tags field to a slice of Tags randomly chosen from the slice of generatedTags
@@ -67,7 +67,7 @@ func (ss *SeedStore) Seed() error {
 	for i := 0; i < 50; i++ {
 		var project Project
 		project.Name = gofakeit.AppName()
-		project.Description = gofakeit.Sentence(5)
+		project.Description = gofakeit.Paragraph(1, 10, 150, ".")
 
 		owner := users[rand.Intn(len(users))]
 		// Set the projects Owner field to a randomly chosen User from the slice of users
