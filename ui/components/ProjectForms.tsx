@@ -15,7 +15,7 @@ type ProjectFormProps = {
   initialItem?: Project;
 };
 
-const ProjectForm: React.FC<ProjectFormProps> = ({initialItem}) => {
+const ProjectForm: React.FC<ProjectFormProps> = ({initialItem, btnSize}) => {
   const [showModal, setShowModal] = React.useState(false);
   const {currentUser} = useAuth();
   const {
@@ -77,7 +77,7 @@ const ProjectForm: React.FC<ProjectFormProps> = ({initialItem}) => {
 
   return (
     <>
-      <Button variant="primary" onClick={handleShow}>
+      <Button variant="primary" onClick={handleShow}  size={btnSize ? "lg" : ""}  >
         {initialItem ? 'Edit Project' : 'Create Project'}
       </Button>
       <Modal show={showModal} onHide={handleClose} centered>
