@@ -22,8 +22,8 @@ const UserCard: React.FC<UserCardProps> = ({user, project}) => {
     >
       <Card.Img
         variant="top"
-        src={project.image_url|| 'https://via.placeholder.com/900x600'}
-        style={{height: "30vh"}}
+        src={project.image_url || 'https://via.placeholder.com/900x600'}
+        style={{height: '30vh'}}
       />
       <Card.Body>
         <Card.Title>
@@ -45,16 +45,13 @@ const UserCard: React.FC<UserCardProps> = ({user, project}) => {
         </Card.Text>
       </Card.Body>
       <Card.Footer>
-          <img
-                    src={
-                      user.avatar_url ||
-                      'https://i.pravatar.cc/600?id=' + user.id
-                    }
-                    alt={user.username}
-                    width="80"
-                    height="80"
-                    className="rounded-circle"
-                  />
+        <img
+          src={user.avatar_url || 'https://i.pravatar.cc/600?id=' + user.id}
+          alt={user.username}
+          width="80"
+          height="80"
+          className="rounded-circle"
+        />
       </Card.Footer>
     </Card>
   );

@@ -2,6 +2,7 @@ package models
 
 import (
 	"context"
+	"sort"
 
 	"gorm.io/gorm"
 )
@@ -47,30 +48,42 @@ func (projectStore *ProjectStore) GetByPopularity(ctx context.Context) ([]*Proje
 
 func (projectStore *ProjectStore) GetRecommended(ctx context.Context, user *User) ([]*Project, error) {
 	var projects []*Project
-	var err error
-	if err = projectStore.db.WithContext(ctx).Preload("Collaborators").Preload("Applications").Preload("PreferredSkills").Preload("RequiredSkills").Preload("Owner").Omit("Collaborators.Projects").Omit("Owner.Projects").Find(&projects).Error; err != nil {
+	err := projectStore.db.WithContext(ctx).Preload("Collaborators").Preload("Applications").Preload("PreferredSkills").Preload("RequiredSkills").Preload("Owner").Preload("Collaborators.Projects").Preload("Collaborators.Tags").Preload("Owner.Projects").Preload("Owner.Tags").Find(&projects).Error
+	if err != nil {
 		return nil, err
 	}
 
-	var recommendedProjects []*Project
+	projectScores := make(map[int]int)
+
+	userTags := user.Tags
+
 	for _, project := range projects {
-		for _, tag := range user.Tags {
-			for _, requiredSkill := range project.RequiredSkills {
-				if requiredSkill.ID == tag.ID {
-					recommendedProjects = append(recommendedProjects, project)
+		projectScores[project.ID] = 0
+		for _, tag := range project.PreferredSkills {
+			for _, userTag := range userTags {
+				if tag.ID == userTag.ID {
+					projectScores[project.ID] += 1
+				}
+			}
+		}
+		for _, tag := range project.RequiredSkills {
+			for _, userTag := range userTags {
+				if tag.ID == userTag.ID {
+					projectScores[project.ID] += 1
 				}
 			}
 		}
 	}
-	// Sort recommendedProjects by number of applications
-	for i := 0; i < len(recommendedProjects)-1; i++ {
-		for j := i + 1; j < len(recommendedProjects); j++ {
-			if len(recommendedProjects[i].Applications) < len(recommendedProjects[j].Applications) {
-				recommendedProjects[i], recommendedProjects[j] = recommendedProjects[j], recommendedProjects[i]
-			}
-		}
+
+	var sortedProjects []*Project
+	for _, project := range projects {
+		sortedProjects = append(sortedProjects, project)
 	}
-	return recommendedProjects, nil
+	sort.Slice(sortedProjects, func(i, j int) bool {
+		return projectScores[sortedProjects[i].ID] > projectScores[sortedProjects[j].ID]
+	})
+
+	return sortedProjects, nil
 }
 
 func (projectStore *ProjectStore) Update(ctx context.Context, project *Project) error {
