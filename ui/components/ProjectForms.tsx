@@ -13,6 +13,7 @@ import CustomSelect from './CustomSelect';
 
 type ProjectFormProps = {
   initialItem?: Project;
+  btnSize?: 'sm' | 'lg';
 };
 
 const ProjectForm: React.FC<ProjectFormProps> = ({initialItem, btnSize}) => {
@@ -77,7 +78,7 @@ const ProjectForm: React.FC<ProjectFormProps> = ({initialItem, btnSize}) => {
 
   return (
     <>
-      <Button variant="primary" onClick={handleShow}  size={btnSize ? "lg" : ""}  >
+      <Button variant="primary" onClick={handleShow} size={btnSize}>
         {initialItem ? 'Edit Project' : 'Create Project'}
       </Button>
       <Modal show={showModal} onHide={handleClose} centered>
@@ -103,7 +104,7 @@ const ProjectForm: React.FC<ProjectFormProps> = ({initialItem, btnSize}) => {
                   .max(85, 'Must be 85 characters or less')
                   .defined('Required'),
               image_url: Yup.string()
-                  .max(50, 'Must be 50 characters or less')
+                  .max(90, 'Must be 90 characters or less')
                   .notRequired()
                   .nullable()
                   .url('Must be a valid URL'),

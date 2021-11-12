@@ -2,10 +2,10 @@
 import React, {useEffect} from 'react';
 import {Button, Stack} from 'react-bootstrap';
 
-import {useProjects} from '../api/project';
 import {useApplications} from '../api/application';
-import ProjectCard from './Card';
+import {useProjects} from '../api/project';
 import {Project} from '../api/types';
+import ProjectCard from './Card';
 
 const CardStack = () => {
   const {projects, getRecommendedProjects, loading, error} = useProjects();

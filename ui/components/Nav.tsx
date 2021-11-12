@@ -1,10 +1,9 @@
 /* eslint-disable max-len */
 import React from 'react';
-import {Container, Nav, Navbar, NavDropdown, Button} from 'react-bootstrap';
+import {Container, Nav, Navbar, NavDropdown} from 'react-bootstrap';
 
 import {useAuth} from '../store/auth';
 import {deleteTokens} from '../utils';
-
 import ProjectForm from './ProjectForms';
 
 const NavBar = () => {
@@ -39,7 +38,8 @@ const NavBar = () => {
                       src={
                         currentUser?.avatar_url ||
                         'https://gravatar.com/avatar/' +
-                          (currentUser?.id) + '?d=identicon'
+                          currentUser?.id +
+                          '?d=identicon'
                       }
                       alt="avatar"
                       className="avatar-img rounded-circle"

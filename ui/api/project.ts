@@ -1,5 +1,6 @@
 /* eslint-disable max-len */
 import {useState} from 'react';
+
 import {doRequest} from '.';
 import {useAuth} from '../store/auth';
 import {Application, Project} from './types';
@@ -84,7 +85,7 @@ export const useProjects = () => {
   const returnProjectById = async (id: number) => {
     setLoading(true);
     setError(null);
-    try{
+    try {
       const [response, error] = await doRequest({
         url: `/projects/${id}`,
         method: 'GET',
@@ -92,14 +93,15 @@ export const useProjects = () => {
           Authorization: `Bearer ${accessToken}`,
         },
       });
-      if (response.code != 200) {
-        setError(response.message);
-      } else {
+      if (error) {
+        setError(error);
+      } else if (response) {
+        setProjects([response.data as Project]);
         setLoading(false);
         return response.data as Project;
       }
     } catch (error) {
-      setError(error.message);
+      setError(error);
     }
     setLoading(false);
   };

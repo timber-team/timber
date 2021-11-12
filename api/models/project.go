@@ -74,6 +74,8 @@ func (projectStore *ProjectStore) GetRecommended(ctx context.Context, user *User
 }
 
 func (projectStore *ProjectStore) Update(ctx context.Context, project *Project) error {
+	projectStore.db.WithContext(ctx).Model(&project).Association("PreferredSkills").Replace(project.PreferredSkills)
+	projectStore.db.WithContext(ctx).Model(&project).Association("RequiredSkills").Replace(project.RequiredSkills)
 	return projectStore.db.WithContext(ctx).Save(&project).Error
 }
 

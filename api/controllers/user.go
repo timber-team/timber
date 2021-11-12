@@ -23,6 +23,6 @@ func (userControl *UserController) GetMany(ctx context.Context, userIds []int) (
 }
 
 //update
-func (userControl *UserController) Update(ctx context.Context, u *models.User, newUser *models.User) error {
-	return userControl.Users.Update(ctx, u, newUser)
+func (userControl *UserController) Update(ctx context.Context, u *models.User) error {
+	return userControl.Users.Update(ctx, u)
 }

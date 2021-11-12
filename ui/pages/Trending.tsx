@@ -1,6 +1,7 @@
 import React, {useEffect} from 'react';
+import {Badge, Card} from 'react-bootstrap';
+
 import {useProjects} from '../api/project';
-import {Card, Badge} from 'react-bootstrap';
 
 const Trending = () => {
   const {projects, loading, error, getProjectsByPopularity} = useProjects();
@@ -12,7 +13,11 @@ const Trending = () => {
   return (
     // react-bootstrap cards displaying each project
     <div>
-      <h2 style={{textAlign: 'center', marginBottom: '30px', marginTop: '30px'}}>Trending</h2>
+      <h2
+        style={{textAlign: 'center', marginBottom: '30px', marginTop: '30px'}}
+      >
+        Trending
+      </h2>
       <div className="card-container">
         {projects.map((project) => (
           <li

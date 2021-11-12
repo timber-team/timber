@@ -1,6 +1,7 @@
 import {useState} from 'react';
-import {useAuth} from '../store/auth';
+
 import {doRequest} from '.';
+import {useAuth} from '../store/auth';
 import {Application} from './types';
 
 // useApplications custom hook

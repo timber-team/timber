@@ -1,10 +1,9 @@
 /* eslint-disable max-len */
-import { Tag } from 'api/types';
+import {Tag} from 'api/types';
 import {ErrorMessage, FieldProps} from 'formik';
 import React from 'react';
 import {Form} from 'react-bootstrap';
 import Select from 'react-select';
-
 
 interface Option {
   label: string;
@@ -35,18 +34,10 @@ export const CustomSelect = ({
   description,
   isMulti = false,
 }: CustomSelectProps) => {
-
   React.useEffect(() => {
-    let selectedOptions;
-    if (alreadySelectedOptions) {
-      const selectedOptions: Option[] = options.filter(
-          (option) => option.selected === true,
-      ).concat(alreadySelectedOptions.map((tag) => {return {label: tag.name, value: `{"id": ${tag.id}, "name": "${tag.name}"}`, boolean: true}}));
-    }else{
-      const selectedOptions: Option[] = options.filter(
+    const selectedOptions = options.filter(
         (option) => option.selected === true,
-      );
-    }
+    );
     if (selectedOptions) {
       form.setFieldValue(
           field.name,
@@ -76,7 +67,6 @@ export const CustomSelect = ({
 
   return (
     <Form.Group>
-      <Form.Label>{label}</Form.Label>
       <Select
         className={className}
         name={field.name}
@@ -87,9 +77,7 @@ export const CustomSelect = ({
         isMulti={isMulti}
       />
       <ErrorMessage name={field.name} component="div" />
-      <Form.Text className={muted ? 'text-muted' : ''}>
-        {description}
-      </Form.Text>
+      <Form.Text className={muted ? 'text-muted' : ''}>{description}</Form.Text>
     </Form.Group>
   );
 };
