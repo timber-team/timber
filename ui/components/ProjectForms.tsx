@@ -98,13 +98,12 @@ const ProjectForm: React.FC<ProjectFormProps> = ({initialItem, btnSize}) => {
             }}
             validationSchema={Yup.object({
               name: Yup.string()
-                  .max(15, 'Must be 15 characters or less')
+                  .max(50, 'Must be 50 characters or less')
                   .defined('Required'),
               description: Yup.string()
-                  .max(85, 'Must be 85 characters or less')
                   .defined('Required'),
               image_url: Yup.string()
-                  .max(90, 'Must be 90 characters or less')
+                  .max(100, 'Must be 100 characters or less')
                   .notRequired()
                   .nullable()
                   .url('Must be a valid URL'),
@@ -143,6 +142,7 @@ const ProjectForm: React.FC<ProjectFormProps> = ({initialItem, btnSize}) => {
                   <FormLabel>Description</FormLabel>
                   <Field
                     type="textbox"
+                    as="textarea"
                     rows={3}
                     name="description"
                     placeholder="Enter project description"
