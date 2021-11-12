@@ -3,7 +3,7 @@ import ProjectsPage from './pages/ProjectsPage';
 import React from 'react';
 import {BrowserRouter as Router, Route, Switch} from 'react-router-dom';
 
-import Legal from './components/Legal';
+import Footer from './components/Footer';
 import NavBar from './components/Nav';
 import ProtectedRoute from './components/ProtectedRoute';
 import Applications from './pages/Applications';
@@ -54,7 +54,7 @@ const App: React.FC = () => {
           </Switch>
         </div>
       </Router>
-      <Legal />
+      <Footer />
     </div>
   );
 };
