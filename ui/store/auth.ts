@@ -1,66 +1,83 @@
 /* eslint-disable max-len */
-// import create, {SetState} from 'zustand';
 import create, {SetState} from 'zustand';
 
 import {doRequest} from '../api';
 import {TokenResponse, User} from '../api/types';
 import {
   AccessTokenClaims,
+  deleteTokens,
   getTokenPayload,
   RefreshTokenClaims,
   storeTokens,
 } from '../utils';
 
 type AuthState = {
-  currentUser: User | undefined;
-  accessToken: string | undefined;
+  currentUser?: User;
+  accessToken?: string;
   isLoading: boolean;
-  error: Error | undefined;
-  getUser: (forceRefresh: boolean) => Promise<User | undefined>;
+  error?: Error;
+  getUser: (forceRefresh?: boolean) => Promise<void>;
+  logout: () => void;
 };
 
-export const useAuth = create<AuthState>((set) => ({
-  currentUser: undefined,
-  accessToken: undefined,
-  isLoading: false,
-  error: undefined,
-  getUser: (forceRefresh = false) => getUser({set, forceRefresh}),
-}));
+export const useAuth = create<AuthState>((set) => {
+  return {
+    currentUser: undefined,
+    accessToken: undefined,
+    isLoading: false,
+    error: undefined,
+    getUser: (forceRefresh = false) => getUser({set, forceRefresh}),
+    logout: () => logout(set),
+  };
+});
 
-const getUser = async (options: {
+const getUser = async ({
+  set,
+  forceRefresh,
+}: {
   set: SetState<AuthState>;
   forceRefresh: boolean;
 }) => {
-  const {set, forceRefresh} = options;
   set((state) => ({...state, isLoading: true, error: undefined}));
 
   const accessToken = localStorage.getItem('access_token') ?? undefined;
   const accessTokenClaims = getTokenPayload<AccessTokenClaims>(accessToken);
 
+  // if (!accessToken || !accessTokenClaims) {
+  //   set((state) => ({ ...state, isLoading: false, error: 'No access token' }));
+  //   return;
+  // }
+
   if (accessTokenClaims && !forceRefresh) {
     set((state) => ({
       ...state,
-      currentUser: accessTokenClaims.user,
-      accessToken,
       isLoading: false,
+      accessToken,
+      currentUser: accessTokenClaims.user,
     }));
-    return accessTokenClaims.user;
+    return;
   }
 
   const refreshToken = localStorage.getItem('refresh_token') ?? undefined;
   const refreshTokenClaims = getTokenPayload<RefreshTokenClaims>(refreshToken);
 
+  // if (!refreshToken || !refreshTokenClaims) {
+  //   set((state) => ({ ...state, isLoading: false, error: 'No refresh token' }));
+  //   return;
+  // }
+
   if (!refreshTokenClaims) {
     set((state) => ({
       ...state,
       isLoading: false,
-      currentUser: undefined,
       accessToken: undefined,
+      currentUser: undefined,
+      error: Error('No refresh token'),
     }));
-    return undefined;
+    return;
   }
 
-  const [data, error] = await doRequest({
+  const {data, error} = await doRequest<TokenResponse>({
     url: '/auth/tokens',
     method: 'POST',
     data: {
@@ -68,29 +85,21 @@ const getUser = async (options: {
     },
   });
 
-  if (error) {
+  if (error || !data) {
     set((state) => ({
       ...state,
       isLoading: false,
-      currentUser: undefined,
+      error: error || Error('Error refreshing token'),
       accessToken: undefined,
-      error,
+      currentUser: undefined,
     }));
-    return undefined;
+    return;
   }
 
-  if (!data) {
-    set((state) => ({
-      ...state,
-      isLoading: false,
-      currentUser: undefined,
-      accessToken: undefined,
-      error: new Error('No data returned'),
-    }));
-    return undefined;
-  }
-
-  const tokenPair = data.data as TokenResponse;
+  const tokenPair = {
+    access_token: data.access_token,
+    refresh_token: data.refresh_token,
+  };
 
   storeTokens(tokenPair.access_token, tokenPair.refresh_token);
   const tokenClaims = getTokenPayload<AccessTokenClaims>(
@@ -99,9 +108,19 @@ const getUser = async (options: {
   set((state) => ({
     ...state,
     isLoading: false,
-    currentUser: tokenClaims!.user,
     accessToken: tokenPair.access_token,
+    currentUser: tokenClaims!.user,
     error: undefined,
   }));
-  return tokenClaims!.user;
+};
+
+const logout = (set: SetState<AuthState>) => {
+  deleteTokens();
+  set((state) => ({
+    ...state,
+    isLoading: false,
+    accessToken: undefined,
+    currentUser: undefined,
+    error: undefined,
+  }));
 };
