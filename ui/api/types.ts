@@ -51,9 +51,9 @@ export interface TokenResponse {
   refresh_token: string;
 }
 
-export interface GenericResponse {
+export interface GenericResponse<T> {
   detail: string;
   msg: string;
-  data: any;
+  data: T;
   code: number;
 }
