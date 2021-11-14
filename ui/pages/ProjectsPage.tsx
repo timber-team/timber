@@ -1,32 +1,34 @@
 /* eslint-disable react/no-unescaped-entities */
 /* eslint-disable max-len */
-/* eslint-disable @typescript-eslint/no-empty-function */
 import React from 'react';
 import {Container} from 'react-bootstrap';
+import {useQuery} from 'react-query';
 
-import {useProjects} from '../api/project';
-import {Project} from '../api/types';
-import ProjectForm from '../components/ProjectForms';
-import ProjectListCard from '../components/ProjectListCard';
+import {getProjectsByUserId} from '../api/project';
+import {Project, User} from '../api/types';
+import ProjectCard from '../components/ProjectCard';
+import ProjectForm from '../components/ProjectForm';
 import {useAuth} from '../store/auth';
 
-const ProjectsPage: React.FC = () => {
-  const {projects, loading, error, getProjectsByUserId} = useProjects();
-  const {currentUser} = useAuth();
+interface ProjectsPageProps {
+  user?: User;
+}
 
-  React.useEffect(() => {
-    getProjectsByUserId(currentUser!.id);
-  }, []);
-
-  if (loading) {
-    return <div>Loading...</div>;
-  }
-
-  if (error) {
-    return <div>Error! {error}</div>;
-  }
-
-  if (projects.length == 0) {
+const ProjectsPage: React.FC<ProjectsPageProps> = ({user}) => {
+  const {accessToken} = useAuth();
+  const {data: projects, status} = useQuery(
+      'projects',
+      () => getProjectsByUserId(user?.id || 0, accessToken || ''),
+      {
+        retry: false,
+      },
+  );
+  if (status === 'loading') return <div>Loading...</div>;
+  if (status === 'error') return <div>Error</div>;
+  if (
+    status === 'success' &&
+    (!projects || (projects && projects.length === 0))
+  ) {
     return (
       <Container style={{textAlign: 'center'}}>
         <h2 style={{padding: '50px'}}>
@@ -36,12 +38,16 @@ const ProjectsPage: React.FC = () => {
       </Container>
     );
   }
-
-  const projectListCards = projects.map((project: Project) => (
-    <ProjectListCard project={project} key={project.id} />
-  ));
-
-  return <Container>{projectListCards}</Container>;
+  if (status === 'success' && projects && projects.length > 0) {
+    return (
+      <Container className="mt-5 mb-5">
+        {projects.map((project: Project) => (
+          <ProjectCard key={project.id} project={project} type="List" />
+        ))}
+      </Container>
+    );
+  }
+  return null;
 };
 
 export default ProjectsPage;

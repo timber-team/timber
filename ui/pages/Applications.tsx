@@ -1,51 +1,101 @@
-/* eslint-disable max-len */
 import React, {useEffect, useState} from 'react';
-import {useProjects} from '../api/project';
-
 import {Badge, Card} from 'react-bootstrap';
-import {Application, Project} from '../api/types';
-import { useApplications } from '../api/application';
 import ReactMarkdown from 'react-markdown';
+import {useQuery} from 'react-query';
+
+import {getOwnApplications} from '../api/application';
+import {getProjectById} from '../api/project';
+import {Application, Project} from '../api/types';
+import {useAuth} from '../store/auth';
 
 const Applications: React.FC = () => {
-  const {loading: projLoading, error: projError, returnProjectById} = useProjects();
-  const {error: appError, applications, getOwnApplications} = useApplications(); 
+  const {accessToken} = useAuth();
+  const [projectsLoading, setProjectsLoading] = useState(false);
+  const {data: applications, status} = useQuery(
+      'applications',
+      () => getOwnApplications(accessToken || ''),
+      {
+        enabled: accessToken !== null,
+      },
+  );
 
+  interface ZippedElem {
+    application: Application;
+    project: Project;
+  }
   const [zippedList, setZippedList] = useState<ZippedElem[]>([]);
 
-  interface ZippedElem{
-    application: Application,
-    project: Project,
-  }
+  console.log(zippedList);
 
   useEffect(() => {
-    getOwnApplications();
-  }, []);
-
-  useEffect(() => {
-    applications.forEach( (application) => {
-      returnProjectById(application.project_id).then((proj) => {
-        if (proj) {
-          setZippedList((prevState) => prevState.concat({application: application, project: proj}));
-        }
+    setProjectsLoading(true);
+    if (applications) {
+      applications.forEach((application) => {
+        getProjectById(application.project_id, accessToken || '').then(
+            (project) => {
+              if (project) {
+                setZippedList((zippedList) =>
+                  zippedList.concat({
+                    application,
+                    project,
+                  }),
+                );
+              }
+            },
+        );
       });
-    });
-  }, [applications]);
+      setProjectsLoading(false);
+    }
+  }, [accessToken, applications]);
 
-  if (projError || appError) {
-    return <div>Error!</div>;
-  }
-
-  if (projLoading) {
+  if (status === 'loading' || projectsLoading) {
     return <div>Loading...</div>;
   }
 
-  if (zippedList === undefined || zippedList.length === 0) {
-    return <div><h2 style={{textAlign: 'center', marginBottom: '30px', marginTop: '30px'}}>You have no applications yet.</h2></div>;
+  if (status === 'error') {
+    return <div>Error</div>;
   }
+
+  console.log(zippedList);
+  if (
+    (zippedList === undefined || zippedList.length === 0) &&
+    !projectsLoading &&
+    status === 'success'
+  ) {
+    return (
+      <div>
+        <h2
+          style={{
+            textAlign: 'center',
+            marginBottom: '30px',
+            marginTop: '30px',
+          }}
+        >
+          You have no applications yet.
+        </h2>
+      </div>
+    );
+  }
+
+  zippedList.sort((a, b) => {
+    if (a.application.accepted && !b.application.accepted) {
+      return -1;
+    } else if (!a.application.accepted && b.application.accepted) {
+      return 1;
+    } else if (a.application.accepted && b.application.accepted) {
+      return 0;
+    } else {
+      return 0;
+    }
+  });
+
   return (
     <div>
-      <h2 style={{textAlign: 'center', marginBottom: '30px', marginTop: '30px'}}>Applications</h2>
+      <h2
+        style={{textAlign: 'center', marginBottom: '30px', marginTop: '30px'}}
+      >
+        Applications
+      </h2>
       <ul>
         {zippedList.map((pair) => (
           <li
@@ -82,40 +132,37 @@ const Applications: React.FC = () => {
                       }}
                     >
                       {pair.project.name}
-                      {pair.application.accepted? (
+                      {pair.application.accepted ? (
                         <Badge
                           style={{margin: '1em', fontSize: '0.6em'}}
                           bg="success"
                         >
                           Accepted
                         </Badge>
-                        ) : 
-                        pair.application.denied? (
-                          <Badge
-                            style={{margin: '1em', fontSize: '0.6em'}}
-                            bg="danger"
-                          >
+                      ) : pair.application.denied ? (
+                        <Badge
+                          style={{margin: '1em', fontSize: '0.6em'}}
+                          bg="danger"
+                        >
                           Rejected
-                          </Badge>
-                        ) :(
-                          <Badge
-                            style={{margin: '1em', fontSize: '0.6em'}}
-                            bg="warning"
-                          >
-                              In Progress
-                          </Badge>
-                        )
-
-                      }
+                        </Badge>
+                      ) : (
+                        <Badge
+                          style={{margin: '1em', fontSize: '0.6em'}}
+                          bg="warning"
+                        >
+                          In Progress
+                        </Badge>
+                      )}
                     </Card.Title>
-                    <Card.Text as="div" className="desc"
+                    <Card.Text
+                      as="div"
+                      className="desc"
                       style={{
                         maxHeight: '30vh',
                       }}
                     >
-                      <ReactMarkdown>
-                        {pair.project.description}
-                      </ReactMarkdown>
+                      <ReactMarkdown>{pair.project.description}</ReactMarkdown>
                     </Card.Text>
 
                     <div
