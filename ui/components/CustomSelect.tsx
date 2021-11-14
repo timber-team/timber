@@ -12,6 +12,7 @@ interface Option {
 interface CustomSelectProps extends FieldProps {
   className?: string;
   options: Option[];
+  alreadySelectedOptions?: Tag[];
   isMulti?: boolean;
   placeholder?: string;
   label: string;

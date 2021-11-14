@@ -16,7 +16,10 @@ const ProtectedRoute = ({user, children, ...rest}: ProtectedRouteProps) => {
       {...rest}
       render={({location}) =>
         user ? (
-          user.username.length > 0 ? (
+          user.username.length > 0 &&
+          user &&
+          user.tags &&
+          user.tags.length > 0 ? (
             children
           ) : (
             <EditProfileForm type="modal" />

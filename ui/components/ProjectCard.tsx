@@ -26,7 +26,6 @@ const ProjectCard: React.FC<ProjectCardProps> = ({project, type}) => {
       >
         <Card.Img
           style={{
-            // max height of 50vh while maintaining aspect ratio
             height: '40vh',
             objectFit: 'cover',
             objectPosition: 'center',

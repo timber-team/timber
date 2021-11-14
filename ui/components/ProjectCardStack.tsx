@@ -22,7 +22,6 @@ const ProjectCardStack = () => {
       'query-recommended',
       async () => getRecommendedProjects(accessToken || ''),
       {
-        enabled: accessToken !== null,
         onSuccess: (data: Project[]) => {
           setRecommendedProjects(data);
         },
@@ -37,7 +36,6 @@ const ProjectCardStack = () => {
     refetchProjects();
   }, [accessToken]);
 
-  // create application useMutation
   const {
     isLoading: isLoadingApplication,
     isError: isErrorApplication,
@@ -70,6 +68,14 @@ const ProjectCardStack = () => {
     setRecommendedProjects(recommendedProjects.slice(1));
   };
 
+  console.log('ProjectCardStack', {
+    isLoadingProjects,
+    isErrorProjects,
+    projects,
+    isLoadingApplication,
+    isErrorApplication,
+    recommendedProjects,
+  });
   return (
     <Stack
       className="card-stack mx-auto justify-content-center w-100"

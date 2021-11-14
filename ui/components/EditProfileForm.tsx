@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 import {Field, Form, Formik} from 'formik';
 import React, {useEffect, useState} from 'react';
 import {
@@ -22,6 +23,8 @@ type EditProfileFormProps = {
 };
 
 const EditProfileForm: React.FC<EditProfileFormProps> = ({type}) => {
+  const [loading, setLoading] = useState<boolean>(true);
+
   const {currentUser, accessToken} = useAuth();
   const [error, setError] = useState<string | undefined>(undefined);
   const [tags, setTags] = useState<Tag[]>([]);
@@ -55,6 +58,26 @@ const EditProfileForm: React.FC<EditProfileFormProps> = ({type}) => {
         },
       },
   );
+
+  if (isError) {
+    console.log('Error loading user', errorUpdating);
+  }
+
+  useEffect(() => {
+    if (
+      tags &&
+      tags.length > 0 &&
+      currentUser &&
+      currentUser.tags &&
+      currentUser.tags.length > 0
+    ) {
+      setLoading(false);
+    }
+  }, [tags, currentUser]);
+
+  if (loading || isLoading) {
+    return <div>Loading...</div>;
+  }
 
   const handleSubmit = async (user: Partial<User>, formikBag: any) => {
     try {
@@ -161,9 +184,11 @@ const EditProfileForm: React.FC<EditProfileFormProps> = ({type}) => {
               placeholder="Skills"
               component={CustomSelect}
               options={tags.map((tag: Tag) => ({
-                label: tag.name,
                 value: tag.id,
-                selected: initialValues.tags.find((t: Tag) => t.id === tag.id) ?
+                label: tag.name,
+                selected: currentUser?.tags?.find(
+                    (skill: Tag) => skill.id === tag.id,
+                ) ?
                   true :
                   false,
               }))}
@@ -192,7 +217,7 @@ const EditProfileForm: React.FC<EditProfileFormProps> = ({type}) => {
 
   if (type === 'modal') {
     return (
-      <Modal show={true}>
+      <Modal show={true} centered>
         <Modal.Header>
           <Modal.Title>Edit Profile</Modal.Title>
         </Modal.Header>

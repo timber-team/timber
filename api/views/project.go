@@ -170,8 +170,6 @@ func (h *Handler) GetRecommendedProjects(c *gin.Context) {
 		return
 	}
 
-	log.WithContext(c).Info(fmt.Sprintf("Recommended projects: %v", queryProjects))
-
 	// check if user has applied to any projects
 	recommendations := []*models.Project{}
 
