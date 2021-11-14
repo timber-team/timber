@@ -1,14 +1,16 @@
-/* eslint-disable max-len */
-import React from 'react';
+import React, {useState} from 'react';
 import {Container, Nav, Navbar, NavDropdown} from 'react-bootstrap';
 
+import {User} from '../api/types';
 import {useAuth} from '../store/auth';
-import {deleteTokens} from '../utils';
-import ProjectForm from './ProjectForms';
+import ProjectForm from './ProjectForm';
 
-const NavBar = () => {
-  const {currentUser} = useAuth();
-  const [showForm, setShowForm] = React.useState(false);
+type NavBarProps = {
+  currentUser?: User;
+};
+
+const NavBar: React.FC<NavBarProps> = ({currentUser}) => {
+  const {logout} = useAuth();
 
   return (
     <Navbar
@@ -53,9 +55,8 @@ const NavBar = () => {
                     Your projects
                   </NavDropdown.Item>
                   <NavDropdown.Item
-                    href="/"
                     onClick={() => {
-                      deleteTokens();
+                      logout();
                     }}
                   >
                     Logout
