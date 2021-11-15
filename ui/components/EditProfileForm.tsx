@@ -23,71 +23,62 @@ type EditProfileFormProps = {
 };
 
 const EditProfileForm: React.FC<EditProfileFormProps> = ({type}) => {
-  const [loading, setLoading] = useState<boolean>(true);
+  const [loading, setLoading] = useState<boolean>(false);
 
-  const {currentUser, accessToken} = useAuth();
+  const {
+    currentUser,
+    accessToken,
+    isLoading: getUserLoading,
+    getUser,
+  } = useAuth();
   const [error, setError] = useState<string | undefined>(undefined);
   const [tags, setTags] = useState<Tag[]>([]);
 
+  // get current user from useAuth state
   useEffect(() => {
+    getUser(false);
+  }, []);
+
+  // get all tags from api
+  useEffect(() => {
+    setLoading(true);
     if (accessToken) {
-      getAllTags(accessToken).then((tags) => {
-        setTags(tags);
+      getAllTags(accessToken).then((res) => {
+        setTags(res);
       });
     }
   }, [accessToken]);
 
+  useEffect(() => {
+    if (tags.length > 0) {
+      setLoading(false);
+    }
+  }, [tags]);
+
+  const userTags = currentUser?.tags;
   const {
-    isLoading,
-    isError,
-    error: errorUpdating,
-    mutate: updateUserMutate,
+    isLoading: isLoadingUserUpdate,
+    mutate: mutateUserUpdate,
+    status,
   } = useMutation(
-      (user: Partial<User>) => updateUser(user, accessToken || ''),
+      (user: Partial<User>) => updateUser(user, accessToken),
       {
-        onSuccess: (user: User) => {
-          console.log('Successfully updated user', user);
-          setError(undefined);
-          if (type === 'modal') {
-            window.location.href = '/';
-          }
+        onSuccess: (res) => {
+          getUser(true);
         },
-        onError: (error: Error) => {
-          console.log('Error updating user', error);
-          setError(error.message);
+        onError: (err) => {
+          setError(err.message);
         },
+      },
+      {
+        enabled: accessToken !== undefined,
       },
   );
 
-  if (isError) {
-    console.log('Error loading user', errorUpdating);
-  }
-
-  useEffect(() => {
-    if (
-      tags &&
-      tags.length > 0 &&
-      currentUser &&
-      currentUser.tags &&
-      currentUser.tags.length > 0
-    ) {
-      setLoading(false);
-    }
-  }, [tags, currentUser]);
-
-  if (loading || isLoading) {
-    return <div>Loading...</div>;
-  }
-
-  const handleSubmit = async (user: Partial<User>, formikBag: any) => {
-    try {
-      await updateUserMutate(user);
-    } catch (error) {
-      console.log(error);
-      setError(error.message);
-    } finally {
-      formikBag.setSubmitting(false);
-    }
+  const handleSubmit = (values: Partial<User>) => {
+    mutateUserUpdate({
+      ...values,
+    });
   };
 
   const validationSchema = Yup.object().shape({
@@ -105,11 +96,21 @@ const EditProfileForm: React.FC<EditProfileFormProps> = ({type}) => {
     tags: Yup.array().of(Yup.number()).min(1, 'Must have at least 1 skill tag'),
   });
 
+  if (
+    getUserLoading ||
+    isLoadingUserUpdate ||
+    loading ||
+    status === 'loading' ||
+    !currentUser
+  ) {
+    return <div>Loading...</div>;
+  }
+
   const initialValues = {
     username: currentUser?.username || '',
     avatar_url: currentUser?.avatar_url || '',
     description: currentUser?.description || '',
-    tags: currentUser?.tags || [],
+    tags: userTags || [],
   };
 
   const form = (
@@ -186,7 +187,7 @@ const EditProfileForm: React.FC<EditProfileFormProps> = ({type}) => {
               options={tags.map((tag: Tag) => ({
                 value: tag.id,
                 label: tag.name,
-                selected: currentUser?.tags?.find(
+                selected: initialValues.tags.find(
                     (skill: Tag) => skill.id === tag.id,
                 ) ?
                   true :

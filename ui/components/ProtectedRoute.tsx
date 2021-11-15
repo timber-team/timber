@@ -11,15 +11,13 @@ type ProtectedRouteProps = RouteProps & {
 };
 
 const ProtectedRoute = ({user, children, ...rest}: ProtectedRouteProps) => {
+  console.log(user);
   return (
     <Route
       {...rest}
       render={({location}) =>
         user ? (
-          user.username.length > 0 &&
-          user &&
-          user.tags &&
-          user.tags.length > 0 ? (
+          user.username && user.tags ? (
             children
           ) : (
             <EditProfileForm type="modal" />
