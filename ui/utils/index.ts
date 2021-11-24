@@ -1,5 +1,5 @@
+/* eslint-disable camelcase */
 import {User} from 'api/types';
-// eslint-disable-next-line camelcase
 import jwt_decode from 'jwt-decode';
 
 // storeTokens Utility function for storing accessToken and refreshToken

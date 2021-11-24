@@ -1,41 +1,119 @@
-/* eslint-disable camelcase */
-/* eslint-disable max-len */
 import {Field, Form, Formik} from 'formik';
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {Alert, Button, FormGroup, FormLabel, Modal} from 'react-bootstrap';
+import {useMutation} from 'react-query';
 import * as Yup from 'yup';
 
-import {useProjects} from '../api/project';
-import {useTags} from '../api/tag';
+import {createProject, updateProject} from '../api/project';
+import {getAllTags} from '../api/tag';
 import {Project, Tag} from '../api/types';
 import {useAuth} from '../store/auth';
 import CustomSelect from './CustomSelect';
 
-type ProjectFormProps = {
+interface ProjectFormProps {
   initialItem?: Project;
   btnSize?: 'sm' | 'lg';
-};
+}
 
 const ProjectForm: React.FC<ProjectFormProps> = ({initialItem, btnSize}) => {
-  const [showModal, setShowModal] = React.useState(false);
-  const {currentUser} = useAuth();
-  const {
-    projects,
-    loading: projectLoading,
-    error: projectError,
-    createProject,
-    updateProject,
-  } = useProjects();
-  const {tags, getAllTags} = useTags();
-  const [error, setError] = React.useState<string | null>(null);
-  const [success, setSuccess] = React.useState<string | null>(null);
-  const [isLoading, setIsLoading] = React.useState(false);
+  const [showModal, setShowModal] = useState(false);
+  const {currentUser, accessToken} = useAuth();
+  const [error, setError] = useState<string | undefined>(undefined);
+  const [tags, setTags] = useState<Tag[]>([]);
 
-  React.useEffect(() => {
-    if (currentUser) {
-      getAllTags();
+  useEffect(() => {
+    if (accessToken) {
+      getAllTags(accessToken).then((tags) => {
+        setTags(tags);
+      });
     }
-  }, [currentUser && showModal == true]);
+  }, [accessToken]);
+
+  const {
+    isLoading: isCreating,
+    isError: isErrorCreating,
+    data: dataCreating,
+    error: errorCreating,
+    mutate: createProjectMutate,
+  } = useMutation(
+      (project: Partial<Project>) => createProject(project, accessToken || ''),
+      {
+        onSuccess: (project: Project) => {
+          console.log('Successfully created project', project);
+          setError(undefined);
+          setShowModal(false);
+        },
+        onError: (error: Error) => {
+          console.log('Error creating project', error);
+          setError(error.message);
+        },
+      },
+  );
+
+  const {
+    isLoading: isUpdating,
+    isError: isErrorUpdating,
+    data: dataUpdating,
+    error: errorUpdating,
+    mutate: updateProjectMutate,
+  } = useMutation(
+      (project: Partial<Project>) => updateProject(project, accessToken || ''),
+      {
+        onSuccess: (project: Project) => {
+          console.log('Successfully updated project', project);
+          setError(undefined);
+          setShowModal(false);
+        },
+        onError: (error: Error) => {
+          console.log('Error updating project', error);
+          setError(error.message);
+        },
+      },
+  );
+
+  const handleSubmit = async (project: Partial<Project>, formikBag: any) => {
+    try {
+      if (initialItem) {
+        await updateProjectMutate(project);
+      } else {
+        await createProjectMutate(project);
+      }
+    } catch (error) {
+      console.log(error);
+      setError(error.message);
+    } finally {
+      formikBag.setSubmitting(false);
+    }
+  };
+
+  const validationSchema = Yup.object().shape({
+    name: Yup.string()
+        .max(50, 'Must be 50 characters or less')
+        .required('Name is required'),
+    description: Yup.string()
+        .max(2000, 'Must be 2000 characters or less')
+        .required('Description is required'),
+    image_url: Yup.string()
+        .max(250, 'Must be 250 characters or less')
+        .notRequired()
+        .nullable()
+        .url('Must be a valid URL'),
+    required_skills: Yup.array()
+        .of(Yup.number())
+        .min(1, 'Must have at least 1 required skill'),
+    preferred_skills: Yup.array()
+        .of(Yup.number())
+        .min(1, 'Must select at least 1 preferred skill'),
+  });
+
+  const initialValues = {
+    name: initialItem?.name || '',
+    description: initialItem?.description || '',
+    image_url: initialItem?.image_url || '',
+    owner_id: initialItem?.owner_id || currentUser?.id,
+    required_skills: initialItem?.required_skills || [],
+    preferred_skills: initialItem?.preferred_skills || [],
+  };
 
   const handleClose = () => {
     setShowModal(false);
@@ -45,42 +123,12 @@ const ProjectForm: React.FC<ProjectFormProps> = ({initialItem, btnSize}) => {
     setShowModal(true);
   };
 
-  const handleSubmit = async (values: Partial<Project>) => {
-    setShowModal(false);
-    setIsLoading(true);
-    try {
-      if (initialItem) {
-        await updateProject({
-          id: initialItem.id,
-          name: values.name,
-          description: values.description,
-          image_url: values.image_url,
-          preferred_skills: values.preferred_skills,
-          required_skills: values.required_skills,
-        });
-        setSuccess('Project updated successfully');
-      } else {
-        await createProject({
-          name: values.name,
-          description: values.description,
-          image_url: values.image_url,
-          preferred_skills: values.preferred_skills,
-          required_skills: values.required_skills,
-        });
-        setSuccess('Project created successfully');
-      }
-    } catch (error) {
-      setError(error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
   return (
     <>
       <Button variant="primary" onClick={handleShow} size={btnSize}>
         {initialItem ? 'Edit Project' : 'Create Project'}
       </Button>
+
       <Modal show={showModal} onHide={handleClose} centered>
         <Modal.Header closeButton>
           <Modal.Title>
@@ -89,40 +137,21 @@ const ProjectForm: React.FC<ProjectFormProps> = ({initialItem, btnSize}) => {
         </Modal.Header>
         <Modal.Body>
           <Formik
-            initialValues={{
-              name: initialItem?.name || '',
-              description: initialItem?.description || '',
-              image_url: initialItem?.image_url || '',
-              preferred_skills: initialItem?.preferred_skills || [],
-              required_skills: initialItem?.required_skills || [],
-            }}
-            validationSchema={Yup.object({
-              name: Yup.string()
-                  .max(50, 'Must be 50 characters or less')
-                  .defined('Required'),
-              description: Yup.string()
-                  .defined('Required'),
-              image_url: Yup.string()
-                  .max(250, 'Must be 250 characters or less')
-                  .notRequired()
-                  .nullable()
-                  .url('Must be a valid URL'),
-              preferred_skills: Yup.array().required('Required'),
-              required_skills: Yup.array().required('Required'),
-            })}
+            initialValues={initialValues}
+            validationSchema={validationSchema}
             onSubmit={handleSubmit}
+            enableReinitialize={true}
           >
             {({
-              values,
               errors,
               touched,
               handleChange,
               handleBlur,
-              handleSubmit,
               isSubmitting,
+              isValid,
             }) => (
               <Form>
-                <FormGroup controlId="name">
+                <FormGroup>
                   <FormLabel>Name</FormLabel>
                   <Field
                     type="text"
@@ -135,15 +164,16 @@ const ProjectForm: React.FC<ProjectFormProps> = ({initialItem, btnSize}) => {
                     onBlur={handleBlur}
                   />
                   {errors.name && touched.name && (
-                    <div className="invalid-feedback">{errors.name}</div>
+                    <Alert variant="danger" className="mt-2 sm" role="alert">
+                      {errors.name}
+                    </Alert>
                   )}
                 </FormGroup>
-                <FormGroup controlId="description">
+                <FormGroup>
                   <FormLabel>Description</FormLabel>
                   <Field
                     type="textbox"
-                    as="textarea"
-                    rows={3}
+                    rows={5}
                     name="description"
                     placeholder="Enter project description"
                     className={`form-control ${
@@ -153,10 +183,12 @@ const ProjectForm: React.FC<ProjectFormProps> = ({initialItem, btnSize}) => {
                     onBlur={handleBlur}
                   />
                   {errors.description && touched.description && (
-                    <div className="invalid-feedback">{errors.description}</div>
+                    <Alert variant="danger" className="mt-2 sm" role="alert">
+                      {errors.description}
+                    </Alert>
                   )}
                 </FormGroup>
-                <FormGroup controlId="image_url">
+                <FormGroup>
                   <FormLabel>Image URL</FormLabel>
                   <Field
                     type="text"
@@ -169,20 +201,22 @@ const ProjectForm: React.FC<ProjectFormProps> = ({initialItem, btnSize}) => {
                     onBlur={handleBlur}
                   />
                   {errors.image_url && touched.image_url && (
-                    <div className="invalid-feedback">{errors.image_url}</div>
+                    <Alert variant="danger" className="mt-2 sm" role="alert">
+                      {errors.image_url}
+                    </Alert>
                   )}
                 </FormGroup>
-                <FormGroup controlId="required_skills">
+                <FormGroup>
                   <FormLabel>Required Skills</FormLabel>
                   <Field
                     name="required_skills"
-                    placeholder="Enter required skills"
+                    placeholder="Select required skills"
                     component={CustomSelect}
-                    options={tags.map((tag) => ({
-                      label: tag.name,
+                    options={tags.map((tag: Tag) => ({
                       value: tag.id,
-                      selected: values.required_skills?.find(
-                          (skill: Tag) => skill?.id === tag.id,
+                      label: tag.name,
+                      selected: initialValues.required_skills.find(
+                          (skill: Tag) => skill.id === tag.id,
                       ) ?
                         true :
                         false,
@@ -197,22 +231,22 @@ const ProjectForm: React.FC<ProjectFormProps> = ({initialItem, btnSize}) => {
                     onBlur={handleBlur}
                   />
                   {errors.required_skills && touched.required_skills && (
-                    <div className="invalid-feedback">
+                    <Alert variant="danger" className="mt-2 sm" role="alert">
                       {errors.required_skills}
-                    </div>
+                    </Alert>
                   )}
                 </FormGroup>
-                <FormGroup controlId="preferred_skills">
+                <FormGroup>
                   <FormLabel>Preferred Skills</FormLabel>
                   <Field
                     name="preferred_skills"
-                    placeholder="Enter preferred skills"
+                    placeholder="Select preferred skills"
                     component={CustomSelect}
                     options={tags.map((tag: Tag) => ({
-                      label: tag.name,
                       value: tag.id,
-                      selected: values.preferred_skills?.find(
-                          (skill: Tag) => skill?.id === tag.id,
+                      label: tag.name,
+                      selected: initialValues.preferred_skills.find(
+                          (skill: Tag) => skill.id === tag.id,
                       ) ?
                         true :
                         false,
@@ -227,34 +261,25 @@ const ProjectForm: React.FC<ProjectFormProps> = ({initialItem, btnSize}) => {
                     onBlur={handleBlur}
                   />
                   {errors.preferred_skills && touched.preferred_skills && (
-                    <div className="invalid-feedback">
+                    <Alert variant="danger" className="mt-2 sm" role="alert">
                       {errors.preferred_skills}
-                    </div>
+                    </Alert>
                   )}
                 </FormGroup>
                 <Button
                   variant="primary"
                   type="submit"
-                  disabled={isSubmitting}
+                  disabled={isSubmitting || !isValid}
                   className="mt-3"
                 >
-                  {isSubmitting ? 'Loading...' : 'Submit'}
+                  {initialItem ? 'Edit Project' : 'Create Project'}
                 </Button>
               </Form>
             )}
           </Formik>
         </Modal.Body>
       </Modal>
-      {success && (
-        <Alert variant="success" onClose={() => setSuccess('')} dismissible>
-          {success}
-        </Alert>
-      )}
-      {error && (
-        <Alert variant="danger" onClose={() => setError('')} dismissible>
-          {error}
-        </Alert>
-      )}
+      {error && <Alert variant="danger">{error}</Alert>}
     </>
   );
 };

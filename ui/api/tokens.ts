@@ -1,22 +1,27 @@
-import {doRequest, NoData} from '.';
+import {doRequest} from '.';
 import {storeTokens} from '../utils';
 import {TokenResponse} from './types';
 
 export const getAccessToken = async (query: string, provider: string) => {
-  const [response, err] = await doRequest({
+  const {data, error} = await doRequest<TokenResponse>({
     url: `/auth/callback/${provider}${query}`,
     method: 'GET',
   });
-  if (err !== null) {
-    console.log(err);
-    return err;
+
+  console.log('getAccessToken', data, error);
+
+  if (error) {
+    return error;
   }
 
-  if (response === null) {
-    return NoData;
+  if (!data) {
+    return new Error('No data returned from server');
   }
 
-  const tokenPair = response.data as TokenResponse;
+  const tokenPair = {
+    access_token: data.access_token,
+    refresh_token: data.refresh_token,
+  };
 
   storeTokens(tokenPair.access_token, tokenPair.refresh_token);
 
@@ -24,23 +29,26 @@ export const getAccessToken = async (query: string, provider: string) => {
 };
 
 export const refreshTokens = async () => {
-  const [response, err] = await doRequest({
-    url: `/auth/tokens`,
+  const {data, error} = await doRequest<TokenResponse>({
+    url: '/auth/tokens',
     method: 'POST',
     data: {
       refreshToken: localStorage.getItem('refresh_token'),
     },
   });
-  if (err !== null) {
-    console.log(err);
-    return err;
+
+  if (error) {
+    throw error;
   }
 
-  if (response === null) {
-    return NoData;
+  if (!data) {
+    throw new Error('No data returned');
   }
 
-  const tokenPair = response.data as TokenResponse;
+  const tokenPair = {
+    access_token: data.access_token,
+    refresh_token: data.refresh_token,
+  };
 
   storeTokens(tokenPair.access_token, tokenPair.refresh_token);
 

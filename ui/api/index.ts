@@ -1,37 +1,41 @@
-import axios, {AxiosRequestConfig} from 'axios';
+import Axios, {AxiosRequestConfig} from 'axios';
+
 import {GenericResponse} from './types';
 
-/**
- * @param {AxiosRequestConfig} config
- * @returns {Promise<[GenericResponse | null, Error | null]>}
- * @async
- * @name doRequest
- * @memberof api
- * @function
- * @inner
- * @description
- * This function is used to make a request to the API.
- * It returns a promise with the response or an error.
- * @example
- * ```js
- * const response = await doRequest(config);
- * ```
- */
+const axios = Axios.create({
+  baseURL: process.env.API_URL,
+  headers: {
+    'Content-Type': 'application/json',
+  },
+});
 
-export const doRequest = async (
-    config: AxiosRequestConfig,
-): Promise<[GenericResponse | null, Error | null]> => {
+export const doRequest = async <T>(reqOptions: AxiosRequestConfig) => {
+  let res: GenericResponse<T> | undefined;
+  let data: T | undefined;
+  let error: Error | undefined;
+
+  reqOptions.url = `/api${reqOptions.url}`;
+
   try {
-    const response = await axios(`/api${config.url}`, config);
-    return [response.data, null];
-  } catch (error) {
-    return [null, error];
+    const response = await axios.request<GenericResponse<T>>(reqOptions);
+    res = response.data;
+    if (res.detail === 'error') {
+      error = new Error(res.msg);
+    } else {
+      data = res.data;
+    }
+  } catch (e) {
+    if (e.response) {
+      error = e.response;
+    } else if (e.request) {
+      error = e.request;
+    } else {
+      error = e;
+    }
   }
+
+  return {
+    data,
+    error,
+  };
 };
-
-export * as project from './project';
-export * as tokens from './tokens';
-export * as types from './types';
-export * as users from './user';
-
-export const NoData = new Error('no data');

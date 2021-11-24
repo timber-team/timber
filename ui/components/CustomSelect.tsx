@@ -1,8 +1,6 @@
-/* eslint-disable max-len */
 import {Tag} from 'api/types';
-import {ErrorMessage, FieldProps} from 'formik';
+import {FieldProps} from 'formik';
 import React from 'react';
-import {Form} from 'react-bootstrap';
 import Select from 'react-select';
 
 interface Option {
@@ -28,7 +26,6 @@ export const CustomSelect = ({
   field,
   form,
   options,
-  alreadySelectedOptions,
   label,
   muted,
   description,
@@ -66,19 +63,14 @@ export const CustomSelect = ({
   };
 
   return (
-    <Form.Group>
-      <Select
-        className={className}
-        name={field.name}
-        value={getValue()}
-        onChange={onChange}
-        placeholder={placeholder}
-        options={options}
-        isMulti={isMulti}
-      />
-      <ErrorMessage name={field.name} component="div" />
-      <Form.Text className={muted ? 'text-muted' : ''}>{description}</Form.Text>
-    </Form.Group>
+    <Select
+      name={field.name}
+      value={getValue()}
+      onChange={onChange}
+      placeholder={placeholder}
+      options={options}
+      isMulti={isMulti}
+    />
   );
 };
 

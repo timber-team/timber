@@ -1,159 +1,82 @@
-import {useState} from 'react';
-
 import {doRequest} from '.';
-import {useAuth} from '../store/auth';
 import {Application} from './types';
 
-// useApplications custom hook
-export const useApplications = () => {
-  const accessToken = useAuth((state) => state.accessToken);
-  const [applications, setApplications] = useState<Application[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+export const getOwnApplications = async (
+    accessToken: string,
+): Promise<Application[]> => {
+  const {data, error} = await doRequest<Application[]>({
+    url: '/applications',
+    method: 'GET',
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    },
+  });
+  if (error) {
+    throw error;
+  }
+  if (!data) {
+    throw new Error('No data returned');
+  }
+  return data;
+};
 
-  const getOwnApplications = async () => {
-    setLoading(true);
-    setError(null);
-    try {
-      const response = await doRequest({
-        url: `/applications`,
-        method: 'GET',
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-      });
-      if (response[0] === null) {
-        setError(response[1]!.message);
-      } else {
-        setApplications(response[0].data);
-      }
-    } catch (error) {
-      setError(error.message);
-    }
-    setLoading(false);
-  };
+export const createApplication = async (
+    projectID: number,
+    accessToken: string,
+): Promise<Application> => {
+  const {data, error} = await doRequest<Application>({
+    url: `/applications/${projectID}`,
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    },
+  });
+  if (error) {
+    throw error;
+  }
+  if (!data) {
+    throw new Error('No data returned');
+  }
+  return data;
+};
 
-  const getAllApplicationsByUserId = async (userId: number) => {
-    setLoading(true);
-    setError(null);
-    try {
-      const response = await doRequest({
-        url: `/users/${userId}/applications`,
-        method: 'GET',
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-      });
-      if (response[0] === null) {
-        setError(response[1]!.message);
-      } else {
-        setApplications(response[0]!.data);
-      }
-    } catch (error) {
-      setError(error.message);
-    }
-    setLoading(false);
-  };
+export const updateApplication = async (
+    application: Partial<Application>,
+    accessToken: string,
+): Promise<Application> => {
+  const {data, error} = await doRequest<Application>({
+    url: `/applications/${application.id}`,
+    method: 'PUT',
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    },
+    data: application,
+  });
+  if (error) {
+    throw error;
+  }
+  if (!data) {
+    throw new Error('No data returned');
+  }
+  return data;
+};
 
-  const getApplicationById = async (id: number) => {
-    setLoading(true);
-    setError(null);
-    try {
-      const response = await doRequest({
-        url: `/applications/${id}`,
-        method: 'GET',
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-      });
-      if (response[0] === null) {
-        setError(response[1]!.message);
-      } else {
-        setApplications(response[0]!.data);
-      }
-    } catch (error) {
-      setError(error.message);
-    }
-    setLoading(false);
-  };
-
-  // get application by project id
-  const getAllApplicationsByProjectId = async (projectId: number) => {
-    setLoading(true);
-    setError(null);
-    try {
-      const response = await doRequest({
-        url: `/projects/${projectId}/applications`,
-        method: 'GET',
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-      });
-      if (response[0] === null) {
-        setError(response[1]!.message);
-      } else {
-        setApplications(response[0]!.data);
-      }
-    } catch (error) {
-      setError(error.message);
-    }
-    setLoading(false);
-  };
-
-  const createApplication = async (projectId: number) => {
-    setLoading(true);
-    setError(null);
-    try {
-      const response = await doRequest({
-        url: `/applications/${projectId}`,
-        method: 'POST',
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-      });
-      if (response[0] === null) {
-        setError(response[1]!.message);
-      } else {
-        setApplications(response[0]!.data);
-      }
-    } catch (error) {
-      setError(error.message);
-    }
-    setLoading(false);
-  };
-
-  const updateApplication = async (application: Partial<Application>) => {
-    setLoading(true);
-    setError(null);
-    try {
-      const response = await doRequest({
-        url: `/applications/${application.id}`,
-        method: 'PUT',
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-        data: application,
-      });
-      if (response[0] === null) {
-        setError(response[1]!.message);
-      } else {
-        setApplications(response[0]!.data);
-      }
-    } catch (error) {
-      setError(error.message);
-    }
-    setLoading(false);
-  };
-
-  return {
-    applications,
-    loading,
-    error,
-    // getAllApplicationsByUserId,
-    getOwnApplications,
-    getApplicationById,
-    getAllApplicationsByProjectId,
-    createApplication,
-    updateApplication,
-  };
+export const getApplicationsByProjectId = async (
+    projectID: number,
+    accessToken: string,
+): Promise<Application[]> => {
+  const {data, error} = await doRequest<Application[]>({
+    url: `/projects/${projectID}/applications`,
+    method: 'GET',
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    },
+  });
+  if (error) {
+    throw error;
+  }
+  if (!data) {
+    throw new Error('No data returned');
+  }
+  return data;
 };

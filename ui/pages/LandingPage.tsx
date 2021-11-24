@@ -1,9 +1,8 @@
 /* eslint-disable react/no-unescaped-entities */
-/* eslint-disable max-len */
 import React from 'react';
 import {Button, Col, Container, Row} from 'react-bootstrap';
 
-import ProjectForm from '../components/ProjectForms';
+import ProjectForm from '../components/ProjectForm';
 
 const LandingPage = () => {
   return (

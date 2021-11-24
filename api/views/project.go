@@ -19,8 +19,16 @@ type projectRequest struct {
 	PreferredSkills []int  `json:"preferred_skills" binding:"omitempty"`
 }
 
+type projectPostRequest struct {
+	Name            string `json:"name" binding:"required,gte=4,lte=50"`
+	Description     string `json:"description" binding:"required"`
+	ImageURL        string `json:"image_url" binding:"omitempty,url,lte=250"`
+	RequiredSkills  []int  `json:"required_skills" binding:"required,min=1"`
+	PreferredSkills []int  `json:"preferred_skills" binding:"required,min=1"`
+}
+
 func (h *Handler) NewProject(c *gin.Context) {
-	var req projectRequest
+	var req projectPostRequest
 
 	if ok := utils.BindData(c, &req); !ok {
 		log.WithContext(c).Error("Could not bind data for new project")
@@ -162,8 +170,6 @@ func (h *Handler) GetRecommendedProjects(c *gin.Context) {
 		return
 	}
 
-	log.WithContext(c).Info(fmt.Sprintf("Recommended projects: %v", queryProjects))
-
 	// check if user has applied to any projects
 	recommendations := []*models.Project{}
 
@@ -302,8 +308,8 @@ func (h *Handler) UpdateProject(c *gin.Context) {
 		return
 	}
 
-	req := &projectRequest{}
-	err = c.BindJSON(req)
+	var req projectPostRequest
+	err = c.BindJSON(&req)
 	if err != nil {
 		utils.Respond(c, customresponse.NewBadRequest(err.Error()), nil)
 		return
