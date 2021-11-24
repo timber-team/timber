@@ -3,7 +3,9 @@ import Axios, {AxiosRequestConfig} from 'axios';
 import {GenericResponse} from './types';
 
 const axios = Axios.create({
-  baseURL: process.env.API_URL,
+  // default to timber.netsoc.cloud
+  baseURL: (process.env.API_URL === undefined) ? "https://timber.netsoc.cloud/api":process.env.API_URL,
+
   headers: {
     'Content-Type': 'application/json',
   },

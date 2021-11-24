@@ -17,7 +17,8 @@ const Footer = () => {
       <Container className="align-items-center text-light">
         <Col>Copyright &copy; 2021 Timber</Col>
         <Col style={{textAlign: 'right'}}>
-          <a href={process.env.PROJECT_GITHUB_URL}>
+          {/* default to github.com/gal/cs3500 */}
+          <a href={(process.env.PROJECT_GITHUB_URL === undefined) ? "https://github.com/gal/cs3500":process.env.PROJECT_GITHUB_URL}>
             <img
               src="https://raw.githubusercontent.com/gilbarbara/logos/f4c8e8b933aa80ce83b6d6d387e016bf4cb4e376/logos/github.svg"
               width="80px"
