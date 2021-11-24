@@ -4,7 +4,7 @@ import EditProfile from './EditProfile';
 
 const EditProfileModal = () => {
   return (
-    <Modal show={true}>
+    <Modal style={{position:"absolute", top:"20%"}} show={true}>
       <Modal.Body>
         <EditProfile />
       </Modal.Body>

@@ -77,11 +77,13 @@ const ProjectCard: React.FC<ProjectCardProps> = ({project}) => {
             trigger={['hover', 'focus']}
             key={project.owner.id}
             placement="top"
+            style={{width:"400px"}}
             overlay={
-              <Popover id={`popover-positioned-${project.owner.id}`}>
+              <Popover style={{width:"400px"}} id={`popover-positioned-${project.owner.id}`}>
                 <Popover.Header
                   as="div"
                   className="d-flex flex-column align-items-center justify-content-center"
+                  style={{width:"400px"}}
                 >
                   <img
                     src={
@@ -95,11 +97,11 @@ const ProjectCard: React.FC<ProjectCardProps> = ({project}) => {
                   />
                   <h3>{project.owner.username}</h3>
                 </Popover.Header>
-                <Popover.Body as="div">
-                  <Popover.Header as="h5">
-                    <ReactMarkdown>{project.owner.description}</ReactMarkdown>
+                <Popover.Body as="div" style={{width:"400px"}}>
+                  <Popover.Header as="h5" style={{width:"400px"}}>
+                    <ReactMarkdown style={{width:"400px"}}>{project.owner.description}</ReactMarkdown>
                   </Popover.Header>
-                  <Popover.Body as="p" className="text-center">
+                  <Popover.Body as="p" className="text-center" style={{width:"400px"}}>
                     {project.owner?.tags?.map((tag) => (
                       <Badge
                         key={tag.id}
@@ -110,7 +112,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({project}) => {
                       </Badge>
                     ))}
                   </Popover.Body>
-                  <Popover.Body as="p" className="text-center">
+                  <Popover.Body as="p" className="text-center" style={{width:"400px"}}>
                     {project.owner.projects?.slice(0, 5).map((project) => (
                       <Badge
                         key={project.id}
@@ -143,9 +145,11 @@ const ProjectCard: React.FC<ProjectCardProps> = ({project}) => {
                     trigger={['hover', 'focus']}
                     key={collaborator.id}
                     placement="top"
+                    style={{width:"400px"}}
                     overlay={
-                      <Popover id={`popover-positioned-${collaborator.id}`}>
+                      <Popover style={{width:"400px"}} id={`popover-positioned-${collaborator.id}`}>
                         <Popover.Header
+                        style={{width:"400px"}}
                           as="div"
                           className="d-flex flex-column align-items-center justify-content-center"
                         >
@@ -161,13 +165,13 @@ const ProjectCard: React.FC<ProjectCardProps> = ({project}) => {
                           />
                           <h3>{collaborator.username}</h3>
                         </Popover.Header>
-                        <Popover.Body as="div" className="">
-                          <Popover.Header as="h5">
-                            <ReactMarkdown>
+                        <Popover.Body as="div" className="" style={{width:"400px"}}>
+                          <Popover.Header as="h5" style={{width:"400px"}}>
+                            <ReactMarkdown style={{width:"400px"}}>
                               {collaborator.description}
                             </ReactMarkdown>
                           </Popover.Header>
-                          <Popover.Body as="p" className="text-center">
+                          <Popover.Body as="p" className="text-center" style={{width:"400px"}}>
                             {collaborator.tags?.map((tag) => (
                               <Badge
                                 key={tag.id}
@@ -178,7 +182,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({project}) => {
                               </Badge>
                             ))}
                           </Popover.Body>
-                          <Popover.Body as="p" className="text-center">
+                          <Popover.Body as="p" className="text-center" style={{width:"400px"}}>
                             {collaborator.projects
                                 ?.slice(0, 5)
                                 .map((project) => (
