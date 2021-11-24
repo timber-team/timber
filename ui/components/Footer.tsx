@@ -15,7 +15,7 @@ const Footer = () => {
       }}
     >
       <Container className="align-items-center text-light">
-        <Col>Copyright © 2021 Timber</Col>
+        <Col>Copyright &copy; 2021 Timber</Col>
         <Col style={{textAlign: 'right'}}>
           <a href={process.env.PROJECT_GITHUB_URL}>
             <img

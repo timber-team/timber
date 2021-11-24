@@ -14,7 +14,7 @@ export const doRequest = async <T>(reqOptions: AxiosRequestConfig) => {
   let data: T | undefined;
   let error: Error | undefined;
 
-  reqOptions.url = `/api${reqOptions.url}`;
+  reqOptions.url = reqOptions.url;
 
   try {
     const response = await axios.request<GenericResponse<T>>(reqOptions);

@@ -164,7 +164,8 @@ const EditProfileForm: React.FC<EditProfileFormProps> = ({type}) => {
           <FormGroup>
             <FormLabel>Description</FormLabel>
             <Field
-              type="textbox"
+              type="text"
+              as="textarea"
               rows={5}
               name="description"
               placeholder="Description"
