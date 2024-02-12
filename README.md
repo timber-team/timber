@@ -1,4 +1,4 @@
-# CS3500
+# Team Software Project - Timber
 
 > Timber is a social networking platform to connect professionals and hobbyists together. It’s
 > main purpose is to join people who are looking to work on projects in their spare time. It
