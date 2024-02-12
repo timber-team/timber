@@ -1,6 +1,6 @@
 # CS3500
 
-Timber is a social networking platform to connect professionals and hobbyists together. It’s
+> Timber is a social networking platform to connect professionals and hobbyists together. It’s
 main purpose is to join people who are looking to work on projects in their spare time. It
 can be ostensible nowadays for a student or a person aspiring to join the industry; to find and
 collaborate with and gain team building skills. Our purpose is to mediate these worries of finding
@@ -10,9 +10,17 @@ barriers to entry such as CVs, lengthy cover letters and experience prerequisite
 platform not only can match with these projects but can also use them to gain and show their
 experience on their professional portfolios.
 
+# Team Software Project 3<sup>rd</sup> year Computer Science CK401, University College Cork
+## Group members
+- Reece Donovan [@ReeceDonovan](https://www.github.com/reecedonovan)
+- Aidan Molloy [@AidanMolloy](https://github.com/AidanMolloy)
+- Max Hodor [@minmaximilian](https://github.com/minmaximilian)
+- Thomas Galligan [@gal](https://github.com/gal)
+
 # Installation
 ## Dependencies
-[Docker](https://docker.com) 
+- [Docker](https://docker.com)
+- [Docker-compose](https://docs.docker.com/compose/)
 ---
 ( or alternatively )
 - [Go](https://golang.org)
