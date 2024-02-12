@@ -1,4 +1,4 @@
-FROM node as dev
+FROM node:latest as dev
 
 WORKDIR /app
 
@@ -6,7 +6,7 @@ COPY . .
 
 RUN npm i
 
-FROM node as build
+FROM node:latest as build
 
 WORKDIR /app
 
